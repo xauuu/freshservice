@@ -1,0 +1,122 @@
+{
+    "getAllGroupApproval": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052000/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createGroupApproval": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052000/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateGroupApproval": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052000/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllDepartment": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/departments",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllEmailTemplate": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052168/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createEmailTemplate": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052168/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateEmailTemplate": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052168/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllSRCategory": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052210/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createSRCategory": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052210/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateSRCategory": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052210/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    }
+}

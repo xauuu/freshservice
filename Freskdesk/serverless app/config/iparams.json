@@ -1,0 +1,8 @@
+{
+  "domain": {
+    "display_name": "domain",
+    "description": "Please enter your domain",
+    "type": "text",
+    "required": true
+  }
+}

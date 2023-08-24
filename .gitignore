@@ -1,0 +1,10 @@
+/New Folder
+**/New Folder
+**/node_modules/**
+**/test_data/**
+.idea
+**/dist/**
+**/.fdk/**
+**/coverage/**
+**/.report.json
+**/.vscode/**
