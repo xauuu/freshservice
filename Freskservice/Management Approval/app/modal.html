@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <form id="formCreate" class="h-screen flex flex-col justify-between">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto">
+            <div>
+                <label for="app_code" class="block mb-2 text-xs font-medium text-gray-900 ">App Code
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <!-- <input type="text" name="app_code" id="app_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required=""> -->
+                <select id="app_code" name="app_code" required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected disabled>Choose an App</option>
+                </select>
+            </div>
+            <div>
+                <label for="process_code" class="block mb-2 text-xs font-medium text-gray-900 ">Process
+                    Code
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <select id="process_code" name="process_code" required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected disabled>Choose a Process</option>
+                </select>
+                <!-- <input type="text" name="process_code" id="process_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required=""> -->
+            </div>
+            <div>
+                <label for="name" class="block mb-2 text-xs font-medium text-gray-900 ">Name
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="text" name="name" id="name"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="action_code" class="block mb-2 text-xs font-medium text-gray-900 ">Action
+                    Code
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="text" name="action_code" id="action_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div class="flex items-center">
+                <input id="is_direct_line_report_approval" name="is_direct_line_report_approval" type="checkbox"
+                    value="yes" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                <label for="is_direct_line_report_approval" class="ml-2 text-xs font-medium text-gray-900">Is Direct
+                    Line Report Approval</label>
+            </div>
+            <div>
+                <label for="next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
+                    Next Approval Group
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <select id="next_approval_group" name="next_approval_group"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected>Choose a next approval group</option>
+                </select>
+            </div>
+            <div>
+                <label for="approval_type" class="block mb-2 text-xs font-medium text-gray-900 ">
+                    Approval Type
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <select id="approval_type" name="approval_type"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected disabled>Choose a approval type</option>
+                    <option value="1">To be approved by Everyone</option>
+                    <option value="2">To be approved by Anyone</option>
+                    <option value="3">To be approved by Majority</option>
+                    <option value="4">To be approved by First Responder</option>
+                </select>
+            </div>
+            <div>
+                <label for="state" class="block mb-2 text-xs font-medium text-gray-900 ">Current State
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="number" name="state" id="state"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="new_state" class="block mb-2 text-xs font-medium text-gray-900 ">New State
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="number" name="new_state" id="new_state"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">Email Template
+                    Code
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <select id="email_template_code" name="email_template_code" required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected disabled>Choose a Email Template</option>
+                </select>
+                <!-- <input type="text" name="email_template_code" id="email_template_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required=""> -->
+            </div>
+        </div>
+        <div class="flex gap-4 justify-end">
+            <button id="closeModal" type="button"
+                class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
+                Cancel
+            </button>
+            <button id="create" type="submit"
+                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                Save
+            </button>
+        </div>
+    </form>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="scripts/constant.js"></script>
+    <script>
+        window.frsh_init().then(function (client) {
+            var context = {}
+            var categories = []
+            document.getElementById("closeModal").addEventListener("click", function () {
+                client.instance.close();
+            });
+            document.getElementById("app_code").addEventListener('change', function (e) {
+                generateSelectProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
+
+            })
+            document.getElementById("formCreate").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const data = new FormData(e.target);
+                const formDataObj = {
+                    is_direct_line_report_approval: 'no'
+                };
+                for (let entry of data.entries()) {
+                    const [key, value] = entry;
+                    formDataObj[key] = value;
+                }
+                client.instance.send({
+                    message: {
+                        type: context.type,
+                        data: formDataObj,
+                        id: context.data?.bo_display_id
+                    }
+                });
+            });
+            client.instance.receive(function (event) {
+                let data = event.helper.getData();
+                if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
+                if (data.type === ACTION_TYPES.LIST_DEPARTMENT) {
+                    data.data?.departments?.forEach((item) => {
+                        const { id, name } = item;
+                        const option = document.createElement('option')
+                        option.value = id
+                        option.text = name
+                        option.selected = id === context.data?.next_approval_group.id
+                        document.getElementById("next_approval_group").append(option)
+                    });
+                    categories = data.data?.categories
+                    data.data.apps?.forEach((item) => {
+                        const { app_code, app_name } = item;
+                        const option = document.createElement('option')
+                        option.value = app_code
+                        option.text = app_name
+                        option.selected = app_code === context.data?.app_code
+                        document.getElementById("app_code").append(option)
+                    });
+                    generateSelectProcess(
+                        categories?.filter(item => item.data.app_code == context.data?.app_code),
+                        process_code === context.data?.process_code
+                    )
+                    data.data?.templates?.forEach((item) => {
+                        const { email_code, email_name } = item.data;
+                        const option = document.createElement('option')
+                        option.value = email_code
+                        option.text = email_name
+                        option.selected = email_code === context.data?.email_template_code
+                        document.getElementById("email_template_code").append(option)
+                    });
+                }
+            });
+            client.instance.context().then(
+                function (c) {
+                    context = c.data
+                    if (context.type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
+                        const data = context.data
+                        document.getElementById("app_code").value = data.app_code;
+                        document.getElementById("process_code").value = data.process_code;
+                        document.getElementById("name").value = data.name;
+                        document.getElementById("action_code").value = data.action_code;
+                        document.getElementById("is_direct_line_report_approval").value = data.is_direct_line_report_approval;
+                        document.getElementById("approval_type").value = data.approval_type;
+                        document.getElementById("next_approval_group").value = data.next_approval_group.id;
+                        document.getElementById("state").value = data.state;
+                        document.getElementById("new_state").value = data.new_state;
+                        document.getElementById("email_template_code").value = data.email_template_code;
+                        document.getElementById("is_direct_line_report_approval").checked = !!data.is_direct_line_report_approval
+                    }
+                }
+            );
+        });
+        function generateSelectProcess(processList, selected) {
+            processList.forEach((item) => {
+                const { process_code, process_name } = item.data;
+                const option = document.createElement('option')
+                option.value = process_code
+                option.text = process_name
+                option.selected = selected
+                document.getElementById("process_code").append(option)
+            });
+        }
+    </script>
+
+</body>
+
+</html>

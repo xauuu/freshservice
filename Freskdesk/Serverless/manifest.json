@@ -1,0 +1,25 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshdesk": {
+      "events": {
+        "onTicketCreate": {
+          "handler": "onTicketCreateHandler"
+        },
+        "onTicketUpdate": {
+          "handler": "onTicketCreateHandler"
+        }
+      },
+      "requests": {
+        "getAllContact": {}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.2"
+  },
+  "dependencies": {
+    "nodemailer": "6.9.3"
+  }
+}

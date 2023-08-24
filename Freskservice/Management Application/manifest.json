@@ -1,0 +1,25 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshservice": {
+      "location": {
+        "ticket_sidebar": {
+          "url": "index.html",
+          "icon": "styles/images/icon.svg"
+        },
+        "full_page_app": {
+          "url": "fullpage.html",
+          "icon": "styles/images/icon.png"
+        }
+      },
+      "requests": {
+        "getAllCustomObject": {},
+        "createCustomObject": {}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.2"
+  }
+}

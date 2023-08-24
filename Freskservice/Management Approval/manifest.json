@@ -1,0 +1,29 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshservice": {
+      "location": {
+        "full_page_app": {
+          "url": "index.html",
+          "icon": "styles/images/icon.svg"
+        }
+      },
+      "requests": {
+        "getAllGroupApproval": {},
+        "createGroupApproval": {},
+        "updateGroupApproval": {},
+        "getAllDepartment": {},
+        "getAllEmailTemplate": {},
+        "createEmailTemplate": {},
+        "updateEmailTemplate": {},
+        "getAllSRCategory": {},
+        "createSRCategory": {},
+        "updateSRCategory": {}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.4"
+  }
+}

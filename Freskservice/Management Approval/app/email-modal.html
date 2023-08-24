@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+    <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet'
+        type='text/css' />
+</head>
+
+<body>
+    <form id="formCreate" class="h-screen flex flex-col justify-between">
+        <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto">
+            <div>
+                <label for="email_code" class="block mb-2 text-xs font-medium text-gray-900 ">Email Code
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="text" name="email_code" id="email_code"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="email_name" class="block mb-2 text-xs font-medium text-gray-900 ">Email Name
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="text" name="email_name" id="email_name"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="subject" class="block mb-2 text-xs font-medium text-gray-900 ">Subject
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <input type="text" name="subject" id="subject"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="body" class="block mb-2 text-xs font-medium text-gray-900 ">Body
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <div id="body"></div>
+                <!-- <input type="text" name="body" id="body"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    placeholder="Enter Details" required=""> -->
+            </div>
+        </div>
+        <div class="flex gap-4 justify-end">
+            <button id="closeModal" type="button"
+                class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
+                Cancel
+            </button>
+            <button id="create" type="submit"
+                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                Save
+            </button>
+        </div>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script type='text/javascript'
+        src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
+    <script src="scripts/constant.js"></script>
+    <script>
+        var editor = new FroalaEditor('#body', FROALA_OPTIONS);
+    </script>
+    <script>
+        window.frsh_init().then(function (client) {
+            var context = {}
+            document.getElementById("closeModal").addEventListener("click", function () {
+                client.instance.close();
+            });
+            document.getElementById("formCreate").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const data = new FormData(e.target);
+                const formDataObj = {
+                    body: document.querySelector('.fr-element').innerHTML
+                };
+                for (let entry of data.entries()) {
+                    const [key, value] = entry;
+                    formDataObj[key] = value;
+                }
+                client.instance.send({
+                    message: {
+                        type: context.type,
+                        data: formDataObj,
+                        id: context.data?.bo_display_id
+                    }
+                });
+            });
+            client.instance.receive(function (event) {
+                let data = event.helper.getData();
+                if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
+            });
+            client.instance.context().then(
+                function (c) {
+                    context = c.data
+                    if (context.type === ACTION_TYPES.EMAIL_TEMPLATE_UPDATE) {
+                        const data = context.data
+                        document.getElementById("email_code").value = data.email_code;
+                        document.getElementById("email_name").value = data.email_name;
+                        document.getElementById("subject").value = data.subject;
+                        editor.html.insert(data.body);
+                    }
+                }
+            );
+        });
+    </script>
+
+</body>
+
+</html>
