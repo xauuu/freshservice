@@ -26,58 +26,53 @@ exports = {
         });
         const currentState = JSON.parse(currentStateRes).records[0].data;
         console.log('DEBUG: currentState', currentState)
-        if (changes.approval_status[0] < changes.approval_status[1]) {
-          const { response: nextGroupRes } = await $request.invokeTemplate("getNextGroupApproval", {
-            context: {
-              state: currentState.sr_state || '',
-              action: 'approve'
-            }
-          });
-          const nextGroup = JSON.parse(nextGroupRes).records[0].data;
-          console.log('DEBUG: TableLookup', nextGroup)
+        const replacements = {
+          ticket_id: ticket.id,
+          display_id: currentState.sr_display_id,
+          title: currentState.sr_title
+        }
+        const { response: groupApprovalRes } = await $request.invokeTemplate("getNextGroupApproval", {
+          context: {
+            state: currentState.sr_state || ''
+          }
+        });
+        const groupApproval = JSON.parse(groupApprovalRes).records[0].data;
+        console.log('DEBUG: TableLookup', groupApproval)
+        if (groupApproval) {
+          if (changes.approval_status[0] < changes.approval_status[1]) {
 
-          if (nextGroup) {
             let requesters = [];
-
-            if (nextGroup.is_direct_line_report_approval === 'yes') {
+            if (groupApproval.is_direct_line_report_approval === 'yes') {
               const currentRequester = await getDirectRequester(ticket.requester_id);
               const directRequester = await getDirectRequester(currentRequester.reporting_manager_id);
               requesters = [directRequester];
             } else {
-              requesters = await getRequesters(nextGroup.next_approval_group.id);
+              requesters = await getRequesters(groupApproval.next_approval_group.id);
             }
             console.log('DEBUG: listRequester', requesters)
             if (requesters && requesters.length > 0) {
               await Promise.all(requesters.map(async (item) => {
-                await requestApproval(ticket.id, item.id, nextGroup.approval_type, `${item.first_name} ${item.last_name}, please approve.`);
+                await requestApproval(ticket.id, item.id, groupApproval.approval_type, `${item.first_name} ${item.last_name}, please approve.`);
               }));
-              const replacements = {
-                ticket_id: ticket.id,
-                display_id: currentState.sr_display_id,
-                title: currentState.sr_title
-              }
-              sendMailTemplate(nextGroup.email_template_code, replacements, requesters.map(r => r.primary_email).join(","))
+              sendMailTemplate(groupApproval.email_template_code, replacements, requesters.map(r => r.primary_email).join(","))
               const approvals = await getTicketApprovals(ticket.id)
               const jsonApprovals = JSON.stringify(formattedApprovals(approvals))
-              await updateState(currentState.bo_display_id, nextGroup.new_state, jsonApprovals);
+              const newVisible = currentState.sr_visible_to?.concat(';', requesters.map(r => r.id).join(";"))
+              updateState(currentState.bo_display_id, groupApproval.new_state, jsonApprovals, newVisible);
             }
+
           }
-        }
-        if (changes.approval_status[0] > changes.approval_status[1]) {
-          const replacements = {
-            ticket_id: ticket.id,
-            display_id: currentState.sr_display_id,
-            title: currentState.sr_title
+          if (changes.approval_status[0] > changes.approval_status[1]) {
+            sendMailTemplate(groupApproval.reject_email_template_code, replacements, args.data.requester.email)
+            const approvals = await getTicketApprovals(ticket.id)
+            const jsonApprovals = JSON.stringify(formattedApprovals(approvals))
+            updateState(currentState.bo_display_id, groupApproval.reject_new_state, jsonApprovals, currentState.sr_visible_to);
           }
-          sendMailTemplate("LEAVE_REQUEST_REJECT", replacements, args.data.requester.email)
-          const approvals = await getTicketApprovals(ticket.id)
-          const jsonApprovals = JSON.stringify(formattedApprovals(approvals))
-          await updateState(currentState.bo_display_id, "0", jsonApprovals);
         }
       }
     } catch (error) {
       console.log(error);
-      await sendMail('ERROR in TicketUpdateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
+      sendMail('ERROR in TicketUpdateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
 
     }
   },
@@ -109,8 +104,7 @@ exports = {
 
       const { response: nextGroupRes } = await $request.invokeTemplate("getNextGroupApproval", {
         context: {
-          state: '0',
-          action: 'submit'
+          state: '0'
         }
       });
 
@@ -141,11 +135,11 @@ exports = {
         sendMailTemplate(nextGroup.email_template_code, replacements, requesters.map(r => r.primary_email).join(","))
         const approvals = await getTicketApprovals(ticket.id)
         const jsonApprovals = JSON.stringify(formattedApprovals(approvals))
-        await updateState(currentState.bo_display_id, nextGroup.new_state, jsonApprovals);
+        updateState(currentState.bo_display_id, nextGroup.new_state, jsonApprovals, requesters.map(r => r.id).join(";"));
       }
     } catch (error) {
       console.log(error);
-      await sendMail('ERROR in TicketCreateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
+      sendMail('ERROR in TicketCreateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
     }
   }
 
@@ -203,7 +197,7 @@ async function requestApproval(ticketId, approverId, approvalType, emailContent)
   });
 }
 
-async function updateState(id, newState, sr_json_approvals) {
+async function updateState(id, newState, sr_json_approvals, sr_visible_to = '') {
   await $request.invokeTemplate("updateState", {
     context: {
       id
@@ -212,7 +206,8 @@ async function updateState(id, newState, sr_json_approvals) {
       data: {
         "sr_state": newState,
         "sr_updated_date": moment(new Date()).format('YYYY-MM-DD[T]HH:mm:ss.SSS[Z]'),
-        "sr_json_approvals": sr_json_approvals
+        "sr_json_approvals": sr_json_approvals,
+        "sr_visible_to": sr_visible_to
       }
     })
   });

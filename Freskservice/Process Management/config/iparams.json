@@ -1,0 +1,44 @@
+{
+    "domain": {
+        "display_name": "domain",
+        "description": "Please enter your domain",
+        "type": "text",
+        "required": true
+    },
+    "apikey": {
+        "display_name": "apikey",
+        "description": "Please enter your apikey",
+        "type": "text",
+        "required": true
+    },
+    "group_approval_id": {
+        "display_name": "group_approval_id",
+        "description": "Please enter your group_approval_id",
+        "type": "text",
+        "required": true
+    },
+    "email_template_id": {
+        "display_name": "email_template_id",
+        "description": "Please enter your email_template_id",
+        "type": "text",
+        "required": true
+    },
+    "sr_category_id": {
+        "display_name": "sr_category_id",
+        "description": "Please enter your sr_category_id",
+        "type": "text",
+        "required": true
+    },
+    "state_approval_id": {
+        "display_name": "state_approval_id",
+        "description": "Please enter your state_approval_id",
+        "type": "text",
+        "required": true
+    },
+    "workflow_id": {
+        "display_name": "workflow_id",
+        "description": "Please enter your workflow_id",
+        "type": "text",
+        "required": true
+    }
+}

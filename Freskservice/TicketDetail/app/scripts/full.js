@@ -1,7 +1,6 @@
 window.frsh_init().then(function (client) {
     client.instance.context().then(
         async function (context) {
-            console.log("Modal instance method context", context);
             const { requested, details } = context.data
             render(requested, details);
         }
@@ -17,14 +16,19 @@ function render(requested, details) {
     details.slice(0).reverse().forEach((item) => {
         const data = item.data
         html += `
-            <tr class="lt-row ember-view">
-                <td class="lt-cell align-left ellipsis ember-view">
+            <tr class="bg-white border-b dark:bg-gray-800 hover:bg-gray-50">
+                <th scope="row" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
                     ${data.leave_date}
+                </th>
+                <td class="px-4 py-2">
+                    ${data.is_half_day == 1 ? "Half day" : "Full day"}
                 </td>
-                <td class="lt-cell align-left ellipsis ember-view">${data.is_half_day == 1 ? "Half day" : "Full day"}
+                <td class="px-4 py-2">
+                    ${data.session}
                 </td>
-                <td class="lt-cell align-left ellipsis ember-view">${data.session}</td>
-                <td class="lt-cell align-left ellipsis ember-view">${data.notes}</td>
+                <td class="px-4 py-2">
+                    ${data.notes}
+                </td>
             </tr>
         `
     })

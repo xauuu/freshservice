@@ -10,5 +10,11 @@
         "description": "Please enter your apikey",
         "type": "text",
         "required": true
+    },
+    "object_id": {
+        "display_name": "object_id",
+        "description": "Please enter your object_id",
+        "type": "text",
+        "required": true
     }
 }

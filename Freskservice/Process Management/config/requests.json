@@ -3,7 +3,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052000/records",
+            "path": "/api/v2/objects/<%= iparam.group_approval_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -15,7 +15,7 @@
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052000/records",
+            "path": "/api/v2/objects/<%= iparam.group_approval_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -27,7 +27,7 @@
         "schema": {
             "method": "PUT",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052000/records/<%= context.id %>",
+            "path": "/api/v2/objects/<%= iparam.group_approval_id %>/records/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -51,7 +51,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052168/records",
+            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -63,7 +63,7 @@
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052168/records",
+            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -75,7 +75,7 @@
         "schema": {
             "method": "PUT",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052168/records/<%= context.id %>",
+            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -87,7 +87,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052210/records",
+            "path": "/api/v2/objects/<%= iparam.sr_category_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -99,7 +99,7 @@
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052210/records",
+            "path": "/api/v2/objects/<%= iparam.sr_category_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -111,7 +111,79 @@
         "schema": {
             "method": "PUT",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052210/records/<%= context.id %>",
+            "path": "/api/v2/objects/<%= iparam.sr_category_id %>/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllStateApproval": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createStateApproval": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateStateApproval": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllWorkflow": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.workflow_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createWorkflow": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.workflow_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateWorkflow": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.workflow_id %>/records/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

@@ -3,13 +3,15 @@ document.onreadystatechange = function () {
 
   function renderApp() {
     var onInit = app.initialized();
-
     onInit
       .then(function getClient(_client) {
         window.client = _client;
         client.events.on('app.activated', onActivated);
       })
       .catch(handleErr);
+    document.getElementById("detail").addEventListener('click', function () {
+      onActivated()
+    })
   }
 };
 
@@ -34,7 +36,6 @@ async function getRequestedItems(id) {
       context: { id }
     });
     const data = JSON.parse(res.response);
-    console.log(data.requested_items[0])
     return data.requested_items[0]
   } catch (error) {
     console.log(error)
@@ -48,7 +49,6 @@ async function getDetails(id) {
       context: { id }
     });
     const data = JSON.parse(res.response);
-    console.log(data.records)
     return data.records
   } catch (error) {
     console.log(error)

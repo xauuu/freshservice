@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt="">
+        </div>
+        <div class="nav">
+            <input type="checkbox" class='nav__input' name="" id="nav__input">
+            <nav class="nav__pc">
+                <ul class="nav__list">
+                    <li><a href="" class="nav__link active">Trang chủ</a></li>
+                    <li><a href="" class="nav__link">Hỗ trợ</a></li>
+                    <li><a href="" class="nav__link">Yêu cầu</a></li>
+                </ul>
+            </nav>
+            <label for="nav__input" class="nav__bar-btn">
+                <img class="menu-white" alt="menu"
+                    src="https://assets8.freshservice.com/assets/portal_v2/menu-white-5a319fb3dbfc31ad92546e9621ffd2f60b7bd095a23ba294b8fd83d61df0a3d8.svg">
+            </label>
+            <label for="nav__input" class="nav__overlay">
+            </label>
+            <nav class="nav__mobile">
+                <ul class="nav__mobile-list">
+                    <li><a href="" class="nav__mobile-link">Trang chủ</a></li>
+                    <li><a href="" class="nav__mobile-link">Hỗ trợ</a></li>
+                    <li><a href="" class="nav__mobile-link">Yêu cầu</a></li>
+                </ul>
+                <label for="nav__input" class="nav__mobile-btn">
+                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times"
+                        class="svg-inline--fa fa-times fa-w-11" role="img" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 352 512">
+                        <path fill="currentColor"
+                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z">
+                        </path>
+                    </svg>
+                </label>
+            </nav>
+        </div>
+        <div class="login-section">
+            <a class="btn btn-login" href="">
+                Đăng nhập
+            </a>
+        </div>
+    </header>
+    <main class="home-page-container">
+        <section class="hero-banner">
+            <h1>Chào mừng bạn đến với Truvisor Việt Nam</h1>
+            <h6>Chúng tôi có thể trợ giúp gì được cho bạn?</h6>
+            <form role='search' id="search-form">
+                <input type="search" id="global-search-home" class="search-input"
+                    placeholder="Tìm kiếm các giải pháp, dịch vụ và hỗ trợ" />
+                <button type="button" class="btn">Tìm kiếm</button>
+            </form>
+            <div class="tags">
+                <span>Phổ biến:</span>
+                <div class="tag-list">
+                    <a href="#">Nghỉ phép</a><a href="#">Chấm công</a><a href="#">Công tác phí</a>
+                </div>
+            </div>
+        </section>
+        <section class="functions">
+            <h2 class="heading">
+                Các chức năng phổ biến
+            </h2>
+            <div class="function-list">
+                <div class="item item-1">
+                    <div class="image">
+                        <img src="/images/lightbulb 1.svg" alt="">
+                    </div>
+                    <h6>Bài viết hỗ trợ</h6>
+                    <p>Tra cứu chính sách hoặc đọc câu hỏi thường gặp để tự khắc phục các vấn đề</p>
+                    <a href="#">Đọc thêm</a>
+                </div>
+                <div class="item item-2">
+                    <div class="image">
+                        <img src="/images/question-mark 1.svg" alt="">
+                    </div>
+                    <h6>Báo lỗi thiết bị</h6>
+                    <p>Bạn đang gặp khó khăn? Liên hệ với đội hỗ trợ.</p>
+                    <a href="#">Đọc thêm</a>
+                </div>
+                <div class="item item-3">
+                    <div class="image">
+                        <img src="/images/comments 1.svg" alt="">
+                    </div>
+                    <h6>Phê duyệt yêu cầu</h6>
+                    <p>Xem tất cả các yêu cầu đang chờ bạn phê duyệt</p>
+                    <a href="#">Đọc thêm</a>
+                </div>
+            </div>
+        </section>
+        <section class="services">
+            <h2 class="heading">Tạo yêu cầu phê duyệt</h2>
+            <h6 class="sub-title">Các yêu cầu phục vụ cho cán bộ, công nhân viên doanh nghiệp</h6>
+            <div class="sr-container">
+                <aside class="sr-categories hide-on-mobile">
+                    <ul>
+                        <li>
+                            <img src="images/bookmark 1.svg" alt="">
+                            Tất cả các mục dịch vụ
+                        </li>
+                        <li class="active">
+                            <img src="images/bag-17 1.svg" alt="">
+                            Tài chính Kế toán
+                        </li>
+                        <li>
+                            <img src="images/credit-card.svg" alt="">
+                            Human Resource
+                        </li>
+                    </ul>
+                </aside>
+                <div class="sr-list-container">
+                    <h3 class="hide-on-mobile">Tài chính Kế toán</h3>
+                    <div class="sr-categories-mobile show-on-mobile">
+                        <select id="categories-list-select">
+                            <option value="">Tất cả các mục dịch vụ</option>
+                            <option value="">Human Resource</option>
+                        </select>
+                    </div>
+                    <div class="sr-list-items">
+                        <a class="item" href="#">
+                            <div class="image">
+                                <img src="images/lightbulb 1.svg" alt="">
+                            </div>
+                            <div class="info">
+                                <h4>Thanh toán</h4>
+                                <p class="max2">Smart contract auditing has always been a bottleneck for our startups.
+                                </p>
+                            </div>
+                        </a>
+                        <a class="item" href="#">
+                            <div class="image">
+                                <img src="images/lightbulb 1.svg" alt="">
+                            </div>
+                            <div class="info">
+                                <h4>Thanh toán</h4>
+                                <p class="max2">Smart contract auditing has always been a bottleneck for our startups.
+                                </p>
+                            </div>
+                        </a>
+                        <a class="item" href="#">
+                            <div class="image">
+                                <img src="images/lightbulb 1.svg" alt="">
+                            </div>
+                            <div class="info">
+                                <h4>Thanh toán</h4>
+                                <p class="max2">Smart contract auditing has always been a bottleneck for our startups.
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="solutions">
+            <h2 class="heading">Solutions</h2>
+            <div class="solution-container">
+                <div class="articles"></div>
+                <aside class="solution-categories hide-on-mobile">
+                    <ul>
+                        <li>
+                            Tổng quan
+                        </li>
+                        <li class="active">
+                            Khởi đầu
+                        </li>
+                        <li>
+                            Khởi đầu
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -18,7 +18,13 @@
         "updateEmailTemplate": {},
         "getAllSRCategory": {},
         "createSRCategory": {},
-        "updateSRCategory": {}
+        "updateSRCategory": {},
+        "getAllStateApproval": {},
+        "createStateApproval": {},
+        "updateStateApproval": {},
+        "getAllWorkflow": {},
+        "createWorkflow": {},
+        "updateWorkflow": {}
       }
     }
   },

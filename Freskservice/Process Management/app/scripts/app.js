@@ -4,34 +4,44 @@ let categories = []
 let templates = []
 let apps = []
 let groups = []
+let states = []
+let workflows = []
 function initApp(_client) {
   clientApp = _client;
   clientApp.events.on('app.activated', initHandlers);
   getAllGroupApproval();
   getAllEmailTemplate();
   getAllSRCategory();
+  getAllStateApproval();
   getDepartments()
+  getAllWorkflow()
 }
 
 function openModal(type, data = null) {
-  if (type === ACTION_TYPES.GROUP_APPROVAL_CREATE || type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
-    sendData()
-  }
+  sendData()
   const titleMap = {
     [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'Add Record',
     [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'Add Record',
     [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'Add Record',
+    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add Record',
+    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Record',
     [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'Edit Record',
     [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'Edit Record',
     [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Record',
   };
   const templateMap = {
-    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'modal.html',
-    [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'modal.html',
-    [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'email-modal.html',
-    [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'email-modal.html',
-    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'sr-modal.html',
-    [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'sr-modal.html',
+    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'modals/modal.html',
+    [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'modals/modal.html',
+    [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'modals/email-modal.html',
+    [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'modals/email-modal.html',
+    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'modals/sr-modal.html',
+    [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'modals/sr-modal.html',
+    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'modals/state-modal.html',
+    [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'modals/state-modal.html',
+    [ACTION_TYPES.WORKFLOW_CREATE]: 'modals/workflow-modal.html',
+    [ACTION_TYPES.WORKFLOW_UPDATE]: 'modals/workflow-modal.html',
   };
   clientApp.interface.trigger('showModal', {
     title: titleMap[type],
@@ -49,6 +59,12 @@ function initHandlers() {
   });
   document.getElementById('createSR').addEventListener('click', function () {
     openModal(ACTION_TYPES.SERVICE_REQUEST_CREATE)
+  });
+  document.getElementById('createState').addEventListener('click', function () {
+    openModal(ACTION_TYPES.STATE_APPROVAL_CREATE)
+  });
+  document.getElementById('createWorkflow').addEventListener('click', function () {
+    openModal(ACTION_TYPES.WORKFLOW_CREATE)
   });
 
   clientApp.instance.receive(async (e) => {
@@ -71,6 +87,18 @@ function initHandlers() {
         break;
       case ACTION_TYPES.SERVICE_REQUEST_UPDATE:
         await handleUpdateSR(id, { ...data, is_active: Number(data.is_active) });
+        break;
+      case ACTION_TYPES.STATE_APPROVAL_CREATE:
+        await handleCreateState({ ...data, state: Number(data.state) });
+        break;
+      case ACTION_TYPES.STATE_APPROVAL_UPDATE:
+        await handleUpdateState(id, { ...data, state: Number(data.state) });
+        break;
+      case ACTION_TYPES.WORKFLOW_CREATE:
+        await handleCreateWorkflow({ ...data, is_active: Number(data.is_active) });
+        break;
+      case ACTION_TYPES.WORKFLOW_UPDATE:
+        await handleUpdateWorkflow(id, { ...data, is_active: Number(data.is_active) });
         break;
     }
   });
@@ -150,6 +178,56 @@ async function handleUpdateSR(id, data) {
   }
 };
 
+async function handleCreateState(data) {
+  try {
+    await clientApp.request.invokeTemplate("createStateApproval", {
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.STATE_APPROVAL_CREATE, 'Successfully created State Approval');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
+async function handleUpdateState(id, data) {
+  try {
+    await clientApp.request.invokeTemplate("updateStateApproval", {
+      context: { id },
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.STATE_APPROVAL_UPDATE, 'Successfully updated State Approval');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
+async function handleCreateWorkflow(data) {
+  try {
+    await clientApp.request.invokeTemplate("createWorkflow", {
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.WORKFLOW_CREATE, 'Successfully created Workflow');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
+async function handleUpdateWorkflow(id, data) {
+  try {
+    await clientApp.request.invokeTemplate("updateWorkflow", {
+      context: { id },
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.WORKFLOW_UPDATE, 'Successfully updated Workflow');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
 function handleSuccess(type, message) {
   showNotification('success', message);
   clientApp.instance.send({ message: { type: ACTION_TYPES.CLOSE_MODAL } });
@@ -159,6 +237,10 @@ function handleSuccess(type, message) {
     getAllEmailTemplate();
   } else if (type === ACTION_TYPES.SERVICE_REQUEST_CREATE || type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
     getAllSRCategory();
+  } else if (type === ACTION_TYPES.STATE_APPROVAL_CREATE || type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
+    getAllStateApproval();
+  } else if (type === ACTION_TYPES.WORKFLOW_CREATE || type === ACTION_TYPES.WORKFLOW_UPDATE) {
+    getAllWorkflow();
   }
 }
 
@@ -189,7 +271,7 @@ async function getAllGroupApproval() {
 function generateGroupApproval(records) {
   let html = "";
   records?.forEach((item) => {
-    const { name, app_code, process_code, status, approval_type, action_code } = item.data;
+    const { name, app_code, process_code, status, approval_type } = item.data;
     const rowData = JSON.stringify(item.data);
     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
                       <td class="px-4 py-3"> ${app_code}</td>
@@ -197,7 +279,6 @@ function generateGroupApproval(records) {
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${name}
                       </th>
-                      <td class="px-4 py-3"> ${action_code}</td>
                       <td class="px-4 py-3"> ${approval_type}</td>
                       <td class="px-4 py-3"> ${status}</td>
                   </tr>`;
@@ -231,7 +312,7 @@ async function getDepartments() {
 async function sendData() {
   try {
     await clientApp.request.invokeTemplate("getAllDepartment", {});
-    clientApp.instance.send({ message: { type: ACTION_TYPES.LIST_DEPARTMENT, data: { departments, categories, templates, apps } } });
+    clientApp.instance.send({ message: { type: ACTION_TYPES.LIST_DATA, data: { departments, categories, templates, apps, states, workflows } } });
   } catch (error) {
     console.error(error);
   }
@@ -318,6 +399,81 @@ async function getAllSRCategory() {
   }
 };
 
+function generateStateApprovalHTML(records) {
+  let html = "";
+  records?.forEach((item) => {
+    const { app_code, process_code, state_name, state } = item.data;
+    const rowData = JSON.stringify(item.data);
+    const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        ${state_name}
+                      </td>
+                      <td class="px-4 py-3"> ${state}</td>
+                      <td class="px-4 py-3"> ${app_code}</td>
+                      <td class="px-4 py-3"> ${process_code}</td>
+                  </tr>`;
+    html += row;
+  });
+  return html;
+};
+
+async function getAllStateApproval() {
+  try {
+    const response = await clientApp.request.invokeTemplate("getAllStateApproval", {});
+    const data = JSON.parse(response.response);
+    states = data.records
+    const html = generateStateApprovalHTML(states);
+    const listSR = document.getElementById("listState");
+    listSR.innerHTML = html;
+    listSR.addEventListener("click", function (event) {
+      const clickedRow = event.target.closest("tr");
+      if (!clickedRow) return
+      const rowData = clickedRow.getAttribute("data-item");
+      openModal(ACTION_TYPES.STATE_APPROVAL_UPDATE, JSON.parse(rowData))
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+function generateWorkflowHTML(records) {
+  let html = "";
+  records?.forEach((item) => {
+    const { app_code, process_code, workflow_name, workflow_code } = item.data;
+    const rowData = JSON.stringify(item.data);
+    const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        ${workflow_name}
+                      </td>
+                      <td class="px-4 py-3"> ${workflow_code}</td>
+                      <td class="px-4 py-3"> ${app_code}</td>
+                      <td class="px-4 py-3"> ${process_code}</td>
+                  </tr>`;
+    html += row;
+  });
+  return html;
+};
+
+async function getAllWorkflow() {
+  try {
+    const response = await clientApp.request.invokeTemplate("getAllWorkflow", {});
+    const data = JSON.parse(response.response);
+    workflows = data.records
+    const html = generateWorkflowHTML(workflows);
+    const listSR = document.getElementById("listWorkflow");
+    listSR.innerHTML = html;
+    listSR.addEventListener("click", function (event) {
+      const clickedRow = event.target.closest("tr");
+      if (!clickedRow) return
+      const rowData = clickedRow.getAttribute("data-item");
+      openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 function generateFilter() {
   html = ''
   apps.forEach((item, index) => {
@@ -330,18 +486,21 @@ function generateFilter() {
               </label>
             </li>`
   });
+
   document.getElementById("filterDropdownContainer").innerHTML = html
   const categoryInputs = document.querySelectorAll('input[name="category"]');
   categoryInputs.forEach(input => {
     input.addEventListener('change', handleFilterChange);
   });
 }
+
 function handleFilterChange() {
   const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(input => input.value);
   const filterGroups = groups.filter(item => selectedCategories.includes(item.data.app_code));
   const html = generateGroupApproval(filterGroups);
   updateListGroupApproval(html)
 }
+
 function getUniqueAppInfo(jsonData) {
   const uniqueAppInfo = new Set();
 

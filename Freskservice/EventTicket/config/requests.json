@@ -15,7 +15,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052000/records?query=app_code%20%3A%20%27hr%27%20AND%20process_code%20%3A%20%27hr_leave%27%20AND%20state%20%3A%20%27<%= context.state %>%27%20AND%20action_code%20%3A%20%27<%= context.action %>%27",
+            "path": "/api/v2/objects/27000052000/records?query=app_code%20%3A%20%27hr%27%20AND%20process_code%20%3A%20%27hr_leave%27%20AND%20state%20%3A%20%27<%= context.state %>%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
