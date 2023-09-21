@@ -1,0 +1,200 @@
+{
+    "custom_object": {
+        "id": 27000052000,
+        "name": "approval_rule_29",
+        "title": "Process_Group_Approval_Rule",
+        "description": null,
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "name",
+                "label": "Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_code",
+                "label": "App_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "state",
+                "label": "Current_State",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "new_state",
+                "label": "New_State",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_code",
+                "label": "Process_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "next_approval_group",
+                "label": "Next_Approval_Group",
+                "type": "lookup",
+                "required": false,
+                "choices": [],
+                "meta": {
+                    "source_name": "department"
+                }
+            },
+            {
+                "name": "action_by_group",
+                "label": "Action_By_Group",
+                "type": "lookup",
+                "required": false,
+                "choices": [],
+                "meta": {
+                    "source_name": "department"
+                }
+            },
+            {
+                "name": "is_direct_line_report_approval",
+                "label": "Is_Direct_Line_Report_Approval",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "approval_type",
+                "label": "Approval Type",
+                "type": "number",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "requested_by_group",
+                "label": "Requested_By_Group",
+                "type": "lookup",
+                "required": true,
+                "choices": [],
+                "meta": {
+                    "source_name": "department"
+                }
+            },
+            {
+                "name": "email_template_code",
+                "label": "Email_Template_Code",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "reject_email_template_code",
+                "label": "Reject_Email_Template_Code",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "expired_email_template_code",
+                "label": "Expired_Email_Template_Code",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "reject_new_state",
+                "label": "Reject_New_State",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "expired_new_state",
+                "label": "Expired_New_State",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "calendar_type",
+                "label": "Calendar_Type",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "duration",
+                "label": "Duration",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "reject_next_approval_group",
+                "label": "Reject_Next_Approval_Group",
+                "type": "lookup",
+                "required": false,
+                "choices": [],
+                "meta": {
+                    "source_name": "department"
+                }
+            },
+            {
+                "name": "expired_next_approval_group",
+                "label": "Expired_Next_Approval_Group",
+                "type": "lookup",
+                "required": false,
+                "choices": [],
+                "meta": {
+                    "source_name": "department"
+                }
+            },
+            {
+                "name": "approval_email_template_code",
+                "label": "Approval_Email_Template_Code",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "step_type",
+                "label": "Step_Type",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "step_ref_id",
+                "label": "Step_Ref_ID",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 4
+        }
+    }
+}

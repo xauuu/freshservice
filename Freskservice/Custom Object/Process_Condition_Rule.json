@@ -1,0 +1,62 @@
+{
+    "custom_object": {
+        "id": 27000052396,
+        "name": "process_condition_ru_39",
+        "title": "Process_Condition_Rule",
+        "description": null,
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "app_code",
+                "label": "App_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_code",
+                "label": "Process_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "rule_code",
+                "label": "Rule_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "name",
+                "label": "Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "condition_type",
+                "label": "Condition_Type",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "field_name",
+                "label": "Field_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 1
+        }
+    }
+}

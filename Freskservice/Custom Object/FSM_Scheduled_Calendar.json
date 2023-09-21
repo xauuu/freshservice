@@ -1,0 +1,110 @@
+{
+    "custom_object": {
+        "id": 27000052475,
+        "name": "fsm_scheduled_calend_44",
+        "title": "FSM_Scheduled_Calendar",
+        "description": null,
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "address",
+                "label": "address",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "agent_email",
+                "label": "agent_email",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "agent_name",
+                "label": "agent_name",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "calendar_type",
+                "label": "calendar_type",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "from_date_time",
+                "label": "from_date_time",
+                "type": "date_time",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "is_active",
+                "label": "is_active",
+                "type": "number",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "notes",
+                "label": "notes",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "object_id",
+                "label": "object_id",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "object_type",
+                "label": "object_type",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "phone",
+                "label": "phone",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "title",
+                "label": "title",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "to_date_time",
+                "label": "to_date_time",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 2
+        }
+    }
+}

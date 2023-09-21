@@ -1,0 +1,46 @@
+{
+    "custom_object": {
+        "id": 27000052261,
+        "name": "process_level_approv_37",
+        "title": "Process_State_Approval",
+        "description": null,
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "app_code",
+                "label": "App_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_code",
+                "label": "Process_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "state_name",
+                "label": "State_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "state",
+                "label": "State",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 4
+        }
+    }
+}

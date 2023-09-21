@@ -1,0 +1,78 @@
+{
+    "custom_object": {
+        "id": 27000052397,
+        "name": "process_condition_ru_40",
+        "title": "Process_Condition_Rule_Detail",
+        "description": null,
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "rule_code",
+                "label": "Rule_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "is_default",
+                "label": "Is_Default",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "value_type",
+                "label": "Value_Type",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "operation",
+                "label": "Operation",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "value",
+                "label": "Value",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "from_value",
+                "label": "From_Value",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "to_value",
+                "label": "To_Value",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "next_state",
+                "label": "Next_State",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 0
+        }
+    }
+}

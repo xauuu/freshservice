@@ -1,0 +1,102 @@
+{
+    "custom_object": {
+        "id": 27000052152,
+        "name": "process_data_log_33",
+        "title": "Process_Data_Log",
+        "description": "Extended Data per Service Request",
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "sr_app_code",
+                "label": "SR_App_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_process_code",
+                "label": "SR_Process_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_id",
+                "label": "SR_ID",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_display_id",
+                "label": "SR_Display_ID",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_created_date",
+                "label": "SR_Created_Date",
+                "type": "date_time",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_updated_date",
+                "label": "SR_Updated_Date",
+                "type": "date_time",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_state",
+                "label": "SR_State",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_requester_id",
+                "label": "SR_Requester_ID",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_title",
+                "label": "SR_Title",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_json_approvals",
+                "label": "SR_JSON_Approvals",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "sr_visible_to",
+                "label": "SR_Visible_To",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 53
+        }
+    }
+}

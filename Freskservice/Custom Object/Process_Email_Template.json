@@ -1,0 +1,46 @@
+{
+    "custom_object": {
+        "id": 27000052168,
+        "name": "process_email_templa_35",
+        "title": "Process_Email_Template",
+        "description": "Email templates for process approval or notification",
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "email_code",
+                "label": "Email_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "email_name",
+                "label": "Email_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "subject",
+                "label": "Subject",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "body",
+                "label": "Body",
+                "type": "paragraph",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 3
+        }
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "custom_object": {
+        "id": 27000052210,
+        "name": "process_service_cate_36",
+        "title": "Process_Service_Category",
+        "description": "Category of Service Request",
+        "workspace_id": 2,
+        "fields": [
+            {
+                "name": "process_code",
+                "label": "Process_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_name",
+                "label": "Process_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_code",
+                "label": "App_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_name",
+                "label": "App_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "is_active",
+                "label": "Is_Active",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_description",
+                "label": "Process_Description",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_url",
+                "label": "Process_URL",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_image",
+                "label": "Process_Image",
+                "type": "paragraph",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_image",
+                "label": "App_Image",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 2
+        }
+    }
+}
