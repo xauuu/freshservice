@@ -19,12 +19,12 @@ function onActivated() {
   client.data.get("ticket").then(
     async function (data) {
       id = data.ticket.display_id
-      const [requested, details] = await Promise.all([getRequestedItems(id), getDetails(id)])
+      const [requested, details, logs] = await Promise.all([getRequestedItems(id), getDetails(id), getLogs(id)])
 
       client.interface.trigger("showModal", {
         title: "Ticket Detail",
         template: "full.html",
-        data: { requested, details }
+        data: { requested, details, logs }
       })
     }
   );
@@ -54,6 +54,19 @@ async function getDetails(id) {
     console.log(error)
   }
 }
+
+async function getLogs(id) {
+  try {
+    const res = await client.request.invokeTemplate("getLogs", {
+      context: { id }
+    });
+    const data = JSON.parse(res.response);
+    return data.records[0].data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 function handleErr(err = 'None') {
   console.error(`Error occured. Details:`, err);
 }

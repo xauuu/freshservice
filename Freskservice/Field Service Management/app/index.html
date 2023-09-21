@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <script src="{{{appclient}}}"></script>
+  <link rel="stylesheet" type="text/css" href="styles/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent"
+      role="tablist">
+      <li class="mr-2" role="presentation">
+        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="scheduled-tab" data-tabs-target="#scheduled"
+          type="button" role="tab" aria-controls="scheduled" aria-selected="false">Scheduled Calendar</button>
+      </li>
+      <li class="mr-2" role="presentation">
+        <button
+          class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+          id="map-tab" data-tabs-target="#map" type="button" role="tab" aria-controls="map"
+          aria-selected="false">Map</button>
+      </li>
+    </ul>
+  </div>
+  <div id="myTabContent">
+    <div class="p-4" id="scheduled" role="tabpanel" aria-labelledby="scheduled-tab">
+      <div id='calendar'></div>
+    </div>
+    <div class="hidden p-4 map-container" id="map" role="tabpanel" aria-labelledby="map-tab">
+      <div id="initMap"></div>
+    </div>
+
+  </div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCf_328D6txR72mRruyBfjvKMpq5_iPB2I&callback=initMap" async
+  defer></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+<script src="scripts/app.js"></script>
+
+</html>

@@ -1,0 +1,277 @@
+<section class="ticket-show-container">
+    <section class="ticket-show-header" role="banner" aria-label="{{translate "portal.tickets.header"}}" data-sticky-class="is_stuck" data-sticky-wrap="true" data-sticky-wrapwith="<div class='ticket-show-header-wrap-ele'></div>">
+        <div class="ticket-show-operations">
+            {{> breadcrumbs url=breadcrumbs}}
+            <p class="subject_header_title">{{ticket.subject}}</p>
+            <div class="ticket-operations-container hide-on-mobile">
+                {{#unless ticket.archived}}
+                <button class="btn" id="reply_ticket">{{translate "portal.tickets.reopen_reply"}}</button>
+                {{/unless}}
+                {{#isnt ticket.status 5}}
+                    <button class="btn" id="close_ticket">{{translate "portal.tickets.mark_closed"}}</button>
+                    <button class="btn" class="add-people-content" id="add_people">{{ticket.share_people_title}}</button>
+                {{/isnt}}
+            </div>
+            <div class="ticket-operations-container show-on-mobile">
+              <button id="ticket-ops-mobile"
+                class="btn add-people-content" 
+                aria-expanded="false" 
+                menu-target="ticket-menu-items" 
+                aria-haspopup="menu" 
+                aria-controls = "ticket-menu-items" >
+                {{image src="/images/portal_v2/more-vertical.svg" alt=(translate "portal.tickets.ticket_ops_menu" class="ticket-ops-icon")}}  
+              </button>
+              <nav class="ticket-operations-menu" id="ticket-menu-items" role="menu">
+                {{#unless ticket.archived}}
+                <a href="javascript:void(0);" role="menuitem" id="reply_ticket_mobile">{{translate "portal.tickets.reopen_reply"}}</a>
+                {{/unless}}
+                {{#isnt ticket.status 5}}
+                  <a href="javascript:void(0);" role="menuitem" id="close_ticket_mobile">{{translate "portal.tickets.mark_closed"}}</a>
+                  <a href="javascript:void(0);" role="menuitem" id="add_people_mobile">{{translate "portal.tickets.add_people"}}</a>
+                {{/isnt}}
+                <a href="javascript:void(0);" role="menuitem" id="view_ticket_details">{{translate "portal.tickets.view_ticket"}}</a>
+              </nav>
+            </div>
+        </div>
+        <div class="ticket-main-info">
+            <h2 class="ticket-subject" tabindex="0">{{ticket.subject}}</h2>
+            <p class="ticket-info">{{{translate "portal.tickets.created" date=(dateFormat datetime=ticket.created_at formatType="dateTimeWithoutSecsAt" showTime=true) source=(unescapeHTMLEntities ticket.source_name)}}} </p>
+            <span class="ticket_cc_emails">{{#if (or ticket.cc_emails ticket.ticket_sharers)}}{{> cc_emails emails=ticket.cc_emails sharers= ticket.ticket_sharers}} {{/if}}</span><br/>
+            <div id="ticket-age" class="ticket-age" aria-labelledby="time_label time_ago">
+                <span id="time_label" aria-hidden="true" >{{{unescapeHTMLEntities ticket.requester_status_name}}} {{translate "portal.since"}}&nbsp;</span>
+                <time id="time_ago" aria-hidden="true" data-timeago="true" data-date="{{ticket.status_updated_at}}">{{support_date_time_ago ticket.status_updated_at}}</time>
+            </div>
+        </div>
+    </section>
+    <section class="ticket-show-body">
+        <section class="ticket-show-left-pane" role="article" aria-label="{{translate "portal.tickets.details"}}">
+            <section class="ticket-detail-card">
+                <div class="show-avatar-image" role="presentation">
+                    {{avatar name=ticket.requester_name url=ticket.requester_avatar type="small" class="user-profile-pic"}}
+                </div>
+                {{!-- using "description-card" class to target desc, attachments for BR actions --}}
+                <div class="detail-card-info description-card {{#if ticket.requested_catalog_items}}with_items{{/if}} {{#if (or ticket.onboarding ticket.offboarding) }}with_onboarding{{/if}}">
+                    <div class="requester-info">
+                        {{user_reported ticket.requester_name ticket.created_at}}
+                    </div>
+                    <div class="description" role="article" aria-label="{{translate "portal.tickets.description"}}">
+                        {{{ticket.description_html}}}
+                    </div>
+                    {{#and ticket.requested_catalog_items (not ticket.onboarding) (not ticket.offboarding)}}
+                        {{>requested_item_details this}}
+                  		{{#if (eq ticket.requested_catalog_items.[0].item_id 27002193302)}}
+                  			<div id="leave-detail"></div>
+                            <script>
+                                $(document).ready(function () {
+                                    jQuery.ajax({
+                                        type: "GET",
+                                        url: "/api/v2/objects/27000052163/records?query=sr_id%20%3A%20%27{{last (split ticket.human_display_id "-")}}%27",
+                                        dataType: "json",
+                                        headers: {
+                                            "Authorization": "Basic " + btoa("QEDIV2kU52hisyqESo1N" + ":x")
+                                        },
+                                        success: function (response) {
+                                            const data = response.records
+                                            renderDetail(data)
+                                        },
+                                        error: function (error) {
+                                            console.log(error)
+                                        }
+                                    });
+                                });
+
+                                function renderDetail(data) {
+                                    const container = $("#leave-detail");
+                                    data.slice().reverse().forEach(element => {
+                                        const { leave_date, notes, is_half_day, session } = element.data;
+                                        const item = $("<div>").addClass("item");
+
+                                        item.html(`
+                                            <div class="item">
+                                                <p class="date">${leave_date}</p>
+                                                <p class="note">${notes}</p>
+                                                <p class="session">${is_half_day ? session : "Full day"}</p>
+                                            </div>`);
+                                        container.append(item);
+                                    });
+                                }
+                            </script>
+                  		{{/if}}
+                    {{/and}}
+                    {{#if ticket.onboarding}}
+                        {{>employee_onboarding_info}}
+                    {{/if}}
+                    {{#if ticket.offboarding}}
+                        {{>employee_offboarding_info}}
+                    {{/if}}
+                     <div class="ticket-attachment-container attach-show-container">
+                         {{fsAttachments (arrayConcat ticket.attachments ticket.cloud_files) ticket.requester_id ticket.archived}}
+                    </div>
+                    {{#and (and cmdb_enabled ticket.associated_assets) (not ticket.onboarding) (not ticket.offboarding)}}
+                        <div id="ticket_associated_assets" data-field-section="config_item_ids">
+                            <h3>{{translate "portal.tickets.assets" count=ticket.associated_assets.length}}</h3>
+                            <ul id="assets_list">
+                                {{#each ticket.associated_assets}}
+                                    <li>{{this.name}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/and}}
+                  	{{#if (getParam "response_url")}}
+                  		<div>
+                          <a class="btn btn-primary" style="float: right; margin: 10px" href={{getParam "response_url"}} target="_blank">Phản hồi</a>
+                  		</div>
+                  	{{/if}}
+                </div>
+            </section>
+            {{#gt ticket.notes_count ticket.notes.length}}
+                <section class="show-more">
+                    <div class="show-more-background"></div>
+                    <button class="load-more" role="button" aria-live="polite">
+                        <span class="more-notes"></span>
+                        {{image src="/images/portal_v2/loading.svg" alt=(translate "portal.tickets.notes_loading") class="notes-loading-icon"}}
+                    </button>
+                </section>
+            {{/gt}}
+            {{#each (restrictAttachments ticket.notes)}}
+                {{> conversation_card note=this readOnly=...ticket/archived reqId=../ticket/requester_id agntId=../ticket/responder_id}}
+            {{/each}}
+            {{#unless ticket.archived}}
+                <section class="ticket-add-reply ticket-detail-card">
+                    <div class="show-avatar-image">
+                        {{avatar name=ticket.requester_name url=ticket.requester_avatar type="small" class="user-profile-pic"}}
+                    </div>
+                    <div class="froala-container">
+                        <h4>{{translate "portal.froala.your_reply"}}</h4>
+                        <div class="froala-editor">
+                            <div id="editor" aria-label="{{translate "portal.aria.reply_editor"}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ticket-attachments">
+                    </div>
+                    <div id="ticket-reply-actions">
+                        <button class="btn btn-primary" id="send-reply" disabled>{{translate "portal.send"}}</button>
+                    </div>
+                </section>
+            {{/unless}}
+        </section>
+        <aside class="ticket-show-right-pane">
+          <input id="approval_status" type="hidden" value= {{ ticket.approval_status_id }}>
+          {{#if (eq user_info.location_name "Vietnam")}}
+          	<section id="sr-item-approval-details"></section>
+            <script>
+                approvalStatuses = {{toJSON APPROVALS_STATUSES}}
+                $(document).ready(function () {
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "https://trusisor.freshservice.com/api/v2/objects/27000052152/records?query=sr_id%20%3A%20%27{{last (split ticket.human_display_id "-")}}%27",
+                        dataType: "json",
+                        headers: {
+                            "Authorization": "Basic " + btoa("QEDIV2kU52hisyqESo1N" + ":x")
+                        },
+                        success: function (response) {
+                            const data = response.records[0].data.sr_json_approvals
+                            const json = JSON.parse(data)
+                            renderApproval(json)
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                });
+
+              function renderApproval(approvals) {
+                    const reversedApprovals = approvals.slice().reverse();
+                    const container = document.getElementById('sr-item-approval-details');
+
+                    const firstApproval = reversedApprovals[0];
+                    const status = approvalStatuses[firstApproval.approval.approval_status.toString()];
+
+                    const approverDiv = document.createElement('div');
+                    approverDiv.classList.add('item-approval-details');
+
+                    const heading = document.createElement('h4');
+                    heading.classList.add('heading');
+
+                    heading.innerHTML = `
+                        <span>Chấp thuận</span>
+                        <span class="approvers-count">${approvals.length}</span>
+                        <label class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</label>
+                    `;
+
+                    approverDiv.appendChild(heading);
+
+                    reversedApprovals.forEach(approval => {
+                        const { avatar_url, name, remark, requestedOn, approval_status, updated_at } = approval.approval;
+                        const status = approvalStatuses[approval_status.toString()];
+                        const item = document.createElement('div');
+                        item.classList.add(`approver-${status}`);
+
+                        item.innerHTML = `
+                                    <div class="approver">
+                                        <div class="avatar-image">
+                                            <div class="user-profile-holder small">
+                                                <img class="user-profile-pic" src="${avatar_url}" onerror="fsImageHandler(this, true, 'small')" role="presentation">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <strong class="name">${name}</strong>
+                                            <p class="requested-on">${requestedOn} ${formatDateString(updated_at)}</p>
+                                        </div>
+                                    </div>
+                                    ${getRemark(remark, status)}
+                            `;
+
+                        approverDiv.appendChild(item);
+                    });
+                    container.innerHTML = '';
+                    container.appendChild(approverDiv)
+                }
+
+                function getRemark(remark, status) {
+                    if (remark && remark.length > 0) {
+                        return `<p class="remark ${status}"><span class="short">${remark[0][1]}</span></p>`
+                    }
+                    return ''
+                }
+                function formatDateString(dateString) {
+                    const options = { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: 'numeric', hour12: false };
+                    const dateObject = new Date(dateString);
+
+                    return dateObject.toLocaleString('vi-VN', options);
+                }
+            </script>
+		  {{else}}
+            <button class="ticket-aside-close show-on-mobile">
+              {{image src="/images/portal_v2/cross.svg" alt=(translate "portal.tickets.ticket_details_close") class="ticket-aside-close-icon"}}
+            </button>
+            {{#if ticket.responder_name}}
+              <section id="agent-details">
+                  <h4 class="heading">{{translate "portal.tickets.agent_working"}}</h4>
+                  {{#if ticket.responder_id}}
+                      <div class="show-avatar-image">
+                          {{avatar name=ticket.responder_name url=ticket.responder_avatar type="small" class="user-profile-pic"}}
+                      </div>
+                  {{/if}}
+                  <div class="agent-information">
+                      <strong id="agent-name">{{unescapeHTMLEntities ticket.responder_name}}</strong>
+                      <p id="agent-title">{{ticket.responder_title}}</p>
+                  </div>
+              </section>
+            {{/if}}
+            {{#if editReqItems}}
+                <section id="sr-item-approval-details">
+                    {{> requested_item_approval_details item=ticket.approver_details}}
+                </section>
+             {{/if}}
+             {{#and (and (eq ticket.status 5) (not ticket.onboarding) (not ticket.offboarding)) survey.showWidget}}
+                 <section id="survey-details">
+                    {{> customer_survey survey=survey }}
+                 </section>
+             {{/and}}
+             {{> ticket_edit_form}}
+          {{/if}}
+        </aside>
+    </section>
+</section>

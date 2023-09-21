@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+
+</head>
+
+<body class="px-1">
+    <div class="mb-3">
+        <label for="agents" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an agent</label>
+        <select id="agents"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option selected>Choose an agent</option>
+        </select>
+    </div>
+
+    <div id="calendar"></div>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script>
+        window.frsh_init().then(function (client) {
+            client.instance.context().then(
+                async function (context) {
+                    const { calendars, agents } = context.data
+                    render(calendars);
+                    renderAgent(agents)
+                }
+            );
+        });
+        function render(calendars) {
+            var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'timeGridDay',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                height: 'auto',
+                navLinks: true,
+                editable: true,
+                dayMaxEvents: true,
+                eventStartEditable: false,
+                events: calendars,
+                eventClick: function (event) {
+                    if (event.event.url) {
+                        event.jsEvent.preventDefault();
+                        window.open(event.event.url, "_blank");
+                    }
+                }
+            });
+
+            calendar.render();
+        }
+        function renderAgent(agents) {
+            agents.forEach(agent => {
+                const option = document.createElement('option')
+                option.value = agent.agent_email
+                option.text = agent.agent_name
+                document.getElementById('agents').appendChild(option)
+
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -24,7 +24,13 @@
         "updateStateApproval": {},
         "getAllWorkflow": {},
         "createWorkflow": {},
-        "updateWorkflow": {}
+        "updateWorkflow": {},
+        "getAllCondition": {},
+        "createCondition": {},
+        "updateCondition": {},
+        "getAllConditionDetail": {},
+        "createConditionDetail": {},
+        "updateConditionDetail": {}
       }
     }
   },

@@ -1,0 +1,14 @@
+{
+    "getAllScheduled": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.scheduled_id %>/records?query=is_active%20%3A%20%271%27",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    }
+}

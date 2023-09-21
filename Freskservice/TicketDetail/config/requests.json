@@ -15,7 +15,19 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects//<%= iparam.object_id %>/records?query=sr_id%20%3A%20%27<%= context.id %>%27%20&sort_field=leave_date&sord_order=ASC",
+            "path": "/api/v2/objects/<%= iparam.object_id %>/records?query=sr_id%20%3A%20%27<%= context.id %>%27%20&sort_field=leave_date&sord_order=ASC",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getLogs": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.log_id %>/records?query=sr_id%20%3A%20%27<%= context.id %>%27%20",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

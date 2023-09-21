@@ -40,5 +40,17 @@
         "description": "Please enter your workflow_id",
         "type": "text",
         "required": true
+    },
+    "condition_id": {
+        "display_name": "condition_id",
+        "description": "Please enter your condition_id",
+        "type": "text",
+        "required": true
+    },
+    "condition_detail_id": {
+        "display_name": "condition_detail_id",
+        "description": "Please enter your condition_detail_id",
+        "type": "text",
+        "required": true
     }
 }

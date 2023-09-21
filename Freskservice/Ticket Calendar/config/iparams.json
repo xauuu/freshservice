@@ -11,15 +11,9 @@
         "type": "text",
         "required": true
     },
-    "object_id": {
-        "display_name": "object_id",
-        "description": "Please enter your object_id",
-        "type": "text",
-        "required": true
-    },
-    "log_id": {
-        "display_name": "log_id",
-        "description": "Please enter your log_id",
+    "scheduled_id": {
+        "display_name": "scheduled_id",
+        "description": "Please enter your scheduled_id",
         "type": "text",
         "required": true
     }

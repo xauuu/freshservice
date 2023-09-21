@@ -23,7 +23,7 @@
                         <button
                             class="inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
                             id="approval-tab" data-tabs-target="#approval" type="button" role="tab"
-                            aria-controls="approval" aria-selected="false">Approval</button>
+                            aria-controls="approval" aria-selected="false">Approval/Submit</button>
                     </li>
                     <li class="mr-2" role="presentation">
                         <button
@@ -109,7 +109,7 @@
                     </div>
                     <div>
                         <label for="email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Email Template Code
+                            Current State Email
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="email_template_code" name="email_template_code"
@@ -164,7 +164,7 @@
                     </div>
                     <div>
                         <label for="approval_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Approval Email Template Code
+                            Approval Email Template
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="approval_email_template_code" name="approval_email_template_code"
@@ -198,7 +198,7 @@
                     </div>
                     <div>
                         <label for="reject_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Reject Email Template Code
+                            Reject Email Template
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="reject_email_template_code" name="reject_email_template_code"
@@ -232,7 +232,7 @@
                     </div>
                     <div>
                         <label for="expired_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Expired Email Template Code
+                            Expired Email Template
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="expired_email_template_code" name="expired_email_template_code"
@@ -279,6 +279,9 @@
                     generateNewState('new_state', newStateList, context)
                     generateNewState('reject_new_state', newStateList, context)
                     generateNewState('expired_new_state', newStateList, context)
+                })
+                document.getElementById("is_direct_line_report_approval").addEventListener('change', function (e) {
+                    document.getElementById("next_approval_group").disabled = e.target.checked
                 })
                 document.getElementById("formCreate").addEventListener("submit", function (e) {
                     e.preventDefault();
@@ -341,7 +344,6 @@
                         context = c.data
                         if (context.type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
                             const data = context.data
-                            console.log(data)
                             document.getElementById("app_code").value = data.app_code;
                             document.getElementById("process_code").value = data.process_code;
                             document.getElementById("name").value = data.name;
@@ -360,7 +362,10 @@
                             document.getElementById("email_template_code").value = data.email_template_code;
                             document.getElementById("reject_email_template_code").value = data.reject_email_template_code;
                             document.getElementById("expired_email_template_code").value = data.expired_email_template_code;
-                            document.getElementById("is_direct_line_report_approval").checked = !!data.is_direct_line_report_approval
+                            if (!!data.is_direct_line_report_approval) {
+                                document.getElementById("is_direct_line_report_approval").checked = true
+                                document.getElementById("next_approval_group").disabled = true
+                            }
                         }
                     }
                 );

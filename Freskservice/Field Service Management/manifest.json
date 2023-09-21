@@ -3,24 +3,18 @@
   "product": {
     "freshservice": {
       "location": {
-        "ticket_top_navigation": {
-          "url": "index.html",
-          "icon": "styles/images/icon.svg"
-        },
-        "ticket_sidebar": {
+        "full_page_app": {
           "url": "index.html",
           "icon": "styles/images/icon.svg"
         }
       },
       "requests": {
-        "getRequestedItems": {},
-        "getDetailTicket": {},
-        "getLogs": {}
+        "getAllScheduled": {}
       }
     }
   },
   "engines": {
     "node": "18.16.1",
-    "fdk": "9.0.4"
+    "fdk": "9.0.5"
   }
 }

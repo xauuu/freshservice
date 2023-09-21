@@ -1,0 +1,22 @@
+html {
+  box-sizing: border-box;
+  font-family: Helvetica, sans-serif;
+}
+
+*,
+*:after,
+*::before {
+  box-sizing: inherit;
+}
+
+.app-body {
+  padding: 1rem;
+}
+
+.map-container {
+  height: calc(100vh - 30px);
+}
+
+#initMap {
+  height: 100%;
+}

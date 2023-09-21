@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="style.css" media="screen" rel="stylesheet" type="text/css">
+</head>
+
+<body class="custom-container">
+    <div id="leave-detail"></div>
+    <script>
+        $(document).ready(function () {
+            jQuery.ajax({
+                type: "GET",
+                url: "https://trusisor.freshservice.com/api/v2/objects/27000052163/records?query=sr_id%20%3A%20%27{{last (split ticket.human_display_id " - ")}}%27",
+                dataType: "json",
+                headers: {
+                    "Authorization": "Basic " + btoa("QEDIV2kU52hisyqESo1N" + ":x")
+                },
+                success: function (response) {
+                    const data = response.records
+                    renderDetail(data)
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        });
+
+        function renderDetail(data) {
+            const container = $("#leave-detail");
+            data.slice().reverse().forEach(element => {
+                const { leave_date, notes, is_half_day, session } = element.data;
+                const item = $("<div>").addClass("item");
+
+                item.html(`
+                    <div class="item">
+                        <p class="date">${leave_date}</p>
+                        <p class="note">${notes}</p>
+                        <p class="session">${is_half_day ? session : "Full day"}</p>
+                    </div>`);
+                container.append(item);
+            });
+        }
+
+    </script>
+</body>
+
+</html>

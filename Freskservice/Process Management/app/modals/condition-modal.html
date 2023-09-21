@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <form id="formCreate" class="h-screen flex flex-col justify-between">
+        <div>
+            <div class="mb-4 border-b border-gray-200 ">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab"
+                    data-tabs-toggle="#myTabContent" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="information-tab"
+                            data-tabs-target="#information" type="button" role="tab" aria-controls="information"
+                            aria-selected="false">Information</button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button
+                            class="inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
+                            id="approval-tab" data-tabs-target="#approval" type="button" role="tab"
+                            aria-controls="approval" aria-selected="false">Detail</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="myTabContent">
+                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="information" role="tabpanel"
+                    aria-labelledby="information-tab">
+                    <div>
+                        <label for="app_code" class="block mb-2 text-xs font-medium text-gray-900 ">App Code
+                            <span class="text-red-700 text-md">*</span>
+                        </label>
+                        <select id="app_code" name="app_code" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected disabled>Choose an App</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="process_code" class="block mb-2 text-xs font-medium text-gray-900">Process Code
+                            <span class="text-red-700 text-md">*</span>
+                        </label>
+                        <select id="process_code" name="process_code" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected disabled>Choose a Process</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="name" class="block mb-2 text-xs font-medium text-gray-900">Rule Name
+                            <span class="text-red-700 text-md">*</span>
+                        </label>
+                        <input type="text" name="name" id="name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                            placeholder="Enter Details" required="">
+                    </div>
+                    <div>
+                        <label for="rule_code" class="block mb-2 text-xs font-medium text-gray-900">Rule Code
+                            <span class="text-red-700 text-md">*</span>
+                        </label>
+                        <input type="text" name="rule_code" id="rule_code"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                            placeholder="Enter Details" required="">
+                    </div>
+                    <div class="flex items-center">
+                        <div class="flex items-center mr-4">
+                            <label for="rule_code" class="block text-xs font-medium text-gray-900">Condition
+                                Type
+                                <span class="text-red-700 text-md">*</span>
+                            </label>
+                        </div>
+                        <div class="flex items-center mr-4">
+                            <input id="yes" type="radio" value="1" name="condition_type"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                            <label for="yes"
+                                class="ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                        </div>
+                        <div class="flex items-center mr-4">
+                            <input id="no" type="radio" value="0" name="condition_type"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                            <label for="no" class="ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">No</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="field_name" class="block mb-2 text-xs font-medium text-gray-900">Field Name
+                            <span class="text-red-700 text-md">*</span>
+                        </label>
+                        <input type="text" name="field_name" id="field_name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                            placeholder="Enter Details" required="">
+                    </div>
+                </div>
+                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="approval" role="tabpanel"
+                    aria-labelledby="approval-tab">
+                    <section class="bg-gray-50 dark:bg-gray-900 antialiased">
+                        <div class="bg-white dark:bg-gray-800 relative sm:rounded-lg overflow-hidden">
+                            <div class="w-full md:w-auto block mb-4">
+                                <button type="button" id="addDetail" data-modal-target="detail-modal"
+                                    data-modal-toggle="detail-modal"
+                                    class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                                    <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                                    </svg>
+                                    Add Detail
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg">
+                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead
+                                        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-4">Is Default</th>
+                                            <th scope="col" class="px-4 py-4">Value Type</th>
+                                            <th scope="col" class="px-4 py-4">Operation</th>
+                                            <th scope="col" class="px-4 py-4">Value</th>
+                                            <th scope="col" class="px-4 py-4">Next State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detail_list">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4 justify-end pb-4">
+            <button id="closeModal" type="button"
+                class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
+                Cancel
+            </button>
+            <button id="create" type="submit"
+                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                Save
+            </button>
+        </div>
+    </form>
+    <div id="detail-modal" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button type="button"
+                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="detail-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="px-6 py-6 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add New Condition Detail</h3>
+                    <form class="space-y-6" id="add-form">
+                        <div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input name="is_default" id="is_active" type="checkbox" value="1" class="sr-only peer">
+                                <div
+                                    class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+
+                                <span class="ml-3 text-xs font-medium text-gray-900 dark:text-gray-300">Is
+                                    Default</span>
+                            </label>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex items-center mr-4">
+                                <label for="value_type" class="block text-xs font-medium text-gray-900">Value
+                                    Type
+                                    <span class="text-red-700 text-md">*</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center mr-4">
+                                <input id="dyes" type="radio" value="1" name="value_type"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                                <label for="dyes"
+                                    class="ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                            </div>
+                            <div class="flex items-center mr-4">
+                                <input id="dno" type="radio" value="0" name="value_type"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                                <label for="dno"
+                                    class="ml-2 text-xs font-medium text-gray-900 dark:text-gray-300">No</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="operation" class="block mb-2 text-xs font-medium text-gray-900">Operation
+                                <span class="text-red-700 text-md">*</span>
+                            </label>
+                            <select id="operation" name="operation" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                                <option value="equal" selected>Equal</option>
+                                <option value="between">Between</option>
+
+                            </select>
+                        </div>
+                        <div>
+                            <label for="value" class="block mb-2 text-xs font-medium text-gray-900">Value
+                                <span class="text-red-700 text-md">*</span>
+                            </label>
+                            <input type="text" name="value" id="value"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                                placeholder="Enter Details">
+                            <div id="from_to" class="hidden items-center gap-4">
+                                <input type="text" name="from_value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                                    placeholder="From Value">
+                                <input type="text" name="to_value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                                    placeholder="To Value">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="next_state" class="block mb-2 text-xs font-medium text-gray-900 ">Next State
+                                <span class="text-red-700 text-md">*</span>
+                            </label>
+                            <select id="next_state" name="next_state"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                                <option value="" selected disabled>Choose a State</option>
+
+                            </select>
+                        </div>
+                        <div class="flex gap-4 justify-end">
+                            <button type="submit" id="add"
+                                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                                Add New
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="../scripts/constant.js"></script>
+    <script>
+        window.frsh_init().then(function (client) {
+            var context = {}
+            var categories = []
+            var states = []
+            const targetEl = document.getElementById('detail-modal');
+            const modal = new Modal(targetEl, {
+                onHide: () => {
+                    const modalBackdrop = document.querySelector('[modal-backdrop]');
+                    if (modalBackdrop) {
+                        modalBackdrop.classList.add('hidden');
+                    }
+                },
+            });
+            document.getElementById("closeModal").addEventListener("click", function () {
+                client.instance.close();
+            });
+            document.getElementById("add-form").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const data = new FormData(e.target);
+                const formDataObj = { is_default: 0, value_type: 0 };
+                for (let entry of data.entries()) {
+                    const [key, value] = entry;
+                    formDataObj[key] = value;
+                }
+                addDetail(states, formDataObj)
+                modal.hide();
+                clearForm()
+            });
+            document.getElementById("app_code").addEventListener('change', function (e) {
+                generateSelectProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
+                document.getElementById("process_code").value = ''
+            })
+            document.getElementById("process_code").addEventListener('change', function (e) {
+                const newStateList = states?.filter(item => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.target.value)
+                generateState(newStateList, false)
+            })
+            document.getElementById("operation").addEventListener('change', function (e) {
+                const value = e.target.value
+                toggleOperation(value)
+            })
+            document.getElementById("formCreate").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const data = new FormData(e.target);
+                const formDataObj = { condition_type: 0 };
+                for (let entry of data.entries()) {
+                    const [key, value] = entry;
+                    formDataObj[key] = value;
+                }
+                client.instance.send({
+                    message: {
+                        type: context.type,
+                        data: formDataObj,
+                        id: context.data?.bo_display_id
+                    }
+                });
+            });
+            client.instance.receive(function (event) {
+                let data = event.helper.getData();
+                if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
+                if (data.type === ACTION_TYPES.LIST_DATA) {
+                    categories = data.data?.categories
+                    data.data.apps?.forEach((item) => {
+                        const { app_code, app_name } = item;
+                        const option = document.createElement('option')
+                        option.value = app_code
+                        option.text = app_name
+                        option.selected = app_code === context.data?.app_code
+                        document.getElementById("app_code").append(option)
+                    });
+                    generateSelectProcess(
+                        categories?.filter(item => item.data.app_code == context.data?.app_code),
+                        process_code === context.data?.process_code
+                    )
+                    states = data.data?.states
+                    const newStates = states?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code)
+                    generateState(newStates, context.data?.state)
+                }
+            });
+            client.instance.context().then(
+                function (c) {
+                    context = c.data
+                    if (context.type === ACTION_TYPES.CONDITION_UPDATE) {
+                        const data = context.data
+                        document.getElementById("app_code").value = data.app_code;
+                        document.getElementById("process_code").value = data.process_code;
+                        document.getElementById("name").value = data.name;
+                        document.getElementById("rule_code").value = data.rule_code;
+                        document.getElementById("yes").checked = !!data.condition_type;
+                        document.getElementById("no").checked = !!data.condition_type;
+                        document.getElementById("field_name").value = data.field_name;
+                    }
+                }
+            );
+        });
+        function generateSelectProcess(processList, selected) {
+            processList.forEach((item) => {
+                const { process_code, process_name } = item.data;
+                const option = document.createElement('option')
+                option.value = process_code
+                option.text = process_name
+                option.selected = selected
+                document.getElementById("process_code").append(option)
+            });
+        }
+        function generateState(states, selected) {
+            states.forEach((item) => {
+                const { state_name, state } = item.data;
+                const option = document.createElement('option')
+                option.value = state
+                option.text = state_name
+                option.selected = state == selected
+                document.getElementById("next_state").append(option)
+            });
+        }
+        function clearForm() {
+            document.getElementById("add-form").reset();
+        }
+        function addDetail(states, data) {
+            const container = document.getElementById('detail_list')
+            const rowHtml = `<tr class="border-b hover:bg-gray-50" data-item='${JSON.stringify(data)}'>
+                    <td class="px-4 py-3">
+                        ${Boolean(Number(data.is_default)) ? "Yes" : "No"}
+                      </td>
+                      <td class="px-4 py-3">
+                        ${Boolean(Number(data.value_type)) ? "Yes" : "No"}
+                      </td>
+                      <td class="px-4 py-3">${data.operation}</td>
+                      <td class="px-4 py-3">${data.operation == 'equal' ? data.value : `${data.from_value}-${data.to_value}`}</td>
+                      <td class="px-4 py-3">${(states.find(item => item.data.state == data.next_state))?.data.state_name || ''}</td>                      
+                  </tr>`;
+            container.insertAdjacentHTML('beforeend', rowHtml);
+        }
+        function toggleOperation(value) {
+            const eleVal = document.getElementById("value")
+            const eleBw = document.getElementById("from_to")
+            if (value == 'equal') {
+                eleVal.style.display = 'block'
+                eleBw.style.display = 'none'
+            } else if (value == 'between') {
+                eleVal.style.display = 'none'
+                eleBw.style.display = 'flex'
+            }
+        }
+        function openDetail(data) {
+            modal.show();
+            document.getElementById("is_default").checked = !!data.is_default;
+            document.getElementById("dyes").checked = !!data.value_type;
+            document.getElementById("dno").checked = !!data.value_type;
+            document.getElementById("next_state").value = data.next_state;
+            document.getElementById("operation").value = data.operation;
+            toggleOperation(data.operation)
+            document.getElementById("value").value = data.value;
+            document.getElementById("from_value").value = data.from_value;
+            document.getElementById("to_value").value = data.to_value;
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<div class="logo">
+    <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
+</div>
+<div class="nav">
+    <input type="checkbox" class='nav__input' name="" id="nav__input">
+    <nav class="nav__pc">
+        <ul class="nav__list">
+            <li><a href="/support/home" class="nav__link">Trang chủ</a></li>
+            <li><a href="/support/solutions" class="nav__link">Hỗ trợ</a></li>
+            <li><a href="/support/tickets" class="nav__link">Yêu cầu</a></li>
+            <li><a href="/support/approvals/pending" class="nav__link">Phê duyệt</a></li>
+            <li><a href="/support/catalog/items" class="nav__link">SC</a></li>
+        </ul>
+    </nav>
+    <label for="nav__input" class="nav__overlay">
+    </label>
+    <nav class="nav__mobile">
+        <label for="nav__input" class="nav__mobile-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M19.7 4.3C19.3 3.9 18.7 3.9 18.3 4.3L12 10.6L5.7 4.3C5.3 3.9 4.7 3.9 4.3 4.3C3.9 4.7 3.9 5.3 4.3 5.7L10.6 12L4.3 18.3C3.9 18.7 3.9 19.3 4.3 19.7C4.5 19.9 4.7 20 5 20C5.3 20 5.5 19.9 5.7 19.7L12 13.4L18.3 19.7C18.5 19.9 18.8 20 19 20C19.2 20 19.5 19.9 19.7 19.7C20.1 19.3 20.1 18.7 19.7 18.3L13.4 12L19.7 5.7C20.1 5.3 20.1 4.7 19.7 4.3Z"
+                    fill="#232628" />
+            </svg>
+            <span>Đóng</span>
+        </label>
+        <ul class="nav__mobile-list">
+            <li><a href="/support/home" class="nav__mobile-link">Trang chủ</a></li>
+            <li><a href="/support/solutions" class="nav__mobile-link">Hỗ trợ</a></li>
+            <li><a href="/support/tickets" class="nav__mobile-link">Yêu cầu</a></li>
+            <li><a href="/support/approvals/pending" class="nav__mobile-link">Phê duyệt</a></li>
+            <li><a href="/support/catalog/items" class="nav__mobile-link">SC</a></li>
+        </ul>
+        <div class="login-section">
+            {{#if portal.logged_in}}
+            <div class="flex-center">{{avatar name=user_info.full_name url=user_info.profile_pic
+                class="user-profile-pic"}}
+                <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+            </div>
+            {{else}}
+            <a class="button btn-login" href="">
+                Đăng nhập
+            </a>
+            {{/if}}
+        </div>
+    </nav>
+</div>
+{{#if portal.logged_in}}
+<div class="user">
+    {{> user_notifications}}
+    <div class="menu-container">
+        <button id="btn-profile-options" class="menu-trigger user flex-center" menu-target="user-dropdown"
+            aria-haspopup="menu" aria-expanded="false" aria-label="{{translate " portal.aria.profile_menu"}}">
+            {{avatar name=user_info.full_name url=user_info.profile_pic class="user-profile-pic"}}
+            <span class="username hide-on-mobile">{{user_info.first_name}} {{user_info.last_name}}</span>
+        </button>
+
+        <div class="menu" id="user-dropdown">
+            <div class="user-profile-info">
+                <div class="user-pic-thumb">
+                    {{avatar name=user_info.first_name url=user_info.profile_pic class="user-profile-pic"}}
+                </div>
+                <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+            </div>
+            <div role="menu">
+                <a href="/support/profile/edit" role="menuitem" aria-controls="page-main">
+                    {{translate "portal.user_dropdown.edit_profile"}}
+                </a>
+                {{#if portal.switch_to_agent_portal}}
+                <a href="/support/agent_portal/view" id="switch-agent-portal" role="menuitem">
+                    {{translate "portal.user_dropdown.switch_to_agent_portal"}}
+                </a>
+                {{/if}}
+                {{#if portal.switch_portal}}
+                <a href="javascript:void(0)" id="switch-portal" role="menuitem" aria-controls="page-main">
+                    {{translate "portal.ask_bot_name" bot_name=portal.bot_name}}
+                </a>
+                {{/if}}
+                <a href="/support/announcements" role="menuitem" aria-haspopup="dialog">
+                    {{translate "portal.announcements"}}
+                </a>
+                {{#if features.project_management}}
+                <a href="/a/project_management/projects" role="menuitem" aria-haspopup="dialog" target="_blank">
+                    {{translate "portal.project_management"}}
+                    {{image src="/images/portal_v2/open-in-new-tab.svg" alt=(translate "portal.aria.external")
+                    class="external-link"}}
+                </a>
+                {{/if}}
+                <a href="/logout" role="menuitem" aria-controls="page-main">
+                    {{translate "portal.user_dropdown.sign_out"}}
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="login-section">
+    <a class="button btn-login" href="">
+        Đăng nhập
+    </a>
+</div>
+{{/if}}
+<label for="nav__input" class="nav__bar-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M3 5H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M3 16H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M3 27H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+</label>

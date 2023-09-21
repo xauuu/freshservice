@@ -190,5 +190,77 @@
             }
         },
         "options": {}
+    },
+    "getAllCondition": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createCondition": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateCondition": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_id %>/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllConditionDetail": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_detail_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createConditionDetail": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_detail_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "updateConditionDetail": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_detail_id %>/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
     }
 }

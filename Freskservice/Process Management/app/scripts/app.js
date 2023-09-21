@@ -6,30 +6,41 @@ let apps = []
 let groups = []
 let states = []
 let workflows = []
-function initApp(_client) {
+
+const categoryContainer = document.getElementById('listSRCategory')
+const emailContainer = document.getElementById('listEmail')
+const workflowContainer = document.getElementById('listWorkflow')
+const stateContainer = document.getElementById('listState')
+const approvalContainer = document.getElementById('listCO')
+const conditionContainer = document.getElementById('listCondition')
+
+async function initApp(_client) {
   clientApp = _client;
   clientApp.events.on('app.activated', initHandlers);
-  getAllGroupApproval();
-  getAllEmailTemplate();
-  getAllSRCategory();
-  getAllStateApproval();
-  getDepartments()
+  await getAllSRCategory();
+  await getAllStateApproval();
   getAllWorkflow()
+  getAllEmailTemplate();
+  getAllGroupApproval();
+  getAllCondition();
+  getDepartments()
 }
 
 function openModal(type, data = null) {
   sendData()
   const titleMap = {
     [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'Add Record',
-    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'Add Record',
-    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'Add Record',
-    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add Record',
-    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Record',
     [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'Add Record',
     [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'Add Record',
     [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add Record',
     [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Record',
     [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.CONDITION_CREATE]: 'Add Record',
+    [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Record',
   };
   const templateMap = {
     [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'modals/modal.html',
@@ -42,7 +53,10 @@ function openModal(type, data = null) {
     [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'modals/state-modal.html',
     [ACTION_TYPES.WORKFLOW_CREATE]: 'modals/workflow-modal.html',
     [ACTION_TYPES.WORKFLOW_UPDATE]: 'modals/workflow-modal.html',
+    [ACTION_TYPES.CONDITION_CREATE]: 'modals/condition-modal.html',
+    [ACTION_TYPES.CONDITION_UPDATE]: 'modals/condition-modal.html',
   };
+
   clientApp.interface.trigger('showModal', {
     title: titleMap[type],
     template: templateMap[type],
@@ -66,7 +80,9 @@ function initHandlers() {
   document.getElementById('createWorkflow').addEventListener('click', function () {
     openModal(ACTION_TYPES.WORKFLOW_CREATE)
   });
-
+  document.getElementById('createCondition').addEventListener('click', function () {
+    openModal(ACTION_TYPES.CONDITION_CREATE)
+  });
   clientApp.instance.receive(async (e) => {
     const { type, data, id } = e.helper.getData();
     switch (type) {
@@ -99,6 +115,12 @@ function initHandlers() {
         break;
       case ACTION_TYPES.WORKFLOW_UPDATE:
         await handleUpdateWorkflow(id, { ...data, is_active: Number(data.is_active) });
+        break;
+      case ACTION_TYPES.CONDITION_CREATE:
+        await handleCreateCondition({ ...data, condition_type: Number(data.condition_type) });
+        break;
+      case ACTION_TYPES.CONDITION_UPDATE:
+        await handleUpdateCondition(id, { ...data, condition_type: Number(data.condition_type) });
         break;
     }
   });
@@ -228,19 +250,52 @@ async function handleUpdateWorkflow(id, data) {
   }
 };
 
-function handleSuccess(type, message) {
+async function handleCreateCondition(data) {
+  try {
+    await clientApp.request.invokeTemplate("createCondition", {
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.CONDITION_CREATE, 'Successfully created Condition');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
+async function handleUpdateCondition(id, data) {
+  try {
+    await clientApp.request.invokeTemplate("updateCondition", {
+      context: { id },
+      body: JSON.stringify({ data })
+    });
+    handleSuccess(ACTION_TYPES.CONDITION_UPDATE, 'Successfully updated Condition');
+  } catch (error) {
+    showNotification("error", "An error occurred");
+    console.log(error);
+  }
+};
+
+async function handleSuccess(type, message) {
   showNotification('success', message);
   clientApp.instance.send({ message: { type: ACTION_TYPES.CLOSE_MODAL } });
   if (type === ACTION_TYPES.GROUP_APPROVAL_CREATE || type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
+    approvalContainer.removeEventListener('click', approvalClickHandler)
     getAllGroupApproval();
   } else if (type === ACTION_TYPES.EMAIL_TEMPLATE_CREATE || type === ACTION_TYPES.EMAIL_TEMPLATE_UPDATE) {
+    emailContainer.removeEventListener('click', emailClickHandler)
     getAllEmailTemplate();
   } else if (type === ACTION_TYPES.SERVICE_REQUEST_CREATE || type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
+    categoryContainer.removeEventListener('click', categoryClickHandler)
     getAllSRCategory();
   } else if (type === ACTION_TYPES.STATE_APPROVAL_CREATE || type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
+    stateContainer.removeEventListener('click', stateClickHandler)
     getAllStateApproval();
   } else if (type === ACTION_TYPES.WORKFLOW_CREATE || type === ACTION_TYPES.WORKFLOW_UPDATE) {
+    workflowContainer.removeEventListener('click', workflowClickHandler)
     getAllWorkflow();
+  } else if (type === ACTION_TYPES.CONDITION_CREATE || type === ACTION_TYPES.CONDITION_UPDATE) {
+    conditionContainer.removeEventListener('click', conditionClickHandler)
+    getAllCondition();
   }
 }
 
@@ -262,7 +317,8 @@ async function getAllGroupApproval() {
     const data = JSON.parse(response.response);
     groups = data.records
     const html = generateGroupApproval(groups);
-    updateListGroupApproval(html)
+    approvalContainer.innerHTML = html;
+    approvalContainer.addEventListener("click", approvalClickHandler);
   } catch (error) {
     console.error(error);
   }
@@ -271,32 +327,29 @@ async function getAllGroupApproval() {
 function generateGroupApproval(records) {
   let html = "";
   records?.forEach((item) => {
-    const { name, app_code, process_code, status, approval_type } = item.data;
+    const { name, app_code, process_code, new_state, state, reject_new_state, expired_new_state } = item.data;
     const rowData = JSON.stringify(item.data);
     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <td class="px-4 py-3"> ${app_code}</td>
-                      <td class="px-4 py-3"> ${process_code}</td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${name}
                       </th>
-                      <td class="px-4 py-3"> ${approval_type}</td>
-                      <td class="px-4 py-3"> ${status}</td>
+                      <td class="px-4 py-3"> ${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+                      <td class="px-4 py-3"> ${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == new_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == reject_new_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == expired_new_state))?.data.state_name || ''}</td>
                   </tr>`;
     html += row;
   });
   return html;
 };
 
-
-function updateListGroupApproval(html) {
-  const listCO = document.getElementById("listCO");
-  listCO.innerHTML = html;
-  listCO.addEventListener("click", function (event) {
-    const clickedRow = event.target.closest("tr");
-    if (!clickedRow) return
-    const rowData = clickedRow.getAttribute("data-item");
-    openModal(ACTION_TYPES.GROUP_APPROVAL_UPDATE, JSON.parse(rowData))
-  });
+function approvalClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.GROUP_APPROVAL_UPDATE, JSON.parse(rowData))
 }
 
 async function getDepartments() {
@@ -338,20 +391,21 @@ function generateEmailTemplateHTML(records) {
   return html;
 };
 
+function emailClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.EMAIL_TEMPLATE_UPDATE, JSON.parse(rowData))
+}
+
 async function getAllEmailTemplate() {
   try {
     const response = await clientApp.request.invokeTemplate("getAllEmailTemplate", {});
     const data = JSON.parse(response.response);
     const html = generateEmailTemplateHTML(data.records);
     templates = data.records
-    const listEmail = document.getElementById("listEmail");
-    listEmail.innerHTML = html;
-    listEmail.addEventListener("click", function (event) {
-      const clickedRow = event.target.closest("tr");
-      if (!clickedRow) return
-      const rowData = clickedRow.getAttribute("data-item");
-      openModal(ACTION_TYPES.EMAIL_TEMPLATE_UPDATE, JSON.parse(rowData))
-    });
+    emailContainer.innerHTML = html;
+    emailContainer.addEventListener("click", emailClickHandler);
   } catch (error) {
     console.error(error);
   }
@@ -364,7 +418,7 @@ function generateSRCategoryHTML(records) {
     const rowData = JSON.stringify(item.data);
     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
                       <td class="px-4 py-3">
-                        <img class="h-10 w-10 rounded-lg" src="${process_image}" alt="image description">
+                        ${process_image}
                       </td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${process_name}
@@ -378,6 +432,13 @@ function generateSRCategoryHTML(records) {
   return html;
 };
 
+function categoryClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.SERVICE_REQUEST_UPDATE, JSON.parse(rowData))
+}
+
 async function getAllSRCategory() {
   try {
     const response = await clientApp.request.invokeTemplate("getAllSRCategory", {});
@@ -386,14 +447,8 @@ async function getAllSRCategory() {
     categories = data.records
     apps = getUniqueAppInfo(data.records)
     generateFilter()
-    const listSR = document.getElementById("listSRCategory");
-    listSR.innerHTML = html;
-    listSR.addEventListener("click", function (event) {
-      const clickedRow = event.target.closest("tr");
-      if (!clickedRow) return
-      const rowData = clickedRow.getAttribute("data-item");
-      openModal(ACTION_TYPES.SERVICE_REQUEST_UPDATE, JSON.parse(rowData))
-    });
+    categoryContainer.innerHTML = html;
+    categoryContainer.addEventListener("click", categoryClickHandler);
   } catch (error) {
     console.error(error);
   }
@@ -409,13 +464,20 @@ function generateStateApprovalHTML(records) {
                         ${state_name}
                       </td>
                       <td class="px-4 py-3"> ${state}</td>
-                      <td class="px-4 py-3"> ${app_code}</td>
-                      <td class="px-4 py-3"> ${process_code}</td>
+                      <td class="px-4 py-3"> ${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+                      <td class="px-4 py-3"> ${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
                   </tr>`;
     html += row;
   });
   return html;
 };
+
+function stateClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.STATE_APPROVAL_UPDATE, JSON.parse(rowData))
+}
 
 async function getAllStateApproval() {
   try {
@@ -423,19 +485,12 @@ async function getAllStateApproval() {
     const data = JSON.parse(response.response);
     states = data.records
     const html = generateStateApprovalHTML(states);
-    const listSR = document.getElementById("listState");
-    listSR.innerHTML = html;
-    listSR.addEventListener("click", function (event) {
-      const clickedRow = event.target.closest("tr");
-      if (!clickedRow) return
-      const rowData = clickedRow.getAttribute("data-item");
-      openModal(ACTION_TYPES.STATE_APPROVAL_UPDATE, JSON.parse(rowData))
-    });
+    stateContainer.innerHTML = html;
+    stateContainer.addEventListener("click", stateClickHandler);
   } catch (error) {
     console.error(error);
   }
 };
-
 
 function generateWorkflowHTML(records) {
   let html = "";
@@ -446,14 +501,21 @@ function generateWorkflowHTML(records) {
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${workflow_name}
                       </td>
-                      <td class="px-4 py-3"> ${workflow_code}</td>
-                      <td class="px-4 py-3"> ${app_code}</td>
-                      <td class="px-4 py-3"> ${process_code}</td>
+                      <td class="px-4 py-3">${workflow_code}</td>
+                      <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+                      <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
                   </tr>`;
     html += row;
   });
   return html;
 };
+
+function workflowClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
+}
 
 async function getAllWorkflow() {
   try {
@@ -461,14 +523,46 @@ async function getAllWorkflow() {
     const data = JSON.parse(response.response);
     workflows = data.records
     const html = generateWorkflowHTML(workflows);
-    const listSR = document.getElementById("listWorkflow");
-    listSR.innerHTML = html;
-    listSR.addEventListener("click", function (event) {
-      const clickedRow = event.target.closest("tr");
-      if (!clickedRow) return
-      const rowData = clickedRow.getAttribute("data-item");
-      openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
-    });
+    workflowContainer.innerHTML = html;
+    workflowContainer.addEventListener("click", workflowClickHandler);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+function generateConditionHTML(records) {
+  let html = "";
+  records?.forEach((item) => {
+    const { app_code, process_code, name, field_name } = item.data;
+    const rowData = JSON.stringify(item.data);
+    const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        ${name}
+                      </td>
+                      <td class="px-4 py-3">${field_name}</td>
+                      <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+                      <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
+                  </tr>`;
+    html += row;
+  });
+  return html;
+};
+
+function conditionClickHandler(event) {
+  const clickedRow = event.target.closest("tr");
+  if (!clickedRow) return
+  const rowData = clickedRow.getAttribute("data-item");
+  openModal(ACTION_TYPES.CONDITION_UPDATE, JSON.parse(rowData))
+}
+
+async function getAllCondition() {
+  try {
+    const response = await clientApp.request.invokeTemplate("getAllCondition", {});
+    const data = JSON.parse(response.response);
+    conditions = data.records
+    const html = generateConditionHTML(conditions);
+    conditionContainer.innerHTML = html;
+    conditionContainer.addEventListener("click", conditionClickHandler);
   } catch (error) {
     console.error(error);
   }

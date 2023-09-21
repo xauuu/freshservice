@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <script src="{{{appclient}}}"></script>
+  <style>
+    .app-body {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      align-items: center;
+      font-family: Helvetica, sans-serif;
+      font-size: 1rem;
+      padding: 1rem;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all .3s;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
+    }
+
+    button:hover {
+      padding: 8px 22px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="app-body">
+    <button id="detail">View Calendar</button>
+  </section>
+</body>
+<script src="scripts/app.js"></script>
+
+</html>

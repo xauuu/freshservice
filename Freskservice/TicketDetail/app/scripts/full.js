@@ -1,8 +1,9 @@
 window.frsh_init().then(function (client) {
     client.instance.context().then(
         async function (context) {
-            const { requested, details } = context.data
+            const { requested, details, logs } = context.data
             render(requested, details);
+            renderLogs(logs)
         }
     );
 });
@@ -33,5 +34,48 @@ function render(requested, details) {
         `
     })
     document.getElementById("leaveDetail").innerHTML = html
+
 }
 
+function renderLogs(data) {
+    const logs = JSON.parse(data.sr_json_approvals)
+    console.log(logs)
+    let html = ''
+    logs.slice(0).reverse().forEach((item) => {
+        const data = item.approval
+        html += `
+                <li class="mb-10 ml-4">
+                    <div class="absolute w-3 h-3 bg-gray-300 rounded-full mt-1.5 -left-1.5 border border-white"></div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">${data.name}</h3>
+                    <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">${data.requestedOn} ${formatLocalDateFromUTC(data.updated_at)}</time>
+                    <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">${getRemarkText(data.remark)}</p>
+                </li>
+        `
+    })
+    document.getElementById("logs").innerHTML = html
+}
+
+
+function getRemarkText(remark) {
+    if (Array.isArray(remark) && remark.length > 0) {
+        return remark[0][1];
+    } else {
+        return '';
+    }
+}
+
+function formatLocalDateFromUTC(inputDateString) {
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const utcDate = new Date(inputDateString);
+
+    // Lấy múi giờ cục bộ của client
+    const clientTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const localDate = new Date(utcDate.toLocaleString('en-US', { timeZone: clientTimezone }));
+
+    // Định dạng lại thời gian theo yêu cầu
+    const outputFormat = `${dayNames[localDate.getUTCDay()]}, ${localDate.getUTCDate()} ${monthNames[localDate.getUTCMonth()]} ${localDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
+
+    return outputFormat;
+}
