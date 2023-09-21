@@ -96,8 +96,8 @@ function generateTooltip(data) {
         <h3 class="font-semibold text-gray-900 dark:text-white">${title}</h3>
         <div class="my-2">
           <p>Agent: ${agent_name}</p>
-          <p>From: ${moment(start).format('dd/MM/yyyy HH:mm')}</p>
-          <p>To: ${moment(end).format('dd/MM/yyyy HH:mm')}</p>
+          <p>From: ${moment(start).format('DD/MM/yyyy HH:mm')}</p>
+          <p>To: ${moment(end).format('DD/MM/yyyy HH:mm')}</p>
         </div>
         <a target="_blank" href="https://trusisor.freshservice.com/a/tickets/${id}" class="flex items-center font-medium text-blue-700 hover:underline">
           Read more 
