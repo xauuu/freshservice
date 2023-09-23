@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div>
+        <div class="mb-4 border-b border-gray-200 ">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab"
+                data-tabs-toggle="#myTabContent" role="tablist">
+                <li class="mr-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="information-tab"
+                        data-tabs-target="#information" type="button" role="tab" aria-controls="information"
+                        aria-selected="false">Information</button>
+                </li>
+                <li class="mr-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
+                        id="calendar-tab" data-tabs-target="#calendar" type="button" role="tab" aria-controls="calendar"
+                        aria-selected="false">Calendar</button>
+                </li>
+            </ul>
+        </div>
+        <div id="myTabContent">
+            <div id="information" role="tabpanel" aria-labelledby="information-tab">
+                <form id="formCreate" class="h-[calc(100vh-5rem)] flex flex-col justify-between">
+                    <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto">
+                        <div>
+                            <label for="assign_to_agent" class="block mb-2 text-xs font-medium text-gray-600">Assign To
+                                Agent
+                                <span class="text-red-700 text-md">*</span>
+                            </label>
+                            <select id="assign_to_agent" name="assign_to_agent"
+                                class="border border-gray-300 text-gray-600 text-xs font-medium rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                                <option value="" selected>Choose an Agent</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2 justify-between items-center">
+                            <div class="flex-1">
+                                <label for="from_date_time" class="block mb-2 text-xs font-medium text-gray-600">From
+                                    Date
+                                    <span class="text-red-700 text-md">*</span>
+                                </label>
+                                <input type="datetime-local" id="from_date_time" name="from_date_time"
+                                    class="w-full border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block px-2.5 py-2">
+                            </div>
+                            <div class="flex-1">
+                                <label for="to_date_time" class="block mb-2 text-xs font-medium text-gray-600">To Date
+                                    <span class="text-red-700 text-md">*</span>
+                                </label>
+                                <input type="datetime-local" id="to_date_time" name="to_date_time"
+                                    class="w-full border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block px-2.5 py-2">
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="send_calendar_to_customer" name="send_calendar_to_customer" type="checkbox"
+                                value="Yes" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="send_calendar_to_customer" class="ml-1 text-gray-600 text-xs font-medium">Send
+                                Calendar To
+                                Customer</label>
+                        </div>
+                        <div>
+                            <label for="customer_email" class="block mb-2 text-xs font-medium text-gray-600">Customer
+                                Email
+                                <!-- <span class="text-red-700 text-md">*</span> -->
+                            </label>
+                            <input type="text" name="customer_email" id="customer_email" readonly
+                                class="bg-gray-100 border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        </div>
+                        <div>
+                            <label for="customer_address" class="block mb-2 text-xs font-medium text-gray-600">Customer
+                                Address
+                                <!-- <span class="text-red-700 text-md">*</span> -->
+                            </label>
+                            <input type="text" name="customer_address" id="customer_address" readonly
+                                class="bg-gray-100 border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        </div>
+                        <div>
+                            <label for="customer_phone" class="block mb-2 text-xs font-medium text-gray-600">Customer
+                                Phone
+                                <!-- <span class="text-red-700 text-md">*</span> -->
+                            </label>
+                            <input type="text" name="customer_phone" id="customer_phone" readonly
+                                class="bg-gray-100 border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        </div>
+                        <div>
+                            <label for="notes" class="block mb-2 text-xs font-medium text-gray-600">Notes
+                                <!-- <span class="text-red-700 text-md">*</span> -->
+                            </label>
+                            <textarea id="notes" name="notes"
+                                class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                                rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 justify-end mb-1">
+                        <button id="closeModal" type="button"
+                            class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
+                            Cancel
+                        </button>
+                        <button id="create" type="submit"
+                            class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
+                            Add New
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="calendar" role="tabpanel"
+                aria-labelledby="calendar-tab">
+                <div>
+                    <label for="filter_agent" class="block mb-2 text-xs font-medium text-gray-600">Filter Agent
+                    </label>
+                    <select id="filter_agent"
+                        class="border border-gray-300 text-gray-600 text-xs font-medium rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        <option value="" selected>Choose an Agent</option>
+                    </select>
+                </div>
+
+                <div id="fullcalendar"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script src="../scripts/helper.js"></script>
+    <script>
+        var fullcalendar;
+        window.frsh_init().then(function (client) {
+            fullcalendar = new FullCalendar.Calendar(document.getElementById('fullcalendar'), {
+                initialView: 'timeGridDay',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                height: 'auto',
+                navLinks: true,
+                editable: true,
+                dayMaxEvents: true,
+                eventStartEditable: false,
+                events: [],
+                eventClick: function (event) {
+                    if (event.event.url) {
+                        event.jsEvent.preventDefault();
+                        window.open(event.event.url, "_blank");
+                    }
+                }
+            });
+            fullcalendar.render()
+            document.getElementById("closeModal").addEventListener("click", function () {
+                client.instance.close();
+            });
+            document.getElementById("filter_agent").addEventListener("change", function (e) {
+                const email = e.target.value
+                client.instance.send({
+                    message: {
+                        type: ACTIONS.FILTER_AGENT,
+                        data: { email },
+                    }
+                });
+            });
+            document.getElementById("formCreate").addEventListener("submit", function (e) {
+                e.preventDefault();
+                const data = new FormData(e.target);
+                const formDataObj = { send_calendar_to_customer: false };
+                for (let entry of data.entries()) {
+                    const [key, value] = entry;
+                    formDataObj[key] = value;
+                }
+                client.instance.send({
+                    message: {
+                        type: ACTIONS.CREATE_SCHEDULE_CALENDAR,
+                        data: { ...formDataObj, send_calendar_to_customer: Boolean(formDataObj.send_calendar_to_customer) },
+                    }
+                });
+            });
+            client.instance.receive(function (event) {
+                const data = event.helper.getData();
+                if (data.type === ACTIONS.CLOSE_MODAL) client.instance.close();
+                if (data.type === ACTIONS.FILTER_AGENT) {
+                    console.log(data.calendars)
+                    fullcalendar.removeAllEvents();
+                    fullcalendar.addEventSource(data.calendars)
+                }
+            });
+            client.instance.context().then(
+                function (context) {
+                    const { data } = context
+                    generateAgent("assign_to_agent", data.agents)
+                    generateAgent("filter_agent", data.agents)
+                    document.getElementById("customer_email").value = data.detail.customer_email
+                    document.getElementById("customer_address").value = data.detail.customer_address
+                    document.getElementById("customer_phone").value = data.detail.customer_phone
+                }
+            );
+        });
+    </script>
+
+</body>
+
+</html>

@@ -9,7 +9,15 @@
         }
       },
       "requests": {
-        "getAllScheduled": {}
+        "getAllScheduled": {},
+        "getDetailSR": {},
+        "createCheckStock": {},
+        "createScheduleCalendar": {},
+        "getAllAssetType": {},
+        "addAgentToTicket": {},
+        "getAllAgent": {},
+        "getScheduleByAgent": {},
+        "updateScheduleCalendar": {}
       }
     }
   },
