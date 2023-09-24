@@ -241,7 +241,7 @@ async function updateScheduleCalendar(ticket_id, id, data) {
 
     if (res.status === 200) {
       const { requested_item } = JSON.parse(res.response)
-      await addAgentToTicket(requested_item.ticket_id, data.assign_to_agent)
+      await addAgentToTicket(requested_item.ticket_id, data.assign_to_agent, ticket.status)
     }
     showNotification("success", "Update Schedule Calendar Successfully");
     closeModal()
@@ -251,12 +251,13 @@ async function updateScheduleCalendar(ticket_id, id, data) {
   }
 }
 
-async function addAgentToTicket(id, agent_id) {
+async function addAgentToTicket(id, agent_id, status = 0) {
   try {
     await client.request.invokeTemplate("addAgentToTicket", {
       context: { id },
       body: JSON.stringify({
-        "responder_id": Number(agent_id)
+        "responder_id": Number(agent_id),
+        "status": status ? getNewStatus(status) : ticket.status
       })
     });
   } catch (error) {
@@ -319,6 +320,12 @@ function showNotification(type, message) {
 
 function closeModal() {
   client.instance.send({ message: { type: ACTIONS.CLOSE_MODAL } });
+}
+
+function getNewStatus(status) {
+  if (status === 6) return 7;
+  if (status === 7) return 6;
+  return 6
 }
 
 document.addEventListener('DOMContentLoaded', () => {
