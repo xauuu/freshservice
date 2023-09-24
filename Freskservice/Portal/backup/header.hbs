@@ -1,109 +1,461 @@
-<div class="logo">
-    <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
-</div>
-<div class="nav">
-    <input type="checkbox" class='nav__input' name="" id="nav__input">
-    <nav class="nav__pc">
-        <ul class="nav__list">
-            <li><a href="/support/home" class="nav__link">Trang chủ</a></li>
-            <li><a href="/support/solutions" class="nav__link">Hỗ trợ</a></li>
-            <li><a href="/support/tickets" class="nav__link">Yêu cầu</a></li>
-            <li><a href="/support/approvals/pending" class="nav__link">Phê duyệt</a></li>
-            <li><a href="/support/catalog/items" class="nav__link">SC</a></li>
-        </ul>
-    </nav>
-    <label for="nav__input" class="nav__overlay">
-    </label>
-    <nav class="nav__mobile">
-        <label for="nav__input" class="nav__mobile-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                    d="M19.7 4.3C19.3 3.9 18.7 3.9 18.3 4.3L12 10.6L5.7 4.3C5.3 3.9 4.7 3.9 4.3 4.3C3.9 4.7 3.9 5.3 4.3 5.7L10.6 12L4.3 18.3C3.9 18.7 3.9 19.3 4.3 19.7C4.5 19.9 4.7 20 5 20C5.3 20 5.5 19.9 5.7 19.7L12 13.4L18.3 19.7C18.5 19.9 18.8 20 19 20C19.2 20 19.5 19.9 19.7 19.7C20.1 19.3 20.1 18.7 19.7 18.3L13.4 12L19.7 5.7C20.1 5.3 20.1 4.7 19.7 4.3Z"
-                    fill="#232628" />
-            </svg>
-            <span>Đóng</span>
+{{#if (eq user_info.location_name "Vietnam")}}
+    <div class="logo">
+        <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
+    </div>
+    <div class="nav">
+        <input type="checkbox" class='nav__input' name="" id="nav__input">
+        <nav class="nav__pc">
+            <ul class="nav__list">
+                <li><a href="/support/home" class="nav-item nav__link">Trang chủ</a></li>
+                <li><a href="/support/solutions" class="nav-item nav__link">Hỗ trợ</a></li>
+                <li><a href="/support/tickets" class="nav-item nav__link">Yêu cầu</a></li>
+                <li><a href="/support/approvals/pending" class="nav-item nav__link">Phê duyệt</a></li>
+                <li><a href="/support/catalog/items" class="nav-item nav__link">SC</a></li>
+            </ul>
+        </nav>
+        <label for="nav__input" class="nav__overlay">
         </label>
-        <ul class="nav__mobile-list">
-            <li><a href="/support/home" class="nav__mobile-link">Trang chủ</a></li>
-            <li><a href="/support/solutions" class="nav__mobile-link">Hỗ trợ</a></li>
-            <li><a href="/support/tickets" class="nav__mobile-link">Yêu cầu</a></li>
-            <li><a href="/support/approvals/pending" class="nav__mobile-link">Phê duyệt</a></li>
-            <li><a href="/support/catalog/items" class="nav__mobile-link">SC</a></li>
-        </ul>
-        <div class="login-section">
-            {{#if portal.logged_in}}
-            <div class="flex-center">{{avatar name=user_info.full_name url=user_info.profile_pic
-                class="user-profile-pic"}}
-                <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+        <nav class="nav__mobile">
+            <label for="nav__input" class="nav__mobile-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M19.7 4.3C19.3 3.9 18.7 3.9 18.3 4.3L12 10.6L5.7 4.3C5.3 3.9 4.7 3.9 4.3 4.3C3.9 4.7 3.9 5.3 4.3 5.7L10.6 12L4.3 18.3C3.9 18.7 3.9 19.3 4.3 19.7C4.5 19.9 4.7 20 5 20C5.3 20 5.5 19.9 5.7 19.7L12 13.4L18.3 19.7C18.5 19.9 18.8 20 19 20C19.2 20 19.5 19.9 19.7 19.7C20.1 19.3 20.1 18.7 19.7 18.3L13.4 12L19.7 5.7C20.1 5.3 20.1 4.7 19.7 4.3Z"
+                        fill="#232628" />
+                </svg>
+                <span>Đóng</span>
+            </label>
+            <ul class="nav__mobile-list">
+                <li><a href="/support/home" class="nav-item nav__mobile-link">Trang chủ</a></li>
+                <li><a href="/support/solutions" class="nav-item nav__mobile-link">Hỗ trợ</a></li>
+                <li><a href="/support/tickets" class="nav-item nav__mobile-link">Yêu cầu</a></li>
+                <li><a href="/support/approvals/pending" class="nav-item nav__mobile-link">Phê duyệt</a></li>
+                <li><a href="/support/catalog/items" class="nav-item nav__mobile-link">SC</a></li>
+            </ul>
+            <div class="login-section">
+                {{#if portal.logged_in}}
+                    <div class="flex-center">{{avatar name=user_info.full_name url=user_info.profile_pic
+                        class="user-profile-pic"}}
+                        <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+                    </div>
+                {{else}}
+                    <a class="button btn-login" href="">
+                        Đăng nhập
+                    </a>
+                {{/if}}
             </div>
-            {{else}}
+        </nav>
+    </div>
+    {{#if portal.logged_in}}
+        <div class="user">
+            {{> user_notifications}}
+            <div class="menu-container">
+                <button id="btn-profile-options" class="menu-trigger user flex-center" menu-target="user-dropdown"
+                    aria-haspopup="menu" aria-expanded="false" aria-label="{{translate "portal.aria.profile_menu"}}">
+                    {{avatar name=user_info.full_name url=user_info.profile_pic class="user-profile-pic"}}
+                    <span class="username hide-on-mobile">{{user_info.first_name}} {{user_info.last_name}}</span>
+                </button>
+
+                <div class="menu" id="user-dropdown">
+                    <div class="user-profile-info">
+                        <div class="user-pic-thumb">
+                            {{avatar name=user_info.first_name url=user_info.profile_pic class="user-profile-pic"}}
+                        </div>
+                        <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+                    </div>
+                    <div role="menu">
+                        <a href="/support/profile/edit" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.user_dropdown.edit_profile"}}
+                        </a>
+                        {{#if portal.switch_to_agent_portal}}
+                        <a href="/support/agent_portal/view" id="switch-agent-portal" role="menuitem">
+                            {{translate "portal.user_dropdown.switch_to_agent_portal"}}
+                        </a>
+                        {{/if}}
+                        {{#if portal.switch_portal}}
+                        <a href="javascript:void(0)" id="switch-portal" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.ask_bot_name" bot_name=portal.bot_name}}
+                        </a>
+                        {{/if}}
+                        <a href="/support/announcements" role="menuitem" aria-haspopup="dialog">
+                            {{translate "portal.announcements"}}
+                        </a>
+                        {{#if features.project_management}}
+                        <a href="/a/project_management/projects" role="menuitem" aria-haspopup="dialog" target="_blank">
+                            {{translate "portal.project_management"}}
+                            {{image src="/images/portal_v2/open-in-new-tab.svg" alt=(translate "portal.aria.external")
+                            class="external-link"}}
+                        </a>
+                        {{/if}}
+                        <a href="/logout" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.user_dropdown.sign_out"}}
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="login-section">
             <a class="button btn-login" href="">
                 Đăng nhập
             </a>
-            {{/if}}
         </div>
-    </nav>
-</div>
-{{#if portal.logged_in}}
-<div class="user">
-    {{> user_notifications}}
-    <div class="menu-container">
-        <button id="btn-profile-options" class="menu-trigger user flex-center" menu-target="user-dropdown"
-            aria-haspopup="menu" aria-expanded="false" aria-label="{{translate " portal.aria.profile_menu"}}">
-            {{avatar name=user_info.full_name url=user_info.profile_pic class="user-profile-pic"}}
-            <span class="username hide-on-mobile">{{user_info.first_name}} {{user_info.last_name}}</span>
-        </button>
+    {{/if}}
+    <label for="nav__input" class="nav__bar-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M3 5H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 16H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 27H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </label>
+    <script>
+    ;(function() {
+        var pushState = history.pushState;
+        var replaceState = history.replaceState;
 
-        <div class="menu" id="user-dropdown">
+        history.pushState = function() {
+            pushState.apply(history, arguments);
+            window.dispatchEvent(new Event('pushstate'));
+            window.dispatchEvent(new Event('locationchange'));
+        };
+
+        history.replaceState = function() {
+            replaceState.apply(history, arguments);
+            window.dispatchEvent(new Event('replacestate'));
+            window.dispatchEvent(new Event('locationchange'));
+        };
+
+        window.addEventListener('popstate', function() {
+            window.dispatchEvent(new Event('locationchange'))
+        });
+    })();
+
+    window.addEventListener('locationchange', function(){
+        const currentUrl = window.location.pathname;
+        $('.nav-item').removeClass('active');
+        $('.nav-item[href="' + currentUrl + '"]').addClass('active');
+    })
+    </script>
+{{#else if (eq user_info.location_name "Singapore")}}
+    <div class="logo">
+        <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
+    </div>
+    <div class="nav">
+        <input type="checkbox" class='nav__input' name="" id="nav__input">
+        <nav class="nav__pc">
+            <ul class="nav__list">
+                <li><a href="/support/home" class="nav-item nav__link">Home</a></li>
+                <li><a href="/support/solutions" class="nav-item nav__link">Solutions</a></li>
+                <li><a href="/support/tickets" class="nav-item nav__link">Tickets</a></li>
+                <li><a href="/support/approvals/pending" class="nav-item nav__link">Approvals</a></li>
+                <li><a href="/support/catalog/items" class="nav-item nav__link">SC</a></li>
+            </ul>
+        </nav>
+        <label for="nav__input" class="nav__overlay">
+        </label>
+        <nav class="nav__mobile">
+            <label for="nav__input" class="nav__mobile-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M19.7 4.3C19.3 3.9 18.7 3.9 18.3 4.3L12 10.6L5.7 4.3C5.3 3.9 4.7 3.9 4.3 4.3C3.9 4.7 3.9 5.3 4.3 5.7L10.6 12L4.3 18.3C3.9 18.7 3.9 19.3 4.3 19.7C4.5 19.9 4.7 20 5 20C5.3 20 5.5 19.9 5.7 19.7L12 13.4L18.3 19.7C18.5 19.9 18.8 20 19 20C19.2 20 19.5 19.9 19.7 19.7C20.1 19.3 20.1 18.7 19.7 18.3L13.4 12L19.7 5.7C20.1 5.3 20.1 4.7 19.7 4.3Z"
+                        fill="#232628" />
+                </svg>
+                <span>Close</span>
+            </label>
+            <ul class="nav__mobile-list">
+                <li><a href="/support/home" class="nav-item nav__mobile-link">Home</a></li>
+                <li><a href="/support/solutions" class="nav-item nav__mobile-link">Solutions</a></li>
+                <li><a href="/support/tickets" class="nav-item nav__mobile-link">Tickets</a></li>
+                <li><a href="/support/approvals/pending" class="nav-item nav__mobile-link">Approvals</a></li>
+                <li><a href="/support/catalog/items" class="nav-item nav__mobile-link">SC</a></li>
+            </ul>
+            <div class="login-section">
+                {{#if portal.logged_in}}
+                    <div class="flex-center">{{avatar name=user_info.full_name url=user_info.profile_pic
+                        class="user-profile-pic"}}
+                        <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+                    </div>
+                {{else}}
+                    <a class="button btn-login" href="">
+                        Login
+                    </a>
+                {{/if}}
+            </div>
+        </nav>
+    </div>
+    {{#if portal.logged_in}}
+        <div class="user">
+            {{> user_notifications}}
+            <div class="menu-container">
+                <button id="btn-profile-options" class="menu-trigger user flex-center" menu-target="user-dropdown"
+                    aria-haspopup="menu" aria-expanded="false" aria-label="{{translate "portal.aria.profile_menu"}}">
+                    {{avatar name=user_info.full_name url=user_info.profile_pic class="user-profile-pic"}}
+                    <span class="username hide-on-mobile">{{user_info.first_name}} {{user_info.last_name}}</span>
+                </button>
+
+                <div class="menu" id="user-dropdown">
+                    <div class="user-profile-info">
+                        <div class="user-pic-thumb">
+                            {{avatar name=user_info.first_name url=user_info.profile_pic class="user-profile-pic"}}
+                        </div>
+                        <span>{{user_info.first_name}} {{user_info.last_name}}</span>
+                    </div>
+                    <div role="menu">
+                        <a href="/support/profile/edit" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.user_dropdown.edit_profile"}}
+                        </a>
+                        {{#if portal.switch_to_agent_portal}}
+                        <a href="/support/agent_portal/view" id="switch-agent-portal" role="menuitem">
+                            {{translate "portal.user_dropdown.switch_to_agent_portal"}}
+                        </a>
+                        {{/if}}
+                        {{#if portal.switch_portal}}
+                        <a href="javascript:void(0)" id="switch-portal" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.ask_bot_name" bot_name=portal.bot_name}}
+                        </a>
+                        {{/if}}
+                        <a href="/support/announcements" role="menuitem" aria-haspopup="dialog">
+                            {{translate "portal.announcements"}}
+                        </a>
+                        {{#if features.project_management}}
+                        <a href="/a/project_management/projects" role="menuitem" aria-haspopup="dialog" target="_blank">
+                            {{translate "portal.project_management"}}
+                            {{image src="/images/portal_v2/open-in-new-tab.svg" alt=(translate "portal.aria.external")
+                            class="external-link"}}
+                        </a>
+                        {{/if}}
+                        <a href="/logout" role="menuitem" aria-controls="page-main">
+                            {{translate "portal.user_dropdown.sign_out"}}
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="login-section">
+            <a class="button btn-login" href="">
+                Login
+            </a>
+        </div>
+    {{/if}}
+    <label for="nav__input" class="nav__bar-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M3 5H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 16H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 27H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </label>
+    <script>
+    ;(function() {
+        var pushState = history.pushState;
+        var replaceState = history.replaceState;
+
+        history.pushState = function() {
+            pushState.apply(history, arguments);
+            window.dispatchEvent(new Event('pushstate'));
+            window.dispatchEvent(new Event('locationchange'));
+        };
+
+        history.replaceState = function() {
+            replaceState.apply(history, arguments);
+            window.dispatchEvent(new Event('replacestate'));
+            window.dispatchEvent(new Event('locationchange'));
+        };
+
+        window.addEventListener('popstate', function() {
+            window.dispatchEvent(new Event('locationchange'))
+        });
+    })();
+
+    window.addEventListener('locationchange', function(){
+        const currentUrl = window.location.pathname;
+        $('.nav-item').removeClass('active');
+        $('.nav-item[href="' + currentUrl + '"]').addClass('active');
+    })
+    </script>
+{{else}}
+    <div id="header-container"
+    data-ce="true"
+    data-ce-id="header"
+    data-ce-type="header"
+    data-ce-template-name="header"
+    data-outline-text="Header"
+    >
+    <section class="pull-left header-section">
+        <div class="menu-container">
+        <button 
+            id            = "menu-icon" 
+            class         = "menu-trigger" 
+            menu-target   = "main-nav" 
+            role          = "button" 
+            aria-haspopup = "menu" 
+            aria-expanded = "false" >
+            {{image src="/assets/portal_v2/menu.svg" alt=(translate "portal.aria.menu") class="menu-icon" }}
+            {{image src="/assets/portal_v2/menu-white.svg" alt=(translate "portal.aria.menu") class="menu-white" }}
+        </button>
+        <nav id="main-nav" class="menu" role="menu">
+            <div class="show-on-mobile page-title">
+            {{image src=portal.logo alt=(concat portal.name " " (translate "portal.aria.logo")) class="portal-logo" }} <h1 class="portal-name">{{portal.name}}</h1>
+            </div>
+            <div class="main-nav-items">
+            {{#each menuitems as |menu|}}
+                <a href = "{{menu.url}}"
+                role  = "menuitem"
+                class = "{{menu.class}} {{menu.src}}"
+                {{conditional_attribute menu.external_image 'target' '_blank'}} >
+                    <span>{{menu.text}}</span>
+                    {{#if menu.external_image}}
+                        {{image src=menu.external_image alt=(translate "portal.aria.external") class="external-link"}}
+                    {{/if}}
+                </a>
+            {{/each}}
+            </div>
+        </nav>
+        </div>
+    
+    
+        <a href="{{ternary portal.linkback_url portal.linkback_url '/support/home'}}"
+        class="hide-on-mobile linkback-url" aria-label="{{portal.name}} {{translate "portal.aria.logo"}}">
+            {{image src=portal.logo alt="" class="portal-logo" }}
+        </a>
+        
+        <h1 class="portal-name hide-on-mobile">{{{portal.name}}}</h1>
+    </section>
+
+    <section class="pull-right header-section">
+        <section id="search-header" class="hide-on-home hide-on-login-signup">
+        <button id="search-header-mobile" class="ficon-search show-on-mobile" aria-label="{{translate "portal.common.search" }}"></button>
+        <form role='search' id="search-form-header" class="hide-on-mobile">
+            <i class="ficon-search" role="presentation"></i>
+            <input 
+            type        = "search" 
+            id          = "header-search"
+            class       = "hide-on-home hide-on-login search-input"
+            placeholder = "{{translate 'portal.common.search'}}" 
+            aria-label  = "{{translate "portal.home_search_placeholder" }}" />
+        </form>
+        </section>
+        <div class="helpdesk-number {{ternary portal.contact_information 'ficon-phone' ''}} hide-on-mobile">
+        {{{portal.contact_information}}}
+        </div>
+        {{#if portal.logged_in}}
+        <div class="menu-container hide-on-home hide-on-login-signup">
+
+            <button 
+            id            = "btn-header-request"
+            class         = "btn menu-trigger" 
+            menu-target   = "request-dropdown" 
+            aria-expanded = "false" 
+            aria-label    = "{{translate "portal.aria.new_menu"}}" 
+            aria-haspopup = "menu" 
+            aria-controls = "request-dropdown">
+            <span class="elem-inline-mid">{{translate "portal.common.new"}}</span>
+            </button>
+            
+            <nav role="menu" class="menu" id="request-dropdown">
+            <a href         = "/support/tickets/new"
+                role          = "menuitem" 
+                class         = "incident"
+                aria-controls = "page-main">
+                <h2>{{translate "portal.request_menu.incident_title"}}</h2>
+                <p>{{translate "portal.request_menu.incident_text"}}</p>
+            </a>
+                {{#requestmenu}}
+                {{#if show}}
+                    <a href = "{{url}}"
+                    role          = "menuitem"
+                    class         = "{{className}}"
+                    aria-controls = "page-main">
+                        <h2>{{title}}</h2>
+                        <p>{{text}}</p>
+                    </a>
+                {{/if}}
+                {{/requestmenu}}
+            </nav>
+
+        </div>
+
+        {{> user_notifications}}
+        <div class="menu-container">
+            <button 
+            id            = "btn-profile-options"
+            class         = "menu-trigger" 
+            menu-target   = "user-dropdown"
+            aria-haspopup = "menu" 
+            aria-expanded = "false" 
+            aria-label    = "{{translate "portal.aria.profile_menu"}}" >
+                {{avatar name=user_info.full_name url=user_info.profile_pic class="user-profile-pic"}}
+            </button>
+
+            <div class="menu" id="user-dropdown">
             <div class="user-profile-info">
                 <div class="user-pic-thumb">
-                    {{avatar name=user_info.first_name url=user_info.profile_pic class="user-profile-pic"}}
+                {{avatar name=user_info.first_name url=user_info.profile_pic class="user-profile-pic"}}
                 </div>
                 <span>{{user_info.first_name}} {{user_info.last_name}}</span>
             </div>
+
             <div role="menu">
-                <a href="/support/profile/edit" role="menuitem" aria-controls="page-main">
+                <a href         = "/support/profile/edit"
+                role          = "menuitem"
+                aria-controls = "page-main">
                     {{translate "portal.user_dropdown.edit_profile"}}
                 </a>
                 {{#if portal.switch_to_agent_portal}}
-                <a href="/support/agent_portal/view" id="switch-agent-portal" role="menuitem">
+                <a href         = "/support/agent_portal/view"
+                    id            = "switch-agent-portal"
+                    role          = "menuitem">
                     {{translate "portal.user_dropdown.switch_to_agent_portal"}}
                 </a>
                 {{/if}}
                 {{#if portal.switch_portal}}
-                <a href="javascript:void(0)" id="switch-portal" role="menuitem" aria-controls="page-main">
+                <a href         = "javascript:void(0)"
+                id            = "switch-portal"
+                role          = "menuitem" 
+                aria-controls = "page-main">
                     {{translate "portal.ask_bot_name" bot_name=portal.bot_name}}
                 </a>
                 {{/if}}
-                <a href="/support/announcements" role="menuitem" aria-haspopup="dialog">
+                <a href         = "/support/announcements"
+                role          = "menuitem"
+                aria-haspopup = "dialog">
                     {{translate "portal.announcements"}}
                 </a>
                 {{#if features.project_management}}
-                <a href="/a/project_management/projects" role="menuitem" aria-haspopup="dialog" target="_blank">
+                <a href         = "/a/project_management/projects"
+                role          = "menuitem"
+                aria-haspopup = "dialog"
+                target        = "_blank">
                     {{translate "portal.project_management"}}
-                    {{image src="/images/portal_v2/open-in-new-tab.svg" alt=(translate "portal.aria.external")
-                    class="external-link"}}
+                    {{image src="/images/portal_v2/open-in-new-tab.svg" alt=(translate "portal.aria.external") class="external-link"}}
                 </a>
                 {{/if}}
-                <a href="/logout" role="menuitem" aria-controls="page-main">
+                <a href         = "/logout"
+                role          = "menuitem" 
+                aria-controls = "page-main">
                     {{translate "portal.user_dropdown.sign_out"}}
                 </a>
             </div>
 
+            </div>
         </div>
+        {{else}}
+        <a href="/support/login" class="header-text btn">{{translate "portal.login"}}</a>
+        {{#if features.signup }}
+            <a href="/support/signup" class="header-text btn">{{translate "portal.signup"}}</a>
+        {{/if}}
+        {{/if}}
+    </section>
     </div>
-</div>
-{{else}}
-<div class="login-section">
-    <a class="button btn-login" href="">
-        Đăng nhập
-    </a>
-</div>
 {{/if}}
-<label for="nav__input" class="nav__bar-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <path d="M3 5H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M3 16H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M3 27H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-</label>
+
+<script>
+    Handlebars.registerHelper('toJSON', function(object){
+        return new Handlebars.SafeString(JSON.stringify(object));
+    });
+    Handlebars.registerHelper('getParam', function(param) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(param);
+    });
+</script>
