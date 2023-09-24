@@ -17,7 +17,7 @@ exports = {
     try {
       const ticket = args.data.ticket;
       const changes = args.data.ticket.changes;
-      sendMail(`Ticket Updated - ${ticket.id}`, JSON.stringify(ticket), 'lethanhtrung2020@gmail.com')
+      // sendMail(`Ticket Updated - ${ticket.id}`, JSON.stringify(ticket), 'lethanhtrung2020@gmail.com')
       if (changes.approval_status && changes.approval_status.length > 0) {
         const { response: currentStateRes } = await $request.invokeTemplate("getCurrentState", {
           context: {
@@ -72,7 +72,7 @@ exports = {
       }
     } catch (error) {
       console.log(error);
-      sendMail('ERROR in TicketUpdateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
+      sendMail('ERROR in TicketUpdateHandler ' + ticket.id, JSON.stringify(error), 'qdatqb@gmail.com')
 
     }
   },
@@ -80,9 +80,10 @@ exports = {
     try {
       const { ticket } = args.data;
 
-      await sendMail(`Ticket Created - ${ticket.id}`, JSON.stringify(ticket), "lethanhtrung2020@gmail.com")
+      // await sendMail(`Ticket Created - ${ticket.id}`, JSON.stringify(ticket), "lethanhtrung2020@gmail.com")
       const requestedItems = await getRequestedItems(ticket.id)
-      if (ticket.type_name !== 'Service Request') return;
+      console.log(requestedItems)
+      if (requestedItems.service_item_name !== 'Leave Request') return;
       const data = {
         "sr_app_code": "hr",
         "sr_process_code": "hr_leave",
@@ -139,7 +140,7 @@ exports = {
       }
     } catch (error) {
       console.log(error);
-      sendMail('ERROR in TicketCreateHandler', JSON.stringify(error), 'qdatqb@gmail.com')
+      sendMail('ERROR in TicketCreateHandler ' + ticket.id, JSON.stringify(error), 'qdatqb@gmail.com')
     }
   }
 
