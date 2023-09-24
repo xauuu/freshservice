@@ -617,6 +617,7 @@ main.custom-container {
       }
       .solution-categories {
         height: 500px;
+        overflow: auto;
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: 300px;

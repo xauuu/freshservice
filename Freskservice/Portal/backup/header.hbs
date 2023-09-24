@@ -1,4 +1,5 @@
 {{#if (eq user_info.location_name "Vietnam")}}
+<div class="custom-container">
     <div class="logo">
         <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
     </div>
@@ -108,6 +109,7 @@
             <path d="M3 27H29" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     </label>
+</div>
     <script>
     ;(function() {
         var pushState = history.pushState;
@@ -136,7 +138,8 @@
         $('.nav-item[href="' + currentUrl + '"]').addClass('active');
     })
     </script>
-{{#else if (eq user_info.location_name "Singapore")}}
+{{!--
+{{else if (eq user_info.location_name "Singapore")}}
     <div class="logo">
         <a href="/support/home"><img src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt=""></a>
     </div>
@@ -274,6 +277,7 @@
         $('.nav-item[href="' + currentUrl + '"]').addClass('active');
     })
     </script>
+--}}
 {{else}}
     <div id="header-container"
     data-ce="true"
@@ -291,7 +295,8 @@
             role          = "button" 
             aria-haspopup = "menu" 
             aria-expanded = "false" >
-            {{image src="/assets/portal_v2/menu.svg" alt=(translate "portal.aria.menu") class="menu-icon" }}
+          
+			{{image src="/assets/portal_v2/menu.svg" alt=(translate "portal.aria.menu") class="menu-icon" }}
             {{image src="/assets/portal_v2/menu-white.svg" alt=(translate "portal.aria.menu") class="menu-white" }}
         </button>
         <nav id="main-nav" class="menu" role="menu">

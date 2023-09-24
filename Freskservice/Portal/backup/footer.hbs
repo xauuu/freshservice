@@ -1,5 +1,6 @@
 {{#if (eq user_info.location_name "Vietnam")}}
-    <div class="footer-container">
+<div class="custom-container">
+     <div class="footer-container">
         <div class="col-1">
             <a href="/support/home">
                 <img class="logo-footer" src="https://www.truvisor.io/wp-content/uploads/2022/04/logo-light.svg" alt="">
@@ -35,7 +36,9 @@
     <div class="ft-copyright text-center">
         {{> portal_copyrights}}
     </div>
+</div>
 {{else if (eq user_info.location_name "Singapore")}}
+<div class="custom-container">
     <div class="footer-container">
         <div class="col-1">
             <a href="/support/home">
@@ -48,21 +51,21 @@
             <ul>
                 <li><a href="#">Knowledgebase</a></li>
                 <li><a href="#">FAQ</a></li>
-                <li><a href="#">Tài liệu hướng dẫn</a></li>
-                <li><a href="#">Diễn đàn</a></li>
+                <li><a href="#">Instructional manual</a></li>
+                <li><a href="#">Forum</a></li>
             </ul>
         </div>
         <div class="col-2">
-            <h4>Liên kết hữu ích</h4>
+            <h4>Helpful links</h4>
             <ul>
-                <li><a href="#">Trang chủ cộng đồng</a></li>
-                <li><a href="#">Hỗ trợ sản phẩm</a></li>
-                <li><a href="#">Hoàn trả</a></li>
+                <li><a href="/support/home">Home</a></li>
+                <li><a href="#">Product support</a></li>
+                <li><a href="#">Refund</a></li>
                 <li><a href="#">Market API</a></li>
             </ul>
         </div>
         <div class="col-2">
-            <h4>Liên hệ với chúng tôi</h4>
+            <h4>Contact us</h4>
             <ul>
                 <li><a href="tel:123456789">+123 456 789</a></li>
                 <li><a href="mailto:support@truvisor.io">support@truvisor.io</a></li>
@@ -72,6 +75,7 @@
     <div class="ft-copyright text-center">
         {{> portal_copyrights}}
     </div>
+</div>
 {{else}}
     <div class="clearfix">
         {{> portal_copyrights}}
