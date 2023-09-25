@@ -7,37 +7,66 @@
 </head>
 
 <body>
-  <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+  <div class="mb-3 border-b border-gray-200 dark:border-gray-700">
     <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent"
       role="tablist">
       <li class="mr-2" role="presentation">
-        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="map-tab" data-tabs-target="#map" type="button"
-          role="tab" aria-controls="map" aria-selected="true">Map</button>
+        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="scheduled-tab" data-tabs-target="#scheduled"
+          type="button" role="tab" aria-controls="scheduled" aria-selected="true">Scheduled Calendar</button>
       </li>
       <li class="mr-2" role="presentation">
         <button
           class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          id="scheduled-tab" data-tabs-target="#scheduled" type="button" role="tab" aria-controls="scheduled"
-          aria-selected="false">Scheduled Calendar</button>
+          id="map-tab" data-tabs-target="#map" type="button" role="tab" aria-controls="map"
+          aria-selected="false">Map</button>
       </li>
     </ul>
   </div>
   <div id="myTabContent">
-    <div class="p-4" id="scheduled" role="tabpanel" aria-labelledby="scheduled-tab">
+    <div class="px-4 pb-4" id="scheduled" role="tabpanel" aria-labelledby="scheduled-tab">
+      <div class="flex gap-4 mb-3">
+        <div>
+          <label for="calendar_agents" class="block mb-1 text-xs font-medium text-gray-600">Agent</label>
+          <select id="calendar_agents"
+            class="w-64 text-gray-600 text-xs font-medium rounded-md px-2.5 py-2 focus:ring-primary-600 focus:border-primary-600 block">
+            <option selected disabled>Select an agent</option>
+          </select>
+        </div>
+      </div>
       <div id='calendar'></div>
     </div>
-    <div class="hidden p-4 map-container" id="map" role="tabpanel" aria-labelledby="map-tab">
+    <div class="hidden px-4 pb-4 map-container" id="map" role="tabpanel" aria-labelledby="map-tab">
+      <div class="flex gap-4 mb-3">
+        <div>
+          <label for="from_date" class="block mb-1 text-xs font-medium text-gray-600">From Date</label>
+          <input type="datetime-local" id="from_date"
+            class="border border-gray-300 text-gray-600 text-xs font-medium rounded-md px-2.5 py-2 focus:ring-primary-600 focus:border-primary-600 block">
+        </div>
+        <div>
+          <label for="to_date" class="block mb-1 text-xs font-medium text-gray-600">To Date</label>
+          <input type="datetime-local" id="to_date"
+            class="border border-gray-300 text-gray-600 text-xs font-medium rounded-md px-2.5 py-2 focus:ring-primary-600 focus:border-primary-600 block">
+        </div>
+        <div>
+          <label for="map_agent" class="block mb-1 text-xs font-medium text-gray-600">Agent</label>
+          <select id="map_agent"
+            class="w-64 text-gray-600 text-xs font-medium rounded-md px-2.5 py-2 focus:ring-primary-600 focus:border-primary-600 block">
+            <option selected disabled>Select an agent</option>
+          </select>
+        </div>
+      </div>
       <div id="initMap"></div>
     </div>
 
   </div>
-
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCf_328D6txR72mRruyBfjvKMpq5_iPB2I&callback=initMap" async
   defer></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+<script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
 <script src="scripts/app.js"></script>
 
 </html>

@@ -21,7 +21,7 @@ function generateAgent(container, list) {
     list.forEach((item) => {
         const { id, first_name, last_name, email } = item;
         const option = document.createElement('option')
-        option.value = id
+        option.value = container === "filter_agent" ? email : id
         option.text = `${first_name} ${last_name} <${email}>`
         document.getElementById(container).append(option)
     });
