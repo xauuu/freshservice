@@ -84,8 +84,8 @@ function initMap(list) {
 
 function codeAddress(data, index) {
   geocoder.geocode({ 'address': data.address }, function (results, status) {
-    var latLng = results[0].geometry.location;
     if (status == 'OK') {
+      var latLng = results[0].geometry.location;
       if (index === 0) map.setCenter(latLng)
       const marker = new google.maps.Marker({
         position: latLng,

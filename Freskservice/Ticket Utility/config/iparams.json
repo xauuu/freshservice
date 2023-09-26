@@ -22,5 +22,17 @@
         "description": "Please enter your asset_type_id",
         "type": "text",
         "required": true
+    },
+    "check_stock_id": {
+        "display_name": "check_stock_id",
+        "description": "Please enter your check_stock_id",
+        "type": "text",
+        "required": true
+    },
+    "scheduled_calendar_id": {
+        "display_name": "scheduled_calendar_id",
+        "description": "Please enter your scheduled_calendar_id",
+        "type": "text",
+        "required": true
     }
 }

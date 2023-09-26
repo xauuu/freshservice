@@ -75,7 +75,7 @@
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/service_catalog/items/98/place_request",
+            "path": "/api/v2/service_catalog/items/<%= iparam.check_stock_id %>/place_request",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -87,7 +87,7 @@
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/service_catalog/items/97/place_request",
+            "path": "/api/v2/service_catalog/items/<%= iparam.scheduled_calendar_id %>/place_request",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

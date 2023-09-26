@@ -217,7 +217,7 @@ async function createScheduleCalendar(data) {
         "custom_fields": data
       })
     });
-
+    console.log(res)
     if (res.status === 200) {
       const { service_request } = JSON.parse(res.response)
       await addAgentToTicket(service_request.id, data.assign_to_agent)
