@@ -1,0 +1,35 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshservice": {
+      "events": {
+        "onTicketCreate": {
+          "handler": "onTicketCreateHandler"
+        },
+        "onTicketUpdate": {
+          "handler": "onTicketUpdateHandler"
+        }
+      },
+      "requests": {
+        "requestApproval": {},
+        "getGroupApprovalRule": {},
+        "getProcessLog": {},
+        "createProcessLog": {},
+        "updateProcessLog": {},
+        "getRequesters": {},
+        "getARequester": {},
+        "getTicketApprovals": {},
+        "getRequestedItems": {},
+        "getEmailTemplate": {}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.5"
+  },
+  "dependencies": {
+    "nodemailer": "6.9.3",
+    "moment": "2.29.4"
+  }
+}
