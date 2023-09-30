@@ -6,17 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="../styles/style.css">
 </head>
 
 <body>
     <form id="formCreate" class="h-screen flex flex-col justify-between">
         <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto">
             <div>
+                <label for="awesomplete" class="block mb-2 text-xs font-medium text-gray-900 ">Service Item
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <select id="service_item_id" name="service_item_id" required
+                    class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                    <option value="" selected disabled>Choose a Service Item</option>
+                </select>
+                <!-- <input type="text" id="awesomplete"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 w-full px-2.5 py-2"
+                    placeholder="Enter Details" required="">
+                <input type="hidden" name="service_item_id" id="service_item_id"> -->
+            </div>
+            <div>
                 <label for="app_code" class="block mb-2 text-xs font-medium text-gray-900 ">App Code
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <input type="text" name="app_code" id="app_code"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                     placeholder="Enter Details" required="">
             </div>
             <div>
@@ -24,15 +39,24 @@
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <input type="text" name="app_name" id="app_name"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                     placeholder="Enter Details" required="">
+            </div>
+            <div>
+                <label for="app_image" class="block mb-2 text-xs font-medium text-gray-900">
+                    App Image SVG
+                    <span class="text-red-700 text-md">*</span>
+                </label>
+                <textarea id="app_image" name="app_image" rows="4"
+                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter Details..."></textarea>
             </div>
             <div>
                 <label for="process_code" class="block mb-2 text-xs font-medium text-gray-900">Process Code
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <input type="text" name="process_code" id="process_code"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                     placeholder="Enter Details" required="">
             </div>
             <div>
@@ -40,15 +64,15 @@
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <input type="text" name="process_name" id="process_name"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                     placeholder="Enter Details" required="">
             </div>
             <div>
-                <label for="process_image" class="block mb-2 text-xs font-medium text-gray-900">Process Image URL
+                <label for="process_image" class="block mb-2 text-xs font-medium text-gray-900">Process Image SVG
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <textarea id="process_image" name="process_image" rows="4"
-                    class="block px-2.5 py-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter Details..."></textarea>
             </div>
             <div>
@@ -57,7 +81,7 @@
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <textarea id="process_description" name="process_description" rows="4"
-                    class="block px-2.5 py-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter Details..."></textarea>
             </div>
             <div>
@@ -65,7 +89,7 @@
                     <span class="text-red-700 text-md">*</span>
                 </label>
                 <input type="text" name="process_url" id="process_url"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                     placeholder="Enter Details" required="">
             </div>
             <div>
@@ -91,14 +115,17 @@
     </form>
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="../scripts/jquery.select-to-autocomplete.js"></script>
     <script src="../scripts/constant.js"></script>
     <script>
         window.frsh_init().then(function (client) {
             var context = {}
-            document.getElementById("closeModal").addEventListener("click", function () {
+            $("#closeModal").click(function () {
                 client.instance.close();
             });
-            document.getElementById("formCreate").addEventListener("submit", function (e) {
+            $("#formCreate").submit(function (e) {
                 e.preventDefault();
                 const data = new FormData(e.target);
                 const formDataObj = {
@@ -108,6 +135,7 @@
                     const [key, value] = entry;
                     formDataObj[key] = value;
                 }
+                console.log(formDataObj)
                 client.instance.send({
                     message: {
                         type: context.type,
@@ -119,14 +147,20 @@
             client.instance.receive(function (event) {
                 let data = event.helper.getData();
                 if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
+                if (data.type === ACTION_TYPES.LIST_DATA) {
+                    generateSelect("service_item_id", data.data.serviceItems, context)
+                    $('#service_item_id').selectToAutocomplete();
+                }
             });
             client.instance.context().then(
                 function (c) {
                     context = c.data
                     if (context.type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
                         const data = context.data
+                        document.getElementById("service_item_id").value = data.service_item_id;
                         document.getElementById("app_code").value = data.app_code;
                         document.getElementById("app_name").value = data.app_name;
+                        document.getElementById("app_image").value = data.app_image;
                         document.getElementById("process_code").value = data.process_code;
                         document.getElementById("process_name").value = data.process_name;
                         document.getElementById("process_image").value = data.process_image;
@@ -137,8 +171,17 @@
                 }
             );
         });
+        function generateSelect(container, list, context) {
+            list?.forEach((item) => {
+                const { display_id, name } = item;
+                const option = document.createElement('option')
+                option.value = display_id
+                option.text = name
+                option.selected = context.data?.service_item_id == display_id
+                document.getElementById(container).append(option)
+            });
+        }
     </script>
-
 </body>
 
 </html>

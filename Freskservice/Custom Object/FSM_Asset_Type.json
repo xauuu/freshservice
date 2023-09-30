@@ -1,0 +1,38 @@
+{
+    "custom_object": {
+        "id": 27000052502,
+        "name": "fsm_asset_type_48",
+        "title": "FSM_Asset_Type",
+        "description": null,
+        "workspace_id": 8,
+        "fields": [
+            {
+                "name": "asset_type_name",
+                "label": "Asset_Type_Name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "asset_type_code",
+                "label": "Asset_Type_Code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "is_active",
+                "label": "Is_Active",
+                "type": "number",
+                "required": false,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 3
+        }
+    }
+}

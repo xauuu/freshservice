@@ -11,24 +11,6 @@
         "type": "text",
         "required": true
     },
-    "service_item_name": {
-        "display_name": "Service Item Name",
-        "description": "Please enter your Service Item Name",
-        "type": "text",
-        "required": true
-    },
-    "app_code": {
-        "display_name": "App Code",
-        "description": "Please enter your App Code",
-        "type": "text",
-        "required": true
-    },
-    "process_code": {
-        "display_name": "Process Code",
-        "description": "Please enter your Process Code",
-        "type": "text",
-        "required": true
-    },
     "approval_rule_id": {
         "display_name": "Group Approval Rule ID",
         "description": "Please enter your Approval Rule ID",
@@ -38,6 +20,12 @@
     "process_log_id": {
         "display_name": "process_log_id",
         "description": "Please enter your process_log_id",
+        "type": "text",
+        "required": true
+    },
+    "service_category_id": {
+        "display_name": "service_category_id",
+        "description": "Please enter your service_category_id",
         "type": "text",
         "required": true
     }

@@ -47,6 +47,18 @@
         },
         "options": {}
     },
+    "getAllRequesterGroup": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/requester_groups",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
     "getAllEmailTemplate": {
         "schema": {
             "method": "GET",
@@ -256,6 +268,30 @@
             "method": "PUT",
             "host": "<%= iparam.domain %>",
             "path": "/api/v2/objects/<%= iparam.condition_detail_id %>/records/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllServiceItem": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/service_catalog/items?workspace_id=<%= context.workspace_id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getAllWorkspace": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.workspace_id %>/records?query=is_active%20%3A%20%271%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

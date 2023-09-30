@@ -52,5 +52,11 @@
         "description": "Please enter your condition_detail_id",
         "type": "text",
         "required": true
+    },
+    "workspace_id": {
+        "display_name": "workspace_id",
+        "description": "Please enter your workspace_id",
+        "type": "text",
+        "required": true
     }
 }

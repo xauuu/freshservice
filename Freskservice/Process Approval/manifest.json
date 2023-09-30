@@ -20,7 +20,8 @@
         "getARequester": {},
         "getTicketApprovals": {},
         "getRequestedItems": {},
-        "getEmailTemplate": {}
+        "getEmailTemplate": {},
+        "getServiceCategory": {}
       }
     }
   },

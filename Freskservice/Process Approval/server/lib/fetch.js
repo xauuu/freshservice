@@ -1,8 +1,8 @@
 const moment = require('moment');
 
-async function getGroupApprovalRule(current_state) {
+async function getGroupApprovalRule(app_code, process_code, current_state) {
     const { response: groupApprovalRes } = await $request.invokeTemplate("getGroupApprovalRule", {
-        context: { current_state }
+        context: { app_code, process_code, current_state }
     });
     const groupApproval = JSON.parse(groupApprovalRes).records[0]?.data;
     return groupApproval
@@ -15,9 +15,9 @@ async function getRequester(requester_id) {
     return JSON.parse(response).requester;
 }
 
-async function getRequesters(department_id) {
+async function getRequesters(requester_group_id) {
     const { response } = await $request.invokeTemplate("getRequesters", {
-        context: { department_id }
+        context: { requester_group_id }
     });
     return JSON.parse(response).requesters;
 }
@@ -33,9 +33,9 @@ async function requestApproval(ticket_id, approver_id, approval_type, email_cont
     });
 }
 
-async function getProcessLog(ticket_id) {
+async function getProcessLog(app_code, process_code, ticket_id) {
     const { response: currentStateRes } = await $request.invokeTemplate("getProcessLog", {
-        context: { ticket_id }
+        context: { app_code, process_code, ticket_id }
     });
     const currentState = JSON.parse(currentStateRes).records[0]?.data;
     return currentState
@@ -76,6 +76,14 @@ async function getTicketApprovals(ticket_id) {
     });
     return JSON.parse(response).approvals;
 }
+
+async function getServiceCategory(service_item_id) {
+    const { response } = await $request.invokeTemplate("getServiceCategory", {
+        context: { service_item_id }
+    });
+    return JSON.parse(response).records[0]?.data;;
+}
+
 exports = {
     getGroupApprovalRule,
     getProcessLog,
@@ -85,5 +93,6 @@ exports = {
     getRequesters,
     getRequestedItems,
     getTicketApprovals,
-    requestApproval
+    requestApproval,
+    getServiceCategory
 };

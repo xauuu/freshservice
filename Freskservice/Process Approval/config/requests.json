@@ -15,7 +15,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.approval_rule_id %>/records?query=app_code%20%3A%20%27<%= iparam.app_code %>%27%20AND%20process_code%20%3A%20%27<%= iparam.process_code %>%27%20AND%20current_state%20%3A%20%27<%= context.current_state %>%27",
+            "path": "/api/v2/objects/<%= iparam.approval_rule_id %>/records?query=app_code%20%3A%20%27<%= context.app_code %>%27%20AND%20process_code%20%3A%20%27<%= context.process_code %>%27%20AND%20current_state%20%3A%20%27<%= context.current_state %>%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -27,7 +27,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.process_log_id %>/records?query=sr_display_id%20%3A%20%27<%= context.ticket_id %>%27%20AND%20app_code%20%3A%20%27<%= iparam.app_code %>%27%20AND%20process_code%20%3A%20%27<%= iparam.process_code %>%27",
+            "path": "/api/v2/objects/<%= iparam.process_log_id %>/records?query=sr_display_id%20%3A%20%27<%= context.ticket_id %>%27%20AND%20app_code%20%3A%20%27<%= context.app_code %>%27%20AND%20process_code%20%3A%20%27<%= context.process_code %>%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -63,7 +63,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/requesters?query=department_id%3A<%= context.department_id %>%20",
+            "path": "/api/v2/requester_groups/<%= context.requester_group_id %>/members",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -112,6 +112,18 @@
             "method": "GET",
             "host": "<%= iparam.domain %>",
             "path": "/api/v2/objects/27000052168/records?query=email_code%20%3A%20%27<%= context.email_code %>%27%20",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getServiceCategory": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.service_category_id %>/records?query=service_item_id%20%3A%20%27<%= context.service_item_id %>%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

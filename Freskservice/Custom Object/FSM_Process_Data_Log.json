@@ -1,22 +1,22 @@
 {
     "custom_object": {
-        "id": 27000052152,
-        "name": "process_data_log_33",
-        "title": "Process_Data_Log",
-        "description": "Extended Data per Service Request",
-        "workspace_id": 2,
+        "id": 27000052518,
+        "name": "process_data_log_53",
+        "title": "FSM_Process_Data_Log",
+        "description": null,
+        "workspace_id": 8,
         "fields": [
             {
-                "name": "sr_app_code",
-                "label": "SR_App_Code",
+                "name": "app_code",
+                "label": "app_code",
                 "type": "text",
                 "required": true,
                 "choices": [],
                 "meta": null
             },
             {
-                "name": "sr_process_code",
-                "label": "SR_Process_Code",
+                "name": "process_code",
+                "label": "process_code",
                 "type": "text",
                 "required": true,
                 "choices": [],
@@ -24,39 +24,31 @@
             },
             {
                 "name": "sr_id",
-                "label": "SR_ID",
-                "type": "number",
-                "required": true,
-                "choices": [],
-                "meta": null
-            },
-            {
-                "name": "sr_display_id",
-                "label": "SR_Display_ID",
+                "label": "sr_id",
                 "type": "text",
                 "required": true,
                 "choices": [],
                 "meta": null
             },
             {
-                "name": "sr_created_date",
-                "label": "SR_Created_Date",
-                "type": "date_time",
+                "name": "sr_display_id",
+                "label": "sr_display_id",
+                "type": "text",
                 "required": true,
                 "choices": [],
                 "meta": null
             },
             {
-                "name": "sr_updated_date",
-                "label": "SR_Updated_Date",
-                "type": "date_time",
-                "required": false,
+                "name": "sr_title",
+                "label": "sr_title",
+                "type": "text",
+                "required": true,
                 "choices": [],
                 "meta": null
             },
             {
                 "name": "sr_state",
-                "label": "SR_State",
+                "label": "sr_state",
                 "type": "text",
                 "required": true,
                 "choices": [],
@@ -64,15 +56,7 @@
             },
             {
                 "name": "sr_requester_id",
-                "label": "SR_Requester_ID",
-                "type": "text",
-                "required": false,
-                "choices": [],
-                "meta": null
-            },
-            {
-                "name": "sr_title",
-                "label": "SR_Title",
+                "label": "sr_requester_id",
                 "type": "text",
                 "required": false,
                 "choices": [],
@@ -80,7 +64,7 @@
             },
             {
                 "name": "sr_json_approvals",
-                "label": "SR_JSON_Approvals",
+                "label": "sr_json_approvals",
                 "type": "paragraph",
                 "required": false,
                 "choices": [],
@@ -88,15 +72,31 @@
             },
             {
                 "name": "sr_visible_to",
-                "label": "SR_Visible_To",
+                "label": "sr_visible_to",
                 "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "created_date",
+                "label": "created_date",
+                "type": "date_time",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "updated_date",
+                "label": "updated_date",
+                "type": "date_time",
                 "required": false,
                 "choices": [],
                 "meta": null
             }
         ],
         "meta": {
-            "total_records_count": 53
+            "total_records_count": 21
         }
     }
 }

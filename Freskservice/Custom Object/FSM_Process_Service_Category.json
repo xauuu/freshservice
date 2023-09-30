@@ -1,0 +1,102 @@
+{
+    "custom_object": {
+        "id": 27000052520,
+        "name": "process_service_cate_55",
+        "title": "FSM_Process_Service_Category",
+        "description": "Category of Service Request",
+        "workspace_id": 8,
+        "fields": [
+            {
+                "name": "app_code",
+                "label": "app_code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_name",
+                "label": "app_name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_code",
+                "label": "process_code",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_name",
+                "label": "process_name",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_description",
+                "label": "process_description",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_image",
+                "label": "process_image",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "process_url",
+                "label": "process_url",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "app_image",
+                "label": "app_image",
+                "type": "paragraph",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "language",
+                "label": "language",
+                "type": "text",
+                "required": false,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "is_active",
+                "label": "is_active",
+                "type": "number",
+                "required": true,
+                "choices": [],
+                "meta": null
+            },
+            {
+                "name": "service_item_id",
+                "label": "service_item_id",
+                "type": "text",
+                "required": true,
+                "choices": [],
+                "meta": null
+            }
+        ],
+        "meta": {
+            "total_records_count": 3
+        }
+    }
+}

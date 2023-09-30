@@ -47,7 +47,7 @@
                                 class="text-red-700 text-md">*</span>
                         </label>
                         <select id="app_code" name="app_code" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected disabled>Choose an App</option>
                         </select>
                     </div>
@@ -57,16 +57,16 @@
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="process_code" name="process_code" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected disabled>Choose a Process</option>
                         </select>
                     </div>
                     <div>
                         <label for="workflow_code" class="block mb-2 text-xs font-medium text-gray-900 ">Workflow
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
-                        <select id="workflow_code" name="workflow_code" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        <select id="workflow_code" name="workflow_code"
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a Workflow</option>
                         </select>
                     </div>
@@ -75,15 +75,15 @@
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <input type="text" name="name" id="name"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                            class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                             placeholder="Enter Details" required="">
                     </div>
                     <div>
-                        <label for="duration" class="block mb-2 text-xs font-medium text-gray-900 ">Duration
+                        <label for="duration" class="block mb-2 text-xs font-medium text-gray-900 ">Duration (Minutes)
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <input type="text" name="duration" id="duration"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
+                            class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                             placeholder="Enter Details" required="">
                     </div>
                     <div>
@@ -92,28 +92,28 @@
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="calendar_type" name="calendar_type"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a calendar type</option>
-                            <option value="business">Business Calendar</option>
-                            <option value="normal">Normal Calendar</option>
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected disabled>Choose a Calendar type</option>
+                            <option value="business">8/5 Calendar</option>
+                            <option value="normal">24/7 Calendar</option>
                         </select>
                     </div>
                     <div>
-                        <label for="state" class="block mb-2 text-xs font-medium text-gray-900 ">Current State
+                        <label for="current_state" class="block mb-2 text-xs font-medium text-gray-900 ">Current State
                             <span class="text-red-700 text-md">*</span>
                         </label>
-                        <select id="state" name="state" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                        <select id="current_state" name="current_state" required
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a State</option>
                         </select>
                     </div>
                     <div>
                         <label for="email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Current State Email
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="email_template_code" name="email_template_code"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected disabled>Choose a Email Template</option>
                         </select>
                     </div>
@@ -122,7 +122,7 @@
                     aria-labelledby="approval-tab">
                     <div class="flex items-center">
                         <input id="is_direct_line_report_approval" name="is_direct_line_report_approval" type="checkbox"
-                            value="yes"
+                            value="1"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
                         <label for="is_direct_line_report_approval" class="ml-2 text-xs font-medium text-gray-900">Is
                             Direct
@@ -131,10 +131,10 @@
                     <div>
                         <label for="next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Next Approval Group
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="next_approval_group" name="next_approval_group"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a next approval group</option>
                         </select>
                     </div>
@@ -144,7 +144,7 @@
                             <span class="text-red-700 text-md">*</span>
                         </label>
                         <select id="approval_type" name="approval_type"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected disabled>Choose a approval type</option>
                             <option value="1">To be approved by Everyone</option>
                             <option value="2">To be approved by Anyone</option>
@@ -156,20 +156,20 @@
                         <label for="new_state" class="block mb-2 text-xs font-medium text-gray-900 ">New State
                             <span class="text-red-700 text-md">*</span>
                         </label>
-                        <select id="new_state" name="new_state" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a State</option>
+                        <select id="new_state" name="new_state"
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a State</option>
 
                         </select>
                     </div>
                     <div>
                         <label for="approval_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Approval Email Template
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="approval_email_template_code" name="approval_email_template_code"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Email Template</option>
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a Email Template</option>
                         </select>
                     </div>
                 </div>
@@ -181,29 +181,29 @@
                             <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="reject_next_approval_group" name="reject_next_approval_group"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a next approval group</option>
                         </select>
                     </div>
                     <div>
                         <label for="reject_new_state" class="block mb-2 text-xs font-medium text-gray-900 ">Reject New
                             State
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
-                        <select id="reject_new_state" name="reject_new_state" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a State</option>
+                        <select id="reject_new_state" name="reject_new_state"
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a State</option>
 
                         </select>
                     </div>
                     <div>
                         <label for="reject_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Reject Email Template
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="reject_email_template_code" name="reject_email_template_code"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Email Template</option>
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a Email Template</option>
                         </select>
                     </div>
                 </div>
@@ -215,29 +215,29 @@
                             <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="expired_next_approval_group" name="expired_next_approval_group"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a next approval group</option>
                         </select>
                     </div>
                     <div>
                         <label for="expired_new_state" class="block mb-2 text-xs font-medium text-gray-900 ">Expired New
                             State
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
-                        <select id="expired_new_state" name="expired_new_state" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a State</option>
+                        <select id="expired_new_state" name="expired_new_state"
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a State</option>
 
                         </select>
                     </div>
                     <div>
                         <label for="expired_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Expired Email Template
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="expired_email_template_code" name="expired_email_template_code"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Email Template</option>
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="" selected>Choose a Email Template</option>
                         </select>
                     </div>
                 </div>
@@ -287,7 +287,7 @@
                     e.preventDefault();
                     const data = new FormData(e.target);
                     const formDataObj = {
-                        is_direct_line_report_approval: 'no',
+                        is_direct_line_report_approval: 0,
                         email_template_code: ''
                     };
                     for (let entry of data.entries()) {
@@ -299,7 +299,7 @@
                     client.instance.send({
                         message: {
                             type: context.type,
-                            data: formDataObj,
+                            data: { ...formDataObj, is_direct_line_report_approval: Number(formDataObj.is_direct_line_report_approval) },
                             id: context.data?.bo_display_id
                         }
                     });
@@ -311,9 +311,9 @@
                         categories = data.data?.categories
                         states = data.data?.states
                         workflows = data.data?.workflows
-                        generateGroup("next_approval_group", data.data?.departments, context)
-                        generateGroup("reject_next_approval_group", data.data?.departments, context)
-                        generateGroup("expired_next_approval_group", data.data?.departments, context)
+                        generateGroup("next_approval_group", data.data?.requesterGroups, context)
+                        generateGroup("reject_next_approval_group", data.data?.requesterGroups, context)
+                        generateGroup("expired_next_approval_group", data.data?.requesterGroups, context)
 
                         data.data.apps?.forEach((item) => {
                             const { app_code, app_name } = item;
@@ -329,7 +329,7 @@
                         )
                         generateWorkflow(workflows?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code), context.data?.workflow_code)
                         const newStates = states?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code)
-                        generateState(newStates, context.data?.state)
+                        generateState(newStates, context.data?.current_state)
                         generateNewState('new_state', newStates, context)
                         generateNewState('reject_new_state', newStates, context)
                         generateNewState('expired_new_state', newStates, context)
@@ -350,12 +350,12 @@
                             document.getElementById("workflow_code").value = data.workflow_code;
                             document.getElementById("is_direct_line_report_approval").value = data.is_direct_line_report_approval;
                             document.getElementById("approval_type").value = data.approval_type;
-                            document.getElementById("next_approval_group").value = data.next_approval_group.id;
-                            document.getElementById("reject_next_approval_group").value = data.reject_next_approval_group.id;
-                            document.getElementById("expired_next_approval_group").value = data.expired_next_approval_group.id;
+                            document.getElementById("next_approval_group").value = data.next_approval_group;
+                            document.getElementById("reject_next_approval_group").value = data.reject_next_approval_group;
+                            document.getElementById("expired_next_approval_group").value = data.expired_next_approval_group;
                             document.getElementById("duration").value = data.duration;
                             document.getElementById("calendar_type").value = data.calendar_type;
-                            document.getElementById("state").value = data.state;
+                            document.getElementById("current_state").value = data.current_state;
                             document.getElementById("new_state").value = data.new_state;
                             document.getElementById("reject_new_state").value = data.reject_new_state;
                             document.getElementById("expired_new_state").value = data.expired_new_state;
@@ -372,14 +372,14 @@
             });
         });
 
-        function generateGroup(id, departments, context) {
-            departments.forEach((item) => {
-                const { id: dep_id, name } = item;
+        function generateGroup(container, requesterGroups, context) {
+            requesterGroups.forEach((item) => {
+                const { id, name } = item;
                 const option = document.createElement('option')
-                option.value = dep_id
+                option.value = id
                 option.text = name
-                option.selected = dep_id === context.data?.[id]?.id
-                document.getElementById(id).append(option)
+                option.selected = id == context.data?.[container]
+                document.getElementById(container).append(option)
             });
         }
         function generateSelectProcess(processList, selected) {
@@ -410,7 +410,7 @@
                 option.value = state
                 option.text = state_name
                 option.selected = state == selected
-                document.getElementById("state").append(option)
+                document.getElementById("current_state").append(option)
             });
         }
         function generateNewState(id, states, context) {

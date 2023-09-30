@@ -409,6 +409,8 @@ main.custom-container .services .sr-container .sr-categories {
   border-radius: 4px;
   background: #eef1f6;
   padding: 36px 24px;
+  height: 500px;
+  overflow-y: auto;
 }
 main.custom-container .services .sr-container .sr-categories li {
   padding: 14px 24px;
@@ -473,6 +475,7 @@ main.custom-container .services .sr-container select {
   line-height: normal;
 }
 main.custom-container .services .sr-container .sr-list-container {
+  position: relative;
   width: 100%;
 }
 main.custom-container .services .sr-container .sr-list-container h3 {
@@ -491,12 +494,13 @@ main.custom-container .services .sr-container .sr-list-container .sr-list-items 
 main.custom-container .services .sr-container .sr-list-container .sr-list-items .item {
   flex: 0 45%;
   display: flex;
+  align-items: center;
   gap: 20px;
 }
 main.custom-container .services .sr-container .sr-list-container .sr-list-items .item .image {
   flex: none;
-  width: 78px;
-  height: 78px;
+  width: 60px;
+  height: 60px;
   background-color: #fff;
   color: #31373f;
   border-radius: 50%;
@@ -506,20 +510,20 @@ main.custom-container .services .sr-container .sr-list-container .sr-list-items 
   justify-content: center;
 }
 main.custom-container .services .sr-container .sr-list-container .sr-list-items .item .image svg {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 main.custom-container .services .sr-container .sr-list-container .sr-list-items .item h4 {
   color: #31373f;
-  font-size: 18px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
 }
 main.custom-container .services .sr-container .sr-list-container .sr-list-items .item p {
-  margin-top: 10px;
+  margin-top: 6px;
   color: #6e7d8e;
-  font-size: 16px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -705,6 +709,47 @@ footer .custom-container .ft-copyright .login-privacy {
   display: none;
 }
 
+#pagination {
+  position: absolute;
+  bottom: 0;
+  margin-top: 30px;
+}
+#pagination ul {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+#pagination ul li {
+  cursor: pointer;
+  display: inline;
+  color: black;
+  float: left;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#pagination ul li.active {
+  background-color: #2579ff;
+}
+#pagination ul li.active a {
+  color: #fff;
+}
+#pagination ul li:hover:not(.active):not(.disabled) {
+  background-color: #6e7d8e;
+}
+#pagination ul li:hover:not(.active):not(.disabled) a {
+  color: #fff;
+}
+#pagination ul li.disabled {
+  color: gainsboro;
+}
+#pagination ul li:not(:first-child) {
+  margin-left: 10px;
+}
+
 body[page=employee_onboarding_new] footer {
   text-align: left;
 }
@@ -805,6 +850,9 @@ i {
   footer .custom-container .footer-container {
     flex-direction: column;
     gap: 30px;
+  }
+  #pagination {
+    position: inherit;
   }
 }
 .ember-light-table {

@@ -1,11 +1,12 @@
 let clientApp = null;
-let departments = []
+let requesterGroups = []
 let categories = []
 let templates = []
 let apps = []
-let groups = []
+let stateChange = []
 let states = []
 let workflows = []
+let serviceItems = []
 
 const categoryContainer = document.getElementById('listSRCategory')
 const emailContainer = document.getElementById('listEmail')
@@ -16,31 +17,28 @@ const conditionContainer = document.getElementById('listCondition')
 
 async function initApp(_client) {
   clientApp = _client;
+  await getAllSRCategory()
+  await getAllStateApproval()
+  await Promise.all([getAllWorkflow(), getAllEmailTemplate(), getAllGroupApproval(), getAllCondition(), getAllRequesterGroup()])
+  await getAllServiceItem()
   clientApp.events.on('app.activated', initHandlers);
-  await getAllSRCategory();
-  await getAllStateApproval();
-  getAllWorkflow()
-  getAllEmailTemplate();
-  getAllGroupApproval();
-  getAllCondition();
-  getDepartments()
 }
 
 function openModal(type, data = null) {
   sendData()
   const titleMap = {
-    [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'Add Record',
-    [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'Edit Record',
-    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'Add Record',
-    [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'Edit Record',
-    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'Add Record',
-    [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'Edit Record',
-    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add Record',
-    [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'Edit Record',
-    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Record',
-    [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Record',
-    [ACTION_TYPES.CONDITION_CREATE]: 'Add Record',
-    [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Record',
+    [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'Add Email Template',
+    [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'Edit Email Template',
+    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'Add State Change',
+    [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: 'Edit State Change',
+    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: 'Add Category',
+    [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'Edit Category',
+    [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add State',
+    [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'Edit State',
+    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Workflow',
+    [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Workflow',
+    [ACTION_TYPES.CONDITION_CREATE]: 'Add Condition',
+    [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Condition',
   };
   const templateMap = {
     [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'modals/modal.html',
@@ -87,10 +85,10 @@ function initHandlers() {
     const { type, data, id } = e.helper.getData();
     switch (type) {
       case ACTION_TYPES.GROUP_APPROVAL_CREATE:
-        await handleCreateGA({ ...data, approval_type: Number(data.approval_type) });
+        await handleCreateGA(data);
         break;
       case ACTION_TYPES.GROUP_APPROVAL_UPDATE:
-        await handleUpdateGA(id, { ...data, approval_type: Number(data.approval_type) });
+        await handleUpdateGA(id, data);
         break;
       case ACTION_TYPES.EMAIL_TEMPLATE_CREATE:
         await handleCreateET(data);
@@ -105,10 +103,10 @@ function initHandlers() {
         await handleUpdateSR(id, { ...data, is_active: Number(data.is_active) });
         break;
       case ACTION_TYPES.STATE_APPROVAL_CREATE:
-        await handleCreateState({ ...data, state: Number(data.state) });
+        await handleCreateState(data);
         break;
       case ACTION_TYPES.STATE_APPROVAL_UPDATE:
-        await handleUpdateState(id, { ...data, state: Number(data.state) });
+        await handleUpdateState(id, data);
         break;
       case ACTION_TYPES.WORKFLOW_CREATE:
         await handleCreateWorkflow({ ...data, is_active: Number(data.is_active) });
@@ -315,8 +313,8 @@ async function getAllGroupApproval() {
   try {
     const response = await clientApp.request.invokeTemplate("getAllGroupApproval", {});
     const data = JSON.parse(response.response);
-    groups = data.records
-    const html = generateGroupApproval(groups);
+    stateChange = data.records
+    const html = generateGroupApproval(stateChange);
     approvalContainer.innerHTML = html;
     approvalContainer.addEventListener("click", approvalClickHandler);
   } catch (error) {
@@ -327,7 +325,7 @@ async function getAllGroupApproval() {
 function generateGroupApproval(records) {
   let html = "";
   records?.forEach((item) => {
-    const { name, app_code, process_code, new_state, state, reject_new_state, expired_new_state } = item.data;
+    const { name, app_code, process_code, new_state, current_state, reject_new_state, expired_new_state } = item.data;
     const rowData = JSON.stringify(item.data);
     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -335,7 +333,7 @@ function generateGroupApproval(records) {
                       </th>
                       <td class="px-4 py-3"> ${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
                       <td class="px-4 py-3"> ${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == current_state))?.data.state_name || ''}</td>
                       <td class="px-4 py-3"> ${(states.find(item => item.data.state == new_state))?.data.state_name || ''}</td>
                       <td class="px-4 py-3"> ${(states.find(item => item.data.state == reject_new_state))?.data.state_name || ''}</td>
                       <td class="px-4 py-3"> ${(states.find(item => item.data.state == expired_new_state))?.data.state_name || ''}</td>
@@ -345,6 +343,11 @@ function generateGroupApproval(records) {
   return html;
 };
 
+function updateListGroupApproval(html) {
+  approvalContainer.innerHTML = html;
+  approvalContainer.addEventListener("click", approvalClickHandler);
+}
+
 function approvalClickHandler(event) {
   const clickedRow = event.target.closest("tr");
   if (!clickedRow) return
@@ -352,11 +355,11 @@ function approvalClickHandler(event) {
   openModal(ACTION_TYPES.GROUP_APPROVAL_UPDATE, JSON.parse(rowData))
 }
 
-async function getDepartments() {
+async function getAllRequesterGroup() {
   try {
-    const response = await clientApp.request.invokeTemplate("getAllDepartment", {});
+    const response = await clientApp.request.invokeTemplate("getAllRequesterGroup", {});
     const data = JSON.parse(response.response);
-    departments = data.departments
+    requesterGroups = data.requester_groups
   } catch (error) {
     console.error(error);
   }
@@ -365,7 +368,7 @@ async function getDepartments() {
 async function sendData() {
   try {
     await clientApp.request.invokeTemplate("getAllDepartment", {});
-    clientApp.instance.send({ message: { type: ACTION_TYPES.LIST_DATA, data: { departments, categories, templates, apps, states, workflows } } });
+    clientApp.instance.send({ message: { type: ACTION_TYPES.LIST_DATA, data: { requesterGroups, categories, templates, apps, states, workflows, serviceItems } } });
   } catch (error) {
     console.error(error);
   }
@@ -417,7 +420,7 @@ function generateSRCategoryHTML(records) {
     const { app_code, app_name, process_code, process_name, process_image } = item.data;
     const rowData = JSON.stringify(item.data);
     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <td class="px-4 py-3">
+                      <td class="px-4 py-3 w-36">
                         ${process_image}
                       </td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -590,8 +593,8 @@ function generateFilter() {
 
 function handleFilterChange() {
   const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(input => input.value);
-  const filterGroups = groups.filter(item => selectedCategories.includes(item.data.app_code));
-  const html = generateGroupApproval(filterGroups);
+  const filterStateChange = stateChange.filter(item => selectedCategories.includes(item.data.app_code));
+  const html = generateGroupApproval(filterStateChange);
   updateListGroupApproval(html)
 }
 
@@ -613,6 +616,30 @@ function getUniqueAppInfo(jsonData) {
   return result;
 }
 
+async function getAllServiceItem() {
+  try {
+    const response = await clientApp.request.invokeTemplate("getAllWorkspace", {});
+    const workspaces = JSON.parse(response.response).records
+    await Promise.all(workspaces.map(async ({ data }) => {
+      const res = await clientApp.request.invokeTemplate("getAllServiceItem", {
+        context: { workspace_id: data.workspace_id }
+      });
+      serviceItems.push(...mappingServiceCatalog(data, JSON.parse(res.response).service_items))
+    }))
+    console.log(serviceItems)
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function mappingServiceCatalog(workspace, list) {
+  return list?.map(item => {
+    return {
+      ...item,
+      name: `[${workspace.name}] ${item.name}`
+    }
+  })
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   app.initialized().then(initApp);

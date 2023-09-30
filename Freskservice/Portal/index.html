@@ -144,6 +144,7 @@
                     <h3 class="hide-on-mobile"></h3>
                     <select class="show-on-mobile" id="sr-categories-list-mb"></select>
                     <div class="sr-list-items" id="list-items"></div>
+                    <div id="pagination"></div>
                 </div>
             </div>
         </section>
@@ -220,6 +221,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://pagination.js.org/dist/2.6.0/pagination.min.js"></script>
     <script>
 
         defaultImage = `<svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -332,22 +334,29 @@
                 });
             }
             function renderProcess(list) {
-                let html = ''
-                jQuery.map(list, function (item, index) {
-                    const { process_image, process_name, process_url, process_description } = item.data
-                    html += `
-                        <a class="item" href="${process_url}" target="_blank">
-                            <div class="image">
-                                ${process_image ? process_image : defaultImage}
-                            </div>
-                            <div class="info">
-                                <h4>${process_name}</h4>
-                                <p class="max2">${process_description}</p>
-                            </div>
-                        </a>
-                        `
-                });
-                processContainer.html(html)
+                $('#pagination').pagination({
+                    dataSource: list,
+                    pageSize: 8,
+                    callback: function (data, pagination) {
+                        let html = ''
+                        $.each(data, function (index, item) {
+                            console.log(item)
+                            const { process_image, process_name, process_url, process_description } = item.data
+                            html += `
+                                    <a class="item" href="${process_url}" target="_blank">
+                                        <div class="image">
+                                            ${process_image ? process_image : defaultImage}
+                                        </div>
+                                        <div class="info">
+                                            <h4>${process_name}</h4>
+                                            <p class="max2">${process_description}</p>
+                                        </div>
+                                    </a>
+                                    `
+                        });
+                        processContainer.html(html)
+                    }
+                })
             }
         });
     </script>

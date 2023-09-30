@@ -30,7 +30,10 @@
         "updateCondition": {},
         "getAllConditionDetail": {},
         "createConditionDetail": {},
-        "updateConditionDetail": {}
+        "updateConditionDetail": {},
+        "getAllRequesterGroup": {},
+        "getAllServiceItem": {},
+        "getAllWorkspace": {}
       }
     }
   },
