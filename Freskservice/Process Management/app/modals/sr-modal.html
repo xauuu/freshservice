@@ -119,6 +119,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="../scripts/jquery.select-to-autocomplete.js"></script>
     <script src="../scripts/constant.js"></script>
+    <script src="../scripts/helper.js"></script>
     <script>
         window.frsh_init().then(function (client) {
             var context = {}
@@ -140,7 +141,7 @@
                     message: {
                         type: context.type,
                         data: formDataObj,
-                        id: context.data?.bo_display_id
+                        id: context.detail?.bo_display_id
                     }
                 });
             });
@@ -155,18 +156,21 @@
             client.instance.context().then(
                 function (c) {
                     context = c.data
-                    if (context.type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
-                        const data = context.data
-                        document.getElementById("service_item_id").value = data.service_item_id;
-                        document.getElementById("app_code").value = data.app_code;
-                        document.getElementById("app_name").value = data.app_name;
-                        document.getElementById("app_image").value = data.app_image;
-                        document.getElementById("process_code").value = data.process_code;
-                        document.getElementById("process_name").value = data.process_name;
-                        document.getElementById("process_image").value = data.process_image;
-                        document.getElementById("process_url").value = data.process_url;
-                        document.getElementById("process_description").value = data.process_description;
-                        document.getElementById("is_active").checked = !!data.is_active;
+                    if (context.type === ACTION_TYPES.SERVICE_REQUEST_CREATE || context.type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
+                        const { detail, data } = context
+                        generateSelect("service_item_id", data.serviceItems, context)
+                        $('#service_item_id').selectToAutocomplete();
+                        if (!detail) return
+                        document.getElementById("service_item_id").value = detail.service_item_id;
+                        document.getElementById("app_code").value = detail.app_code;
+                        document.getElementById("app_name").value = detail.app_name;
+                        document.getElementById("app_image").value = detail.app_image;
+                        document.getElementById("process_code").value = detail.process_code;
+                        document.getElementById("process_name").value = detail.process_name;
+                        document.getElementById("process_image").value = detail.process_image;
+                        document.getElementById("process_url").value = detail.process_url;
+                        document.getElementById("process_description").value = detail.process_description;
+                        document.getElementById("is_active").checked = !!detail.is_active;
                     }
                 }
             );
@@ -177,7 +181,7 @@
                 const option = document.createElement('option')
                 option.value = display_id
                 option.text = name
-                option.selected = context.data?.service_item_id == display_id
+                option.selected = context.detail?.service_item_id == display_id
                 document.getElementById(container).append(option)
             });
         }

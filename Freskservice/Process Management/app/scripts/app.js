@@ -24,8 +24,7 @@ async function initApp(_client) {
   clientApp.events.on('app.activated', initHandlers);
 }
 
-function openModal(type, data = null) {
-  sendData()
+function openModal(type, detail = null) {
   const titleMap = {
     [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: 'Add Email Template',
     [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: 'Edit Email Template',
@@ -54,11 +53,25 @@ function openModal(type, data = null) {
     [ACTION_TYPES.CONDITION_CREATE]: 'modals/condition-modal.html',
     [ACTION_TYPES.CONDITION_UPDATE]: 'modals/condition-modal.html',
   };
+  const listMap = {
+    [ACTION_TYPES.GROUP_APPROVAL_CREATE]: { apps, categories, workflows, templates, requesterGroups, states },
+    [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: { apps, categories, workflows, templates, requesterGroups, states },
+    [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: {},
+    [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: {},
+    [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems },
+    [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems },
+    [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories },
+    [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories },
+    [ACTION_TYPES.WORKFLOW_CREATE]: { apps, categories },
+    [ACTION_TYPES.WORKFLOW_UPDATE]: { apps, categories },
+    [ACTION_TYPES.CONDITION_CREATE]: { apps, categories },
+    [ACTION_TYPES.CONDITION_UPDATE]: { apps, categories },
+  };
 
   clientApp.interface.trigger('showModal', {
     title: titleMap[type],
     template: templateMap[type],
-    data: { type, data }
+    data: { type, detail, data: listMap[type] }
   });
 }
 
@@ -333,10 +346,10 @@ function generateGroupApproval(records) {
                       </th>
                       <td class="px-4 py-3"> ${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
                       <td class="px-4 py-3"> ${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == current_state))?.data.state_name || ''}</td>
-                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == new_state))?.data.state_name || ''}</td>
-                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == reject_new_state))?.data.state_name || ''}</td>
-                      <td class="px-4 py-3"> ${(states.find(item => item.data.state == expired_new_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == current_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == new_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == reject_new_state))?.data.state_name || ''}</td>
+                      <td class="px-4 py-3"> ${(states.find(item => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == expired_new_state))?.data.state_name || ''}</td>
                   </tr>`;
     html += row;
   });

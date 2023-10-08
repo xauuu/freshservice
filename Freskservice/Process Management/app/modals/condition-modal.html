@@ -240,6 +240,7 @@
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="../scripts/constant.js"></script>
+    <script src="../scripts/helper.js"></script>
     <script>
         window.frsh_init().then(function (client) {
             var context = {}
@@ -270,7 +271,7 @@
                 clearForm()
             });
             document.getElementById("app_code").addEventListener('change', function (e) {
-                generateSelectProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
+                generateProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
                 document.getElementById("process_code").value = ''
             })
             document.getElementById("process_code").addEventListener('change', function (e) {
@@ -293,68 +294,41 @@
                     message: {
                         type: context.type,
                         data: formDataObj,
-                        id: context.data?.bo_display_id
+                        id: context.detail?.bo_display_id
                     }
                 });
             });
             client.instance.receive(function (event) {
                 let data = event.helper.getData();
                 if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
-                if (data.type === ACTION_TYPES.LIST_DATA) {
-                    categories = data.data?.categories
-                    data.data.apps?.forEach((item) => {
-                        const { app_code, app_name } = item;
-                        const option = document.createElement('option')
-                        option.value = app_code
-                        option.text = app_name
-                        option.selected = app_code === context.data?.app_code
-                        document.getElementById("app_code").append(option)
-                    });
-                    generateSelectProcess(
-                        categories?.filter(item => item.data.app_code == context.data?.app_code),
-                        process_code === context.data?.process_code
-                    )
-                    states = data.data?.states
-                    const newStates = states?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code)
-                    generateState(newStates, context.data?.state)
-                }
             });
             client.instance.context().then(
                 function (c) {
                     context = c.data
-                    if (context.type === ACTION_TYPES.CONDITION_UPDATE) {
-                        const data = context.data
-                        document.getElementById("app_code").value = data.app_code;
-                        document.getElementById("process_code").value = data.process_code;
-                        document.getElementById("name").value = data.name;
-                        document.getElementById("rule_code").value = data.rule_code;
-                        document.getElementById("yes").checked = !!data.condition_type;
-                        document.getElementById("no").checked = !!data.condition_type;
-                        document.getElementById("field_name").value = data.field_name;
+                    if (context.type === ACTION_TYPES.CONDITION_CREATE || context.type === ACTION_TYPES.CONDITION_UPDATE) {
+                        const { detail, data } = context
+                        categories = data.categories
+                        states = data.states
+                        generateApp(data.apps, app_code === context.detail?.app_code)
+                        generateProcess(
+                            categories?.filter(item => item.data.app_code == context.detail?.app_code),
+                            process_code === context.detail?.process_code
+                        )
+                        const newStates = states?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code)
+                        generateNewState("next_state", newStates, context)
+
+                        if (!detail) return
+                        document.getElementById("app_code").value = detail.app_code;
+                        document.getElementById("process_code").value = detail.process_code;
+                        document.getElementById("name").value = detail.name;
+                        document.getElementById("rule_code").value = detail.rule_code;
+                        document.getElementById("yes").checked = !!detail.condition_type;
+                        document.getElementById("no").checked = !!detail.condition_type;
+                        document.getElementById("field_name").value = detail.field_name;
                     }
                 }
             );
         });
-        function generateSelectProcess(processList, selected) {
-            processList.forEach((item) => {
-                const { process_code, process_name } = item.data;
-                const option = document.createElement('option')
-                option.value = process_code
-                option.text = process_name
-                option.selected = selected
-                document.getElementById("process_code").append(option)
-            });
-        }
-        function generateState(states, selected) {
-            states.forEach((item) => {
-                const { state_name, state } = item.data;
-                const option = document.createElement('option')
-                option.value = state
-                option.text = state_name
-                option.selected = state == selected
-                document.getElementById("next_state").append(option)
-            });
-        }
         function clearForm() {
             document.getElementById("add-form").reset();
         }

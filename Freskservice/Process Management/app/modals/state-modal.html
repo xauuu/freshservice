@@ -59,6 +59,7 @@
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="../scripts/constant.js"></script>
+    <script src="../scripts/helper.js"></script>
     <script>
         window.frsh_init().then(function (client) {
             var context = {}
@@ -67,8 +68,8 @@
                 client.instance.close();
             });
             document.getElementById("app_code").addEventListener('change', function (e) {
-                generateSelectProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
                 document.getElementById("process_code").value = ''
+                generateProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
             })
             document.getElementById("formCreate").addEventListener("submit", function (e) {
                 e.preventDefault();
@@ -82,52 +83,34 @@
                     message: {
                         type: context.type,
                         data: formDataObj,
-                        id: context.data?.bo_display_id
+                        id: context.detail?.bo_display_id
                     }
                 });
             });
             client.instance.receive(function (event) {
                 let data = event.helper.getData();
                 if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
-                if (data.type === ACTION_TYPES.LIST_DATA) {
-                    categories = data.data?.categories
-                    data.data.apps?.forEach((item) => {
-                        const { app_code, app_name } = item;
-                        const option = document.createElement('option')
-                        option.value = app_code
-                        option.text = app_name
-                        option.selected = app_code === context.data?.app_code
-                        document.getElementById("app_code").append(option)
-                    });
-                    generateSelectProcess(
-                        categories?.filter(item => item.data.app_code == context.data?.app_code),
-                        process_code === context.data?.process_code
-                    )
-                }
             });
             client.instance.context().then(
                 function (c) {
                     context = c.data
-                    if (context.type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
-                        const data = context.data
-                        document.getElementById("state_name").value = data.state_name;
-                        document.getElementById("state").value = data.state;
-                        document.getElementById("app_code").value = data.app_code;
-                        document.getElementById("process_code").value = data.process_code;
+                    if (context.type === ACTION_TYPES.STATE_APPROVAL_CREATE || context.type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
+                        const { detail, data } = context
+                        categories = data.categories
+                        generateApp(data.apps, app_code === context.detail?.app_code)
+                        generateProcess(
+                            categories?.filter(item => item.data.app_code == context.detail?.app_code),
+                            process_code === context.detail?.process_code
+                        )
+                        if (!detail) return
+                        document.getElementById("state_name").value = detail.state_name;
+                        document.getElementById("state").value = detail.state;
+                        document.getElementById("app_code").value = detail.app_code;
+                        document.getElementById("process_code").value = detail.process_code;
                     }
                 }
             );
         });
-        function generateSelectProcess(processList, selected) {
-            processList.forEach((item) => {
-                const { process_code, process_name } = item.data;
-                const option = document.createElement('option')
-                option.value = process_code
-                option.text = process_name
-                option.selected = selected
-                document.getElementById("process_code").append(option)
-            });
-        }
     </script>
 
 </body>

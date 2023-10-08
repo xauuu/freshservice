@@ -28,5 +28,11 @@
         "description": "Please enter your service_category_id",
         "type": "text",
         "required": true
+    },
+    "email_template_id": {
+        "display_name": "email_template_id",
+        "description": "Please enter your email_template_id",
+        "type": "text",
+        "required": true
     }
 }

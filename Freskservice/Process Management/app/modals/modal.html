@@ -78,6 +78,13 @@
                             class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
                             placeholder="Enter Details" required="">
                     </div>
+                    <div class="flex items-center">
+                        <input id="is_automator" name="is_automator" type="checkbox" value="1"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="is_automator" class="ml-2 text-xs font-medium text-gray-900">
+                            Is Automator
+                        </label>
+                    </div>
                     <div>
                         <label for="duration" class="block mb-2 text-xs font-medium text-gray-900 ">Duration (Minutes)
                             <span class="text-red-700 text-md">*</span>
@@ -109,7 +116,7 @@
                     </div>
                     <div>
                         <label for="email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Current State Email
+                            Email Template
                             <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="email_template_code" name="email_template_code"
@@ -120,20 +127,24 @@
                 </div>
                 <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="approval" role="tabpanel"
                     aria-labelledby="approval-tab">
-                    <div class="flex items-center">
-                        <input id="is_direct_line_report_approval" name="is_direct_line_report_approval" type="checkbox"
-                            value="1"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="is_direct_line_report_approval" class="ml-2 text-xs font-medium text-gray-900">Is
-                            Direct
-                            Line Report Approval</label>
+                    <div>
+                        <label for="approver" class="block mb-2 text-xs font-medium text-gray-900 ">
+                            Approver
+                        </label>
+                        <select id="approver" name="approver"
+                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
+                            <option value="1">Reporting Manager</option>
+                            <option value="2">Department Head</option>
+                            <option value="3">Selected Department</option>
+                            <option value="4">Group</option>
+                        </select>
                     </div>
                     <div>
                         <label for="next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Next Approval Group
                             <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
-                        <select id="next_approval_group" name="next_approval_group"
+                        <select id="next_approval_group" name="next_approval_group" disabled
                             class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
                             <option value="" selected>Choose a next approval group</option>
                         </select>
@@ -141,11 +152,11 @@
                     <div>
                         <label for="approval_type" class="block mb-2 text-xs font-medium text-gray-900 ">
                             Approval Type
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="approval_type" name="approval_type"
                             class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a approval type</option>
+                            <option value="" selected disabled>Choose an approval type</option>
                             <option value="1">To be approved by Everyone</option>
                             <option value="2">To be approved by Anyone</option>
                             <option value="3">To be approved by Majority</option>
@@ -154,7 +165,7 @@
                     </div>
                     <div>
                         <label for="new_state" class="block mb-2 text-xs font-medium text-gray-900 ">New State
-                            <span class="text-red-700 text-md">*</span>
+                            <!-- <span class="text-red-700 text-md">*</span> -->
                         </label>
                         <select id="new_state" name="new_state"
                             class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
@@ -257,6 +268,7 @@
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="../scripts/constant.js"></script>
+    <script src="../scripts/helper.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.frsh_init().then(function (client) {
@@ -268,7 +280,7 @@
                     client.instance.close();
                 });
                 document.getElementById("app_code").addEventListener('change', function (e) {
-                    generateSelectProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
+                    generateProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
                     document.getElementById("process_code").value = ''
                 })
                 document.getElementById("process_code").addEventListener('change', function (e) {
@@ -280,15 +292,20 @@
                     generateNewState('reject_new_state', newStateList, context)
                     generateNewState('expired_new_state', newStateList, context)
                 })
-                document.getElementById("is_direct_line_report_approval").addEventListener('change', function (e) {
-                    document.getElementById("next_approval_group").disabled = e.target.checked
+                document.getElementById("approver").addEventListener('change', function (e) {
+                    const value = e.target.value
+                    if (value == 4) {
+                        document.getElementById("next_approval_group").disabled = false
+                    } else {
+                        document.getElementById("next_approval_group").disabled = true
+                    }
                 })
                 document.getElementById("formCreate").addEventListener("submit", function (e) {
                     e.preventDefault();
                     const data = new FormData(e.target);
                     const formDataObj = {
-                        is_direct_line_report_approval: 0,
-                        email_template_code: ''
+                        email_template_code: '',
+                        is_automator: 0
                     };
                     for (let entry of data.entries()) {
                         const [key, value] = entry;
@@ -299,8 +316,8 @@
                     client.instance.send({
                         message: {
                             type: context.type,
-                            data: { ...formDataObj, is_direct_line_report_approval: Number(formDataObj.is_direct_line_report_approval) },
-                            id: context.data?.bo_display_id
+                            data: { ...formDataObj, is_automator: Number(formDataObj.is_automator) },
+                            id: context.detail?.bo_display_id
                         }
                     });
                 });
@@ -308,142 +325,66 @@
                     let data = event.helper.getData();
                     if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
                     if (data.type === ACTION_TYPES.LIST_DATA) {
-                        categories = data.data?.categories
-                        states = data.data?.states
-                        workflows = data.data?.workflows
-                        generateGroup("next_approval_group", data.data?.requesterGroups, context)
-                        generateGroup("reject_next_approval_group", data.data?.requesterGroups, context)
-                        generateGroup("expired_next_approval_group", data.data?.requesterGroups, context)
 
-                        data.data.apps?.forEach((item) => {
-                            const { app_code, app_name } = item;
-                            const option = document.createElement('option')
-                            option.value = app_code
-                            option.text = app_name
-                            option.selected = app_code === context.data?.app_code
-                            document.getElementById("app_code").append(option)
-                        });
-                        generateSelectProcess(
-                            categories?.filter(item => item.data.app_code == context.data?.app_code),
-                            false
-                        )
-                        generateWorkflow(workflows?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code), context.data?.workflow_code)
-                        const newStates = states?.filter(item => item.data.app_code == context.data?.app_code && item.data.process_code == context.data?.process_code)
-                        generateState(newStates, context.data?.current_state)
-                        generateNewState('new_state', newStates, context)
-                        generateNewState('reject_new_state', newStates, context)
-                        generateNewState('expired_new_state', newStates, context)
-                        populateEmailTemplates('email_template_code', data.data?.templates, context)
-                        populateEmailTemplates('approval_email_template_code', data.data?.templates, context)
-                        populateEmailTemplates('reject_email_template_code', data.data?.templates, context)
-                        populateEmailTemplates('expired_email_template_code', data.data?.templates, context)
                     }
                 });
                 client.instance.context().then(
                     function (c) {
                         context = c.data
-                        if (context.type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
-                            const data = context.data
-                            document.getElementById("app_code").value = data.app_code;
-                            document.getElementById("process_code").value = data.process_code;
-                            document.getElementById("name").value = data.name;
-                            document.getElementById("workflow_code").value = data.workflow_code;
-                            document.getElementById("is_direct_line_report_approval").value = data.is_direct_line_report_approval;
-                            document.getElementById("approval_type").value = data.approval_type;
-                            document.getElementById("next_approval_group").value = data.next_approval_group;
-                            document.getElementById("reject_next_approval_group").value = data.reject_next_approval_group;
-                            document.getElementById("expired_next_approval_group").value = data.expired_next_approval_group;
-                            document.getElementById("duration").value = data.duration;
-                            document.getElementById("calendar_type").value = data.calendar_type;
-                            document.getElementById("current_state").value = data.current_state;
-                            document.getElementById("new_state").value = data.new_state;
-                            document.getElementById("reject_new_state").value = data.reject_new_state;
-                            document.getElementById("expired_new_state").value = data.expired_new_state;
-                            document.getElementById("email_template_code").value = data.email_template_code;
-                            document.getElementById("reject_email_template_code").value = data.reject_email_template_code;
-                            document.getElementById("expired_email_template_code").value = data.expired_email_template_code;
-                            if (!!data.is_direct_line_report_approval) {
-                                document.getElementById("is_direct_line_report_approval").checked = true
-                                document.getElementById("next_approval_group").disabled = true
+                        if (context.type === ACTION_TYPES.GROUP_APPROVAL_CREATE || context.type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
+                            const { detail, data } = context
+                            categories = data.categories
+                            states = data.states
+                            workflows = data.workflows
+                            generateApp(data.apps, app_code === context.detail?.app_code)
+                            generateProcess(
+                                categories?.filter(item => item.data.app_code == context.detail?.app_code),
+                                false
+                            )
+                            generateGroup("next_approval_group", data.requesterGroups, context)
+                            generateGroup("reject_next_approval_group", data.requesterGroups, context)
+                            generateGroup("expired_next_approval_group", data.requesterGroups, context)
+                            generateWorkflow(workflows?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code), context.detail?.workflow_code)
+                            const newStates = states?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code)
+                            generateState(newStates, context.detail?.current_state)
+                            generateNewState('new_state', newStates, context)
+                            generateNewState('reject_new_state', newStates, context)
+                            generateNewState('expired_new_state', newStates, context)
+                            generateEmailTemplate('email_template_code', data.templates, context)
+                            generateEmailTemplate('approval_email_template_code', data.templates, context)
+                            generateEmailTemplate('reject_email_template_code', data.templates, context)
+                            generateEmailTemplate('expired_email_template_code', data.templates, context)
+
+                            if (!detail) return
+
+                            document.getElementById("app_code").value = detail.app_code;
+                            document.getElementById("process_code").value = detail.process_code;
+                            document.getElementById("name").value = detail.name;
+                            document.getElementById("workflow_code").value = detail.workflow_code;
+                            document.getElementById("approver").value = detail.approver;
+                            document.getElementById("is_automator").checked = !!detail.is_automator;
+                            document.getElementById("approval_type").value = detail.approval_type;
+                            document.getElementById("next_approval_group").value = detail.next_approval_group || "";
+                            document.getElementById("reject_next_approval_group").value = detail.reject_next_approval_group || "";
+                            document.getElementById("expired_next_approval_group").value = detail.expired_next_approval_group || "";
+                            document.getElementById("duration").value = detail.duration;
+                            document.getElementById("calendar_type").value = detail.calendar_type;
+                            document.getElementById("current_state").value = detail.current_state;
+                            document.getElementById("new_state").value = detail.new_state || "";
+                            document.getElementById("reject_new_state").value = detail.reject_new_state || "";
+                            document.getElementById("expired_new_state").value = detail.expired_new_state || "";
+                            document.getElementById("email_template_code").value = detail.email_template_code || "";
+                            document.getElementById("approval_email_template_code").value = detail.approval_email_template_code || "";
+                            document.getElementById("reject_email_template_code").value = detail.reject_email_template_code || "";
+                            document.getElementById("expired_email_template_code").value = detail.expired_email_template_code || "";
+                            if (detail.approver == 4) {
+                                document.getElementById("next_approval_group").disabled = false
                             }
                         }
                     }
                 );
             });
         });
-
-        function generateGroup(container, requesterGroups, context) {
-            requesterGroups.forEach((item) => {
-                const { id, name } = item;
-                const option = document.createElement('option')
-                option.value = id
-                option.text = name
-                option.selected = id == context.data?.[container]
-                document.getElementById(container).append(option)
-            });
-        }
-        function generateSelectProcess(processList, selected) {
-            processList.forEach((item) => {
-                const { process_code, process_name } = item.data;
-                const option = document.createElement('option')
-                option.value = process_code
-                option.text = process_name
-                option.selected = selected
-                document.getElementById("process_code").append(option)
-            });
-        }
-
-        function generateWorkflow(processList, selected) {
-            processList.forEach((item) => {
-                const { workflow_code, workflow_name } = item.data;
-                const option = document.createElement('option')
-                option.value = workflow_code
-                option.text = workflow_name
-                option.selected = selected == workflow_code
-                document.getElementById("workflow_code").append(option)
-            });
-        }
-        function generateState(states, selected) {
-            states.forEach((item) => {
-                const { state_name, state } = item.data;
-                const option = document.createElement('option')
-                option.value = state
-                option.text = state_name
-                option.selected = state == selected
-                document.getElementById("current_state").append(option)
-            });
-        }
-        function generateNewState(id, states, context) {
-            states.forEach((item) => {
-                const { state_name, state: new_state } = item.data;
-                const option = document.createElement('option')
-                option.value = new_state
-                option.text = state_name
-                option.selected = new_state == context.data?.[id]
-                document.getElementById(id).append(option)
-            });
-        }
-        function populateEmailTemplates(id, templates, context) {
-            const selectElement = document.getElementById(id);
-
-            if (!selectElement) {
-                console.error(`Element with ID ${id} not found.`);
-                return;
-            }
-
-            templates.forEach((item) => {
-                const { email_code, email_name } = item.data;
-                const option = document.createElement('option');
-                option.value = email_code;
-                option.text = email_name;
-
-                if (email_code === context.data?.[id]) {
-                    option.selected = true;
-                }
-
-                selectElement.append(option);
-            });
-        }
     </script>
 
 </body>

@@ -9,6 +9,7 @@ const buttonNewCheck = document.getElementById("new-check")
 const buttonNewSchedule = document.getElementById("new-schedule")
 const buttonEditCheck = document.getElementById("edit-check")
 const buttonEditSchedule = document.getElementById("edit-schedule")
+const buttonGenerateReport = document.getElementById("generate-report")
 
 async function initApp(_client) {
   client = _client;
@@ -92,6 +93,25 @@ function handleEvent() {
         agents
       }
     })
+  })
+  buttonGenerateReport.addEventListener('click', async function () {
+    const date = new Date()
+    try {
+      const res = await client.request.invokeTemplate("addAgentToTicket", {
+        context: { id: ticket.display_id },
+        body: JSON.stringify({
+          "custom_fields": {
+            "last_update": date
+          }
+        })
+      });
+      if (res.status == 200) {
+        showNotification("success", "New report created successfully. Please open your mailbox after a few minutes");
+      }
+    } catch (error) {
+      showNotification("error", "The error occurred when generate Report");
+      console.log(error)
+    }
   })
 }
 
@@ -300,6 +320,7 @@ function handleErr(err = 'None') {
 }
 
 function checkType(type) {
+  buttonGenerateReport.style.display = 'block'
   if (type?.includes("Support Order")) {
     buttonView.style.display = 'block'
     buttonNewCheck.style.display = 'block'

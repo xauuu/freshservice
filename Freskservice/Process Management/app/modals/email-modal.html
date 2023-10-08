@@ -65,6 +65,7 @@
     <script type='text/javascript'
         src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
     <script src="../scripts/constant.js"></script>
+    <script src="../scripts/helper.js"></script>
     <script>
         var editor = new FroalaEditor('#body', FROALA_OPTIONS);
     </script>
@@ -88,7 +89,7 @@
                     message: {
                         type: context.type,
                         data: formDataObj,
-                        id: context.data?.bo_display_id
+                        id: context.detail?.bo_display_id
                     }
                 });
             });
@@ -100,11 +101,11 @@
                 function (c) {
                     context = c.data
                     if (context.type === ACTION_TYPES.EMAIL_TEMPLATE_UPDATE) {
-                        const data = context.data
-                        document.getElementById("email_code").value = data.email_code;
-                        document.getElementById("email_name").value = data.email_name;
-                        document.getElementById("subject").value = data.subject;
-                        editor.html.insert(data.body);
+                        const { detail, data } = context
+                        document.getElementById("email_code").value = detail.email_code;
+                        document.getElementById("email_name").value = detail.email_name;
+                        document.getElementById("subject").value = detail.subject;
+                        editor.html.insert(detail.body);
                     }
                 }
             );

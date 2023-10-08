@@ -111,7 +111,7 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052168/records?query=email_code%20%3A%20%27<%= context.email_code %>%27%20",
+            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records?query=email_code%20%3A%20%27<%= context.email_code %>%27%20",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

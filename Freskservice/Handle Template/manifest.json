@@ -1,0 +1,25 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshservice": {
+      "events": {
+        "onTicketUpdate": {
+          "handler": "onTicketUpdateHandler"
+        }
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.5"
+  },
+  "dependencies": {
+    "nodemailer": "6.9.3",
+    "easy-template-x": "3.2.0",
+    "node-fetch": "2.6.7",
+    "form-data": "4.0.0",
+    "base-64": "0.1.0",
+    "xlsx-renderer": "2.4.4",
+    "@tormozz48/xlsx-template": "1.0.4"
+  }
+}
