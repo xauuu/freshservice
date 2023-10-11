@@ -107,6 +107,18 @@
         },
         "options": {}
     },
+    "updateRequestedItem": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/tickets/<%= context.ticket_id %>/requested_items/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
     "getEmailTemplate": {
         "schema": {
             "method": "GET",
@@ -124,6 +136,18 @@
             "method": "GET",
             "host": "<%= iparam.domain %>",
             "path": "/api/v2/objects/<%= iparam.service_category_id %>/records?query=service_item_id%20%3A%20%27<%= context.service_item_id %>%27",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getDepartment": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/departments/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

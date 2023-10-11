@@ -5,153 +5,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 
 <body>
-    <form id="formCreate" class="h-screen flex flex-col justify-between">
-        <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto">
-            <div>
-                <label for="awesomplete" class="block mb-2 text-xs font-medium text-gray-900 ">Service Item
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <select id="service_item_id" name="service_item_id" required
-                    class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                    <option value="" selected disabled>Choose a Service Item</option>
-                </select>
-                <!-- <input type="text" id="awesomplete"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-                <input type="hidden" name="service_item_id" id="service_item_id"> -->
-            </div>
-            <div>
-                <label for="app_code" class="block mb-2 text-xs font-medium text-gray-900 ">App Code
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <input type="text" name="app_code" id="app_code"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-            </div>
-            <div>
-                <label for="app_name" class="block mb-2 text-xs font-medium text-gray-900">App Name
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <input type="text" name="app_name" id="app_name"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-            </div>
-            <div>
-                <label for="app_image" class="block mb-2 text-xs font-medium text-gray-900">
-                    App Image SVG
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <textarea id="app_image" name="app_image" rows="4"
-                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter Details..."></textarea>
-            </div>
-            <div>
-                <label for="process_code" class="block mb-2 text-xs font-medium text-gray-900">Process Code
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <input type="text" name="process_code" id="process_code"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-            </div>
-            <div>
-                <label for="process_name" class="block mb-2 text-xs font-medium text-gray-900">Process Name
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <input type="text" name="process_name" id="process_name"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-            </div>
-            <div>
-                <label for="process_image" class="block mb-2 text-xs font-medium text-gray-900">Process Image SVG
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <textarea id="process_image" name="process_image" rows="4"
-                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter Details..."></textarea>
-            </div>
-            <div>
-                <label for="process_description" class="block mb-2 text-xs font-medium text-gray-900">Process
-                    Description
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <textarea id="process_description" name="process_description" rows="4"
-                    class="block px-2.5 py-2 w-full text-xs text-gray-900 font-medium rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter Details..."></textarea>
-            </div>
-            <div>
-                <label for="process_url" class="block mb-2 text-xs font-medium text-gray-900">Process URL
-                    <span class="text-red-700 text-md">*</span>
-                </label>
-                <input type="text" name="process_url" id="process_url"
-                    class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                    placeholder="Enter Details" required="">
-            </div>
-            <div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input name="is_active" id="is_active" type="checkbox" value="1" class="sr-only peer">
-                    <div
-                        class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                    </div>
+    <div id="static-form-container">
+        <fw-form id="formCreate">
+            <fw-form-control type="DROPDOWN" id="service_item_id" name="service_item_id" label="Service Item"
+                required="true" placeholder="Select Service Item"></fw-form-control>
+            <fw-form-control id="app_code" name="app_code" label="App Code" required="true"
+                placeholder="Enter App Code"></fw-form-control>
+            <fw-form-control id="app_name" name="app_name" label="App Name" required="true"
+                placeholder="Enter App Name"></fw-form-control>
+            <fw-form-control type="PARAGRAPH" id="app_image" name="app_image" rows=3 maxlength=190 minlength=5
+                label="Enter App Image SVG" placeholder="App Image SVG">
+            </fw-form-control>
+            <fw-form-control id="process_code" name="process_code" label="Enter Process Code" required="true"
+                placeholder="Process Code"></fw-form-control>
+            <fw-form-control id="process_name" name="process_name" label="Enter Process Name" required="true"
+                placeholder="Process Name"></fw-form-control>
+            <fw-form-control id="process_url" name="process_url" label="Process_URL" required="true"
+                placeholder="Enter Process_URL"></fw-form-control>
+            <fw-form-control type="PARAGRAPH" id="process_image" name="process_image" rows=3 maxlength=190 minlength=5
+                label="Process Image SVG" placeholder="Enter Process Image SVG">
+            </fw-form-control>
+            <fw-form-control type="PARAGRAPH" id="process_description" name="process_description" rows=3 maxlength=190
+                minlength=5 label="Description" placeholder="Enter Description">
+            </fw-form-control>
+            <fw-form-control type="CHECKBOX" id="is_active" name="is_active" label="Is Active"></fw-form-control>
+        </fw-form>
+        <div class="bottom">
+            <fw-button id="closeModal" color="secondary">Close</fw-button>
+            <fw-button id="submit" color="primary">Save</fw-button>
+        </div>
+    </div>
 
-                    <span class="ml-3 text-xs font-medium text-gray-900 dark:text-gray-300">Is Active</span>
-                </label>
-            </div>
-        </div>
-        <div class="flex gap-4 justify-end mb-1"> <button id="closeModal" type="button"
-                class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
-                Cancel
-            </button>
-            <button id="create" type="submit"
-                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
-                Save
-            </button>
-        </div>
-    </form>
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="../scripts/jquery.select-to-autocomplete.js"></script>
+    <script type="module"
+        src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
     <script src="../scripts/constant.js"></script>
-    <script src="../scripts/helper.js"></script>
     <script>
         window.frsh_init().then(function (client) {
             var context = {}
-            $("#closeModal").click(function () {
+            var formCreate = document.querySelector("#formCreate")
+            document.getElementById("closeModal").addEventListener('click', function () {
                 client.instance.close();
-            });
-            $("#formCreate").submit(function (e) {
-                e.preventDefault();
-                const data = new FormData(e.target);
-                const formDataObj = {
-                    is_active: 0
-                };
-                for (let entry of data.entries()) {
-                    const [key, value] = entry;
-                    formDataObj[key] = value;
-                }
-                console.log(formDataObj)
+            })
+            document.querySelector('#submit').addEventListener('click', async (e) => {
+                const { values, isValid } = await formCreate.doSubmit(e);
+                console.log(values)
                 client.instance.send({
                     message: {
                         type: context.type,
-                        data: formDataObj,
+                        data: values,
                         id: context.detail?.bo_display_id
                     }
                 });
+
             });
             client.instance.receive(function (event) {
                 let data = event.helper.getData();
                 if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
-                if (data.type === ACTION_TYPES.LIST_DATA) {
-                    generateSelect("service_item_id", data.data.serviceItems, context)
-                    $('#service_item_id').selectToAutocomplete();
-                }
             });
             client.instance.context().then(
                 function (c) {
@@ -159,31 +74,20 @@
                     if (context.type === ACTION_TYPES.SERVICE_REQUEST_CREATE || context.type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
                         const { detail, data } = context
                         generateSelect("service_item_id", data.serviceItems, context)
-                        $('#service_item_id').selectToAutocomplete();
                         if (!detail) return
-                        document.getElementById("service_item_id").value = detail.service_item_id;
-                        document.getElementById("app_code").value = detail.app_code;
-                        document.getElementById("app_name").value = detail.app_name;
-                        document.getElementById("app_image").value = detail.app_image;
-                        document.getElementById("process_code").value = detail.process_code;
-                        document.getElementById("process_name").value = detail.process_name;
-                        document.getElementById("process_image").value = detail.process_image;
-                        document.getElementById("process_url").value = detail.process_url;
-                        document.getElementById("process_description").value = detail.process_description;
-                        document.getElementById("is_active").checked = !!detail.is_active;
+                        Object.keys(detail).forEach(function (key) {
+                            formCreate.setFieldValue([key], detail[key]);
+                        });
                     }
                 }
             );
         });
         function generateSelect(container, list, context) {
-            list?.forEach((item) => {
-                const { display_id, name } = item;
-                const option = document.createElement('option')
-                option.value = display_id
-                option.text = name
-                option.selected = context.detail?.service_item_id == display_id
-                document.getElementById(container).append(option)
+            const options = list?.map((item) => {
+                return { value: String(item.display_id), text: item.name };
             });
+            document.getElementById(container).choices = options
+            document.getElementById(container).value = String(context.detail?.service_item_id)
         }
     </script>
 </body>

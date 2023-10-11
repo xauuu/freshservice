@@ -1,0 +1,26 @@
+{
+    "domain": {
+        "display_name": "domain",
+        "description": "Please enter your domain",
+        "type": "text",
+        "required": true
+    },
+    "apikey": {
+        "display_name": "apikey",
+        "description": "Please enter your apikey",
+        "type": "text",
+        "required": true
+    },
+    "url_docx": {
+        "display_name": "url_docx",
+        "description": "Please enter your url_docx",
+        "type": "text",
+        "required": true
+    },
+    "url_xlsx": {
+        "display_name": "url_xlsx",
+        "description": "Please enter your url_xlsx",
+        "type": "text",
+        "required": true
+    }
+}

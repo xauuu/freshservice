@@ -5,268 +5,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/style.css">
 </head>
 
 <body>
-    <form id="formCreate" class="h-screen flex flex-col justify-between">
-        <div>
-            <div class="mb-4 border-b border-gray-200 ">
-                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab"
-                    data-tabs-toggle="#myTabContent" role="tablist">
-                    <li class="mr-2" role="presentation">
-                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="information-tab"
-                            data-tabs-target="#information" type="button" role="tab" aria-controls="information"
-                            aria-selected="false">Information</button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button
-                            class="inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
-                            id="approval-tab" data-tabs-target="#approval" type="button" role="tab"
-                            aria-controls="approval" aria-selected="false">Approval/Submit</button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button
-                            class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
-                            id="reject-tab" data-tabs-target="#reject" type="button" role="tab" aria-controls="reject"
-                            aria-selected="false">Reject</button>
-                    </li>
-                    <li role="presentation">
-                        <button
-                            class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 "
-                            id="expired-tab" data-tabs-target="#expired" type="button" role="tab"
-                            aria-controls="expired" aria-selected="false">Expired</button>
-                    </li>
-                </ul>
-            </div>
-            <div id="myTabContent">
-                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="information" role="tabpanel"
-                    aria-labelledby="information-tab">
-                    <div>
-                        <label for="app_code" class="block mb-2 text-xs font-medium text-gray-900 ">App<span
-                                class="text-red-700 text-md">*</span>
-                        </label>
-                        <select id="app_code" name="app_code" required
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose an App</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="process_code" class="block mb-2 text-xs font-medium text-gray-900 ">Process
+    <div id="static-form-container">
+        <fw-form id="formCreate">
+            <fw-tabs>
+                <fw-tab slot="tab" panel="information">Information</fw-tab>
+                <fw-tab slot="tab" panel="approval">Approval/Submit</fw-tab>
+                <fw-tab slot="tab" panel="reject">Reject</fw-tab>
+                <fw-tab slot="tab" panel="expired">Expired</fw-tab>
 
-                            <span class="text-red-700 text-md">*</span>
-                        </label>
-                        <select id="process_code" name="process_code" required
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Process</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="workflow_code" class="block mb-2 text-xs font-medium text-gray-900 ">Workflow
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="workflow_code" name="workflow_code"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a Workflow</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="name" class="block mb-2 text-xs font-medium text-gray-900 ">Name
-                            <span class="text-red-700 text-md">*</span>
-                        </label>
-                        <input type="text" name="name" id="name"
-                            class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                            placeholder="Enter Details" required="">
-                    </div>
-                    <div class="flex items-center">
-                        <input id="is_automator" name="is_automator" type="checkbox" value="1"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="is_automator" class="ml-2 text-xs font-medium text-gray-900">
-                            Is Automator
-                        </label>
-                    </div>
-                    <div>
-                        <label for="duration" class="block mb-2 text-xs font-medium text-gray-900 ">Duration (Minutes)
-                            <span class="text-red-700 text-md">*</span>
-                        </label>
-                        <input type="text" name="duration" id="duration"
-                            class="border border-gray-300 text-gray-900 font-medium text-xs rounded-md focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2"
-                            placeholder="Enter Details" required="">
-                    </div>
-                    <div>
-                        <label for="calendar_type" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Calendar Type
-                            <span class="text-red-700 text-md">*</span>
-                        </label>
-                        <select id="calendar_type" name="calendar_type"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Calendar type</option>
-                            <option value="business">8/5 Calendar</option>
-                            <option value="normal">24/7 Calendar</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="current_state" class="block mb-2 text-xs font-medium text-gray-900 ">Current State
-                            <span class="text-red-700 text-md">*</span>
-                        </label>
-                        <select id="current_state" name="current_state" required
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a State</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Email Template
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="email_template_code" name="email_template_code"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose a Email Template</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="approval" role="tabpanel"
-                    aria-labelledby="approval-tab">
-                    <div>
-                        <label for="approver" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Approver
-                        </label>
-                        <select id="approver" name="approver"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="1">Reporting Manager</option>
-                            <option value="2">Department Head</option>
-                            <option value="3">Selected Department</option>
-                            <option value="4">Group</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Next Approval Group
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="next_approval_group" name="next_approval_group" disabled
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a next approval group</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="approval_type" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Approval Type
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="approval_type" name="approval_type"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected disabled>Choose an approval type</option>
-                            <option value="1">To be approved by Everyone</option>
-                            <option value="2">To be approved by Anyone</option>
-                            <option value="3">To be approved by Majority</option>
-                            <option value="4">To be approved by First Responder</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="new_state" class="block mb-2 text-xs font-medium text-gray-900 ">New State
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="new_state" name="new_state"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a State</option>
+                <fw-tab-panel name="information">
+                    <fw-form-control type="DROPDOWN" id="app_code" name="app_code" label="App Name" required="true"
+                        placeholder="Enter App Name"></fw-form-control>
+                    <fw-form-control type="DROPDOWN" id="process_code" name="process_code" label="Process Name"
+                        required="true" placeholder="Enter Process Name"></fw-form-control>
 
-                        </select>
-                    </div>
-                    <div>
-                        <label for="approval_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Approval Email Template
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="approval_email_template_code" name="approval_email_template_code"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a Email Template</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="reject" role="tabpanel"
-                    aria-labelledby="reject-tab">
-                    <div>
-                        <label for="reject_next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Reject Next Approval Group
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="reject_next_approval_group" name="reject_next_approval_group"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a next approval group</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="reject_new_state" class="block mb-2 text-xs font-medium text-gray-900 ">Reject New
-                            State
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="reject_new_state" name="reject_new_state"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a State</option>
+                    <fw-form-control id="name" name="name" label="Name" required="true"
+                        placeholder="Enter Name"></fw-form-control>
 
-                        </select>
-                    </div>
-                    <div>
-                        <label for="reject_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Reject Email Template
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="reject_email_template_code" name="reject_email_template_code"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a Email Template</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid gap-4 mb-4 sm:grid-cols-2 p-1 overflow-y-auto" id="expired" role="tabpanel"
-                    aria-labelledby="expired-tab">
-                    <div>
-                        <label for="expired_next_approval_group" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Expired Next Approval Group
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="expired_next_approval_group" name="expired_next_approval_group"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a next approval group</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="expired_new_state" class="block mb-2 text-xs font-medium text-gray-900 ">Expired New
-                            State
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="expired_new_state" name="expired_new_state"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a State</option>
+                    <fw-form-control id="duration" name="duration" label="Duration (Minutes)" required="true"
+                        placeholder="Enter Duration (Minutes)"></fw-form-control>
 
-                        </select>
+                    <fw-form-control type="DROPDOWN" id="calendar_type" name="calendar_type" label="Calendar Type"
+                        required="true" placeholder="Select Calendar Type"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="current_state" name="current_state" label="Current State"
+                        required="true" placeholder="Select Current State"></fw-form-control>
+
+                    <fw-form-control type="CHECKBOX" id="is_state_end" name="is_state_end"
+                        label="Is State End"></fw-form-control>
+                    <div id="is_end" style="display: none;">
+                        <fw-form-control type="CHECKBOX" id="is_send_email" name="is_send_email"
+                            label="Is Send Email"></fw-form-control>
+
+                        <fw-form-control type="CHECKBOX" id="is_attach_file" name="is_attach_file"
+                            label="Is attach file"></fw-form-control>
                     </div>
-                    <div>
-                        <label for="expired_email_template_code" class="block mb-2 text-xs font-medium text-gray-900 ">
-                            Expired Email Template
-                            <!-- <span class="text-red-700 text-md">*</span> -->
-                        </label>
-                        <select id="expired_email_template_code" name="expired_email_template_code"
-                            class="font-medium border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 py-2">
-                            <option value="" selected>Choose a Email Template</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+
+                    <fw-form-control type="DROPDOWN" id="email_template_code" name="email_template_code"
+                        label="Email Template" placeholder="Enter Email Template"></fw-form-control>
+
+                </fw-tab-panel>
+
+                <fw-tab-panel name="approval">
+                    <fw-form-control type="DROPDOWN" id="approver" name="approver" label="Approver"
+                        placeholder="Select Approver"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="next_approval_group" name="next_approval_group"
+                        label="Next Approval Group" placeholder="Select Next Approval Group" disabled></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="approval_type" name="approval_type" label=" Approval Type"
+                        placeholder="Select  Approval Type"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="new_state" name="new_state" label="New State"
+                        placeholder="Select New State"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="approval_email_template_code"
+                        name="approval_email_template_code" label="Email Template"
+                        placeholder="Enter Email Template"></fw-form-control>
+                </fw-tab-panel>
+
+                <fw-tab-panel name="reject">
+                    <fw-form-control type="DROPDOWN" id="reject_next_approval_group" name="reject_next_approval_group"
+                        label="Reject Approval Group" placeholder="Select Reject Approval Group"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="reject_new_state" name="reject_new_state"
+                        label="Reject New State" placeholder="Select Reject New State"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="reject_email_template_code" name="reject_email_template_code"
+                        label="Reject Email Template" placeholder="Enter Reject Email Template"></fw-form-control>
+                </fw-tab-panel>
+
+                <fw-tab-panel name="expired">
+                    <fw-form-control type="DROPDOWN" id="expired_next_approval_group" name="expired_next_approval_group"
+                        label="Expired Approval Group" placeholder="Select Expired Approval Group"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="expired_new_state" name="expired_new_state"
+                        label="Expired New State" placeholder="Select expired New State"></fw-form-control>
+
+                    <fw-form-control type="DROPDOWN" id="expired_email_template_code" name="expired_email_template_code"
+                        label="Expired Email Template" placeholder="Enter Expired Email Template"></fw-form-control>
+                </fw-tab-panel>
+            </fw-tabs>
+
+        </fw-form>
+        <div class="bottom">
+            <fw-button id="closeModal" color="secondary">Close</fw-button>
+            <fw-button id="submit" color="primary">Save</fw-button>
         </div>
-        <div class="flex gap-4 justify-end pb-4">
-            <button id="closeModal" type="button"
-                class="inline-flex items-center border border-gray-300 rounded-md hover:bg-gray-100 font-medium text-xs px-5 py-1.5 text-center">
-                Cancel
-            </button>
-            <button id="create" type="submit"
-                class="inline-flex items-center text-white border border-blue-800 bg-blue-800 hover:bg-blue-900 font-medium rounded-md text-xs px-5 py-1.5 text-center">
-                Save
-            </button>
-        </div>
-    </form>
+    </div>
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script type="module"
+        src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
     <script src="../scripts/constant.js"></script>
     <script src="../scripts/helper.js"></script>
     <script>
@@ -275,51 +109,54 @@
                 var context = {}
                 var categories = []
                 var states = []
-                var workflows = []
+                var formCreate = document.querySelector("#formCreate")
+                generateSelect()
                 document.getElementById("closeModal").addEventListener("click", function () {
                     client.instance.close();
                 });
-                document.getElementById("app_code").addEventListener('change', function (e) {
-                    generateProcess(categories?.filter(item => item.data.app_code == e.target.value), false)
-                    document.getElementById("process_code").value = ''
-                })
-                document.getElementById("process_code").addEventListener('change', function (e) {
-                    document.getElementById("workflow_code").value = ''
-                    generateWorkflow(workflows?.filter(item => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.target.value), '')
-                    const newStateList = states?.filter(item => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.target.value)
-                    generateState(newStateList, false)
-                    generateNewState('new_state', newStateList, context)
-                    generateNewState('reject_new_state', newStateList, context)
-                    generateNewState('expired_new_state', newStateList, context)
-                })
-                document.getElementById("approver").addEventListener('change', function (e) {
-                    const value = e.target.value
-                    if (value == 4) {
-                        document.getElementById("next_approval_group").disabled = false
-                    } else {
-                        document.getElementById("next_approval_group").disabled = true
+                formCreate.addEventListener('fwFormValueChanged', (e) => {
+                    if (e.detail.field == 'app_code') {
+                        generateProcess(categories?.filter(item => item.data.app_code == e.detail.value), "")
                     }
-                })
-                document.getElementById("formCreate").addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    const data = new FormData(e.target);
-                    const formDataObj = {
-                        email_template_code: '',
-                        is_automator: 0
-                    };
-                    for (let entry of data.entries()) {
-                        const [key, value] = entry;
-                        if ((key == 'reject_next_approval_group' && value == '') || key == 'expired_next_approval_group' && value == '')
-                            break;
-                        formDataObj[key] = value;
+                    if (e.detail.field == 'process_code') {
+                        const newStateList = states?.filter(item => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.detail.value)
+                        generateState('current_state', newStateList, context)
+                        generateState('new_state', newStateList, context)
+                        generateState('reject_new_state', newStateList, context)
+                        generateState('expired_new_state', newStateList, context)
                     }
+                    if (e.detail.field == 'approver') {
+                        if (e.detail.value == 4) {
+                            document.getElementById("next_approval_group").disabled = false
+                        } else {
+                            document.getElementById("next_approval_group").disabled = true
+                        }
+                    }
+                    if (e.detail.field == 'is_state_end') {
+                        if (e.detail.value) {
+                            document.getElementById("is_end").style.display = "block"
+                        } else {
+                            document.getElementById("is_end").style.display = "none"
+                            formCreate.setFieldValue(["is_send_email"], false);
+                            formCreate.setFieldValue(["is_attach_file"], false);
+                        }
+                    }
+                });
+                document.querySelector('#submit').addEventListener('click', async (e) => {
+                    const { values, isValid } = await formCreate.doSubmit(e);
                     client.instance.send({
                         message: {
                             type: context.type,
-                            data: { ...formDataObj, is_automator: Number(formDataObj.is_automator) },
+                            data: {
+                                ...values,
+                                is_state_end: Number(values.is_state_end),
+                                is_send_email: Number(values.is_send_email),
+                                is_attach_file: Number(values.is_attach_file)
+                            },
                             id: context.detail?.bo_display_id
                         }
                     });
+
                 });
                 client.instance.receive(function (event) {
                     let data = event.helper.getData();
@@ -335,55 +172,55 @@
                             const { detail, data } = context
                             categories = data.categories
                             states = data.states
-                            workflows = data.workflows
-                            generateApp(data.apps, app_code === context.detail?.app_code)
+                            generateApp(data.apps, context.detail?.app_code)
                             generateProcess(
                                 categories?.filter(item => item.data.app_code == context.detail?.app_code),
-                                false
+                                ""
                             )
                             generateGroup("next_approval_group", data.requesterGroups, context)
                             generateGroup("reject_next_approval_group", data.requesterGroups, context)
                             generateGroup("expired_next_approval_group", data.requesterGroups, context)
-                            generateWorkflow(workflows?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code), context.detail?.workflow_code)
                             const newStates = states?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code)
-                            generateState(newStates, context.detail?.current_state)
-                            generateNewState('new_state', newStates, context)
-                            generateNewState('reject_new_state', newStates, context)
-                            generateNewState('expired_new_state', newStates, context)
+                            generateState('current_state', newStates, context)
+                            generateState('new_state', newStates, context)
+                            generateState('reject_new_state', newStates, context)
+                            generateState('expired_new_state', newStates, context)
                             generateEmailTemplate('email_template_code', data.templates, context)
                             generateEmailTemplate('approval_email_template_code', data.templates, context)
                             generateEmailTemplate('reject_email_template_code', data.templates, context)
                             generateEmailTemplate('expired_email_template_code', data.templates, context)
 
                             if (!detail) return
-
-                            document.getElementById("app_code").value = detail.app_code;
-                            document.getElementById("process_code").value = detail.process_code;
-                            document.getElementById("name").value = detail.name;
-                            document.getElementById("workflow_code").value = detail.workflow_code;
-                            document.getElementById("approver").value = detail.approver;
-                            document.getElementById("is_automator").checked = !!detail.is_automator;
-                            document.getElementById("approval_type").value = detail.approval_type;
-                            document.getElementById("next_approval_group").value = detail.next_approval_group || "";
-                            document.getElementById("reject_next_approval_group").value = detail.reject_next_approval_group || "";
-                            document.getElementById("expired_next_approval_group").value = detail.expired_next_approval_group || "";
-                            document.getElementById("duration").value = detail.duration;
-                            document.getElementById("calendar_type").value = detail.calendar_type;
-                            document.getElementById("current_state").value = detail.current_state;
-                            document.getElementById("new_state").value = detail.new_state || "";
-                            document.getElementById("reject_new_state").value = detail.reject_new_state || "";
-                            document.getElementById("expired_new_state").value = detail.expired_new_state || "";
-                            document.getElementById("email_template_code").value = detail.email_template_code || "";
-                            document.getElementById("approval_email_template_code").value = detail.approval_email_template_code || "";
-                            document.getElementById("reject_email_template_code").value = detail.reject_email_template_code || "";
-                            document.getElementById("expired_email_template_code").value = detail.expired_email_template_code || "";
-                            if (detail.approver == 4) {
-                                document.getElementById("next_approval_group").disabled = false
-                            }
+                            Object.keys(detail).forEach(function (key) {
+                                formCreate.setFieldValue([key], detail[key]);
+                            });
+                            if (detail.approver == 4) document.getElementById("next_approval_group").disabled = false
+                            if (Boolean(detail.is_state_end)) document.getElementById("is_end").style.display = "block"
                         }
                     }
                 );
             });
+            function generateSelect() {
+                const calendar_type = [
+                    { value: 'business', text: '8/5 Calendar' },
+                    { value: 'normal', text: '24/7 Calendar' }
+                ]
+                const approver = [
+                    { value: '1', text: 'Reporting Manager' },
+                    { value: '2', text: 'Department Head' },
+                    { value: '3', text: 'Selected Department' },
+                    { value: '4', text: 'Group' },
+                ]
+                const approval_type = [
+                    { value: '1', text: 'To be approved by Everyone' },
+                    { value: '2', text: 'To be approved by Anyone' },
+                    { value: '3', text: 'To be approved by Majority' },
+                    { value: '4', text: 'To be approved by First Responder' },
+                ]
+                document.getElementById("calendar_type").choices = calendar_type;
+                document.getElementById("approver").choices = approver;
+                document.getElementById("approval_type").choices = approval_type;
+            }
         });
     </script>
 

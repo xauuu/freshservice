@@ -19,7 +19,7 @@ async function initApp(_client) {
   clientApp = _client;
   await getAllSRCategory()
   await getAllStateApproval()
-  await Promise.all([getAllWorkflow(), getAllEmailTemplate(), getAllGroupApproval(), getAllCondition(), getAllRequesterGroup()])
+  await Promise.all([getAllEmailTemplate(), getAllGroupApproval(), getAllRequesterGroup()])
   await getAllServiceItem()
   clientApp.events.on('app.activated', initHandlers);
 }
@@ -34,10 +34,10 @@ function openModal(type, detail = null) {
     [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'Edit Category',
     [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'Add State',
     [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'Edit State',
-    [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Workflow',
-    [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Workflow',
-    [ACTION_TYPES.CONDITION_CREATE]: 'Add Condition',
-    [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Condition',
+    // [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Workflow',
+    // [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Workflow',
+    // [ACTION_TYPES.CONDITION_CREATE]: 'Add Condition',
+    // [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Condition',
   };
   const templateMap = {
     [ACTION_TYPES.GROUP_APPROVAL_CREATE]: 'modals/modal.html',
@@ -48,10 +48,10 @@ function openModal(type, detail = null) {
     [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: 'modals/sr-modal.html',
     [ACTION_TYPES.STATE_APPROVAL_CREATE]: 'modals/state-modal.html',
     [ACTION_TYPES.STATE_APPROVAL_UPDATE]: 'modals/state-modal.html',
-    [ACTION_TYPES.WORKFLOW_CREATE]: 'modals/workflow-modal.html',
-    [ACTION_TYPES.WORKFLOW_UPDATE]: 'modals/workflow-modal.html',
-    [ACTION_TYPES.CONDITION_CREATE]: 'modals/condition-modal.html',
-    [ACTION_TYPES.CONDITION_UPDATE]: 'modals/condition-modal.html',
+    // [ACTION_TYPES.WORKFLOW_CREATE]: 'modals/workflow-modal.html',
+    // [ACTION_TYPES.WORKFLOW_UPDATE]: 'modals/workflow-modal.html',
+    // [ACTION_TYPES.CONDITION_CREATE]: 'modals/condition-modal.html',
+    // [ACTION_TYPES.CONDITION_UPDATE]: 'modals/condition-modal.html',
   };
   const listMap = {
     [ACTION_TYPES.GROUP_APPROVAL_CREATE]: { apps, categories, workflows, templates, requesterGroups, states },
@@ -62,10 +62,10 @@ function openModal(type, detail = null) {
     [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems },
     [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories },
     [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories },
-    [ACTION_TYPES.WORKFLOW_CREATE]: { apps, categories },
-    [ACTION_TYPES.WORKFLOW_UPDATE]: { apps, categories },
-    [ACTION_TYPES.CONDITION_CREATE]: { apps, categories },
-    [ACTION_TYPES.CONDITION_UPDATE]: { apps, categories },
+    // [ACTION_TYPES.WORKFLOW_CREATE]: { apps, categories },
+    // [ACTION_TYPES.WORKFLOW_UPDATE]: { apps, categories },
+    // [ACTION_TYPES.CONDITION_CREATE]: { apps, categories },
+    // [ACTION_TYPES.CONDITION_UPDATE]: { apps, categories },
   };
 
   clientApp.interface.trigger('showModal', {
@@ -88,12 +88,12 @@ function initHandlers() {
   document.getElementById('createState').addEventListener('click', function () {
     openModal(ACTION_TYPES.STATE_APPROVAL_CREATE)
   });
-  document.getElementById('createWorkflow').addEventListener('click', function () {
-    openModal(ACTION_TYPES.WORKFLOW_CREATE)
-  });
-  document.getElementById('createCondition').addEventListener('click', function () {
-    openModal(ACTION_TYPES.CONDITION_CREATE)
-  });
+  // document.getElementById('createWorkflow').addEventListener('click', function () {
+  //   openModal(ACTION_TYPES.WORKFLOW_CREATE)
+  // });
+  // document.getElementById('createCondition').addEventListener('click', function () {
+  //   openModal(ACTION_TYPES.CONDITION_CREATE)
+  // });
   clientApp.instance.receive(async (e) => {
     const { type, data, id } = e.helper.getData();
     switch (type) {
@@ -236,55 +236,55 @@ async function handleUpdateState(id, data) {
   }
 };
 
-async function handleCreateWorkflow(data) {
-  try {
-    await clientApp.request.invokeTemplate("createWorkflow", {
-      body: JSON.stringify({ data })
-    });
-    handleSuccess(ACTION_TYPES.WORKFLOW_CREATE, 'Successfully created Workflow');
-  } catch (error) {
-    showNotification("error", "An error occurred");
-    console.log(error);
-  }
-};
+// async function handleCreateWorkflow(data) {
+//   try {
+//     await clientApp.request.invokeTemplate("createWorkflow", {
+//       body: JSON.stringify({ data })
+//     });
+//     handleSuccess(ACTION_TYPES.WORKFLOW_CREATE, 'Successfully created Workflow');
+//   } catch (error) {
+//     showNotification("error", "An error occurred");
+//     console.log(error);
+//   }
+// };
 
-async function handleUpdateWorkflow(id, data) {
-  try {
-    await clientApp.request.invokeTemplate("updateWorkflow", {
-      context: { id },
-      body: JSON.stringify({ data })
-    });
-    handleSuccess(ACTION_TYPES.WORKFLOW_UPDATE, 'Successfully updated Workflow');
-  } catch (error) {
-    showNotification("error", "An error occurred");
-    console.log(error);
-  }
-};
+// async function handleUpdateWorkflow(id, data) {
+//   try {
+//     await clientApp.request.invokeTemplate("updateWorkflow", {
+//       context: { id },
+//       body: JSON.stringify({ data })
+//     });
+//     handleSuccess(ACTION_TYPES.WORKFLOW_UPDATE, 'Successfully updated Workflow');
+//   } catch (error) {
+//     showNotification("error", "An error occurred");
+//     console.log(error);
+//   }
+// };
 
-async function handleCreateCondition(data) {
-  try {
-    await clientApp.request.invokeTemplate("createCondition", {
-      body: JSON.stringify({ data })
-    });
-    handleSuccess(ACTION_TYPES.CONDITION_CREATE, 'Successfully created Condition');
-  } catch (error) {
-    showNotification("error", "An error occurred");
-    console.log(error);
-  }
-};
+// async function handleCreateCondition(data) {
+//   try {
+//     await clientApp.request.invokeTemplate("createCondition", {
+//       body: JSON.stringify({ data })
+//     });
+//     handleSuccess(ACTION_TYPES.CONDITION_CREATE, 'Successfully created Condition');
+//   } catch (error) {
+//     showNotification("error", "An error occurred");
+//     console.log(error);
+//   }
+// };
 
-async function handleUpdateCondition(id, data) {
-  try {
-    await clientApp.request.invokeTemplate("updateCondition", {
-      context: { id },
-      body: JSON.stringify({ data })
-    });
-    handleSuccess(ACTION_TYPES.CONDITION_UPDATE, 'Successfully updated Condition');
-  } catch (error) {
-    showNotification("error", "An error occurred");
-    console.log(error);
-  }
-};
+// async function handleUpdateCondition(id, data) {
+//   try {
+//     await clientApp.request.invokeTemplate("updateCondition", {
+//       context: { id },
+//       body: JSON.stringify({ data })
+//     });
+//     handleSuccess(ACTION_TYPES.CONDITION_UPDATE, 'Successfully updated Condition');
+//   } catch (error) {
+//     showNotification("error", "An error occurred");
+//     console.log(error);
+//   }
+// };
 
 async function handleSuccess(type, message) {
   showNotification('success', message);
@@ -301,13 +301,14 @@ async function handleSuccess(type, message) {
   } else if (type === ACTION_TYPES.STATE_APPROVAL_CREATE || type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
     stateContainer.removeEventListener('click', stateClickHandler)
     getAllStateApproval();
-  } else if (type === ACTION_TYPES.WORKFLOW_CREATE || type === ACTION_TYPES.WORKFLOW_UPDATE) {
-    workflowContainer.removeEventListener('click', workflowClickHandler)
-    getAllWorkflow();
-  } else if (type === ACTION_TYPES.CONDITION_CREATE || type === ACTION_TYPES.CONDITION_UPDATE) {
-    conditionContainer.removeEventListener('click', conditionClickHandler)
-    getAllCondition();
   }
+  // } else if (type === ACTION_TYPES.WORKFLOW_CREATE || type === ACTION_TYPES.WORKFLOW_UPDATE) {
+  //   workflowContainer.removeEventListener('click', workflowClickHandler)
+  //   getAllWorkflow();
+  // } else if (type === ACTION_TYPES.CONDITION_CREATE || type === ACTION_TYPES.CONDITION_UPDATE) {
+  //   conditionContainer.removeEventListener('click', conditionClickHandler)
+  //   getAllCondition();
+  // }
 }
 
 function handleError(error) {
@@ -373,15 +374,6 @@ async function getAllRequesterGroup() {
     const response = await clientApp.request.invokeTemplate("getAllRequesterGroup", {});
     const data = JSON.parse(response.response);
     requesterGroups = data.requester_groups
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function sendData() {
-  try {
-    await clientApp.request.invokeTemplate("getAllDepartment", {});
-    clientApp.instance.send({ message: { type: ACTION_TYPES.LIST_DATA, data: { requesterGroups, categories, templates, apps, states, workflows, serviceItems } } });
   } catch (error) {
     console.error(error);
   }
@@ -508,81 +500,81 @@ async function getAllStateApproval() {
   }
 };
 
-function generateWorkflowHTML(records) {
-  let html = "";
-  records?.forEach((item) => {
-    const { app_code, process_code, workflow_name, workflow_code } = item.data;
-    const rowData = JSON.stringify(item.data);
-    const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        ${workflow_name}
-                      </td>
-                      <td class="px-4 py-3">${workflow_code}</td>
-                      <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
-                      <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-                  </tr>`;
-    html += row;
-  });
-  return html;
-};
+// function generateWorkflowHTML(records) {
+//   let html = "";
+//   records?.forEach((item) => {
+//     const { app_code, process_code, workflow_name, workflow_code } = item.data;
+//     const rowData = JSON.stringify(item.data);
+//     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+//                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+//                         ${workflow_name}
+//                       </td>
+//                       <td class="px-4 py-3">${workflow_code}</td>
+//                       <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+//                       <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
+//                   </tr>`;
+//     html += row;
+//   });
+//   return html;
+// };
 
-function workflowClickHandler(event) {
-  const clickedRow = event.target.closest("tr");
-  if (!clickedRow) return
-  const rowData = clickedRow.getAttribute("data-item");
-  openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
-}
+// function workflowClickHandler(event) {
+//   const clickedRow = event.target.closest("tr");
+//   if (!clickedRow) return
+//   const rowData = clickedRow.getAttribute("data-item");
+//   openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
+// }
 
-async function getAllWorkflow() {
-  try {
-    const response = await clientApp.request.invokeTemplate("getAllWorkflow", {});
-    const data = JSON.parse(response.response);
-    workflows = data.records
-    const html = generateWorkflowHTML(workflows);
-    workflowContainer.innerHTML = html;
-    workflowContainer.addEventListener("click", workflowClickHandler);
-  } catch (error) {
-    console.error(error);
-  }
-};
+// async function getAllWorkflow() {
+//   try {
+//     const response = await clientApp.request.invokeTemplate("getAllWorkflow", {});
+//     const data = JSON.parse(response.response);
+//     workflows = data.records
+//     const html = generateWorkflowHTML(workflows);
+//     workflowContainer.innerHTML = html;
+//     workflowContainer.addEventListener("click", workflowClickHandler);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
-function generateConditionHTML(records) {
-  let html = "";
-  records?.forEach((item) => {
-    const { app_code, process_code, name, field_name } = item.data;
-    const rowData = JSON.stringify(item.data);
-    const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        ${name}
-                      </td>
-                      <td class="px-4 py-3">${field_name}</td>
-                      <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
-                      <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-                  </tr>`;
-    html += row;
-  });
-  return html;
-};
+// function generateConditionHTML(records) {
+//   let html = "";
+//   records?.forEach((item) => {
+//     const { app_code, process_code, name, field_name } = item.data;
+//     const rowData = JSON.stringify(item.data);
+//     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+//                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+//                         ${name}
+//                       </td>
+//                       <td class="px-4 py-3">${field_name}</td>
+//                       <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
+//                       <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
+//                   </tr>`;
+//     html += row;
+//   });
+//   return html;
+// };
 
-function conditionClickHandler(event) {
-  const clickedRow = event.target.closest("tr");
-  if (!clickedRow) return
-  const rowData = clickedRow.getAttribute("data-item");
-  openModal(ACTION_TYPES.CONDITION_UPDATE, JSON.parse(rowData))
-}
+// function conditionClickHandler(event) {
+//   const clickedRow = event.target.closest("tr");
+//   if (!clickedRow) return
+//   const rowData = clickedRow.getAttribute("data-item");
+//   openModal(ACTION_TYPES.CONDITION_UPDATE, JSON.parse(rowData))
+// }
 
-async function getAllCondition() {
-  try {
-    const response = await clientApp.request.invokeTemplate("getAllCondition", {});
-    const data = JSON.parse(response.response);
-    conditions = data.records
-    const html = generateConditionHTML(conditions);
-    conditionContainer.innerHTML = html;
-    conditionContainer.addEventListener("click", conditionClickHandler);
-  } catch (error) {
-    console.error(error);
-  }
-};
+// async function getAllCondition() {
+//   try {
+//     const response = await clientApp.request.invokeTemplate("getAllCondition", {});
+//     const data = JSON.parse(response.response);
+//     conditions = data.records
+//     const html = generateConditionHTML(conditions);
+//     conditionContainer.innerHTML = html;
+//     conditionContainer.addEventListener("click", conditionClickHandler);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 function generateFilter() {
   html = ''
@@ -639,7 +631,6 @@ async function getAllServiceItem() {
       });
       serviceItems.push(...mappingServiceCatalog(data, JSON.parse(res.response).service_items))
     }))
-    console.log(serviceItems)
   } catch (error) {
     console.error(error);
   }

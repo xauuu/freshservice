@@ -1,8 +1,5 @@
 const nodemailer = require("nodemailer");
 const moment = require('moment');
-const { TemplateHandler } = require('easy-template-x')
-const fetch = require("node-fetch");
-const { Renderer } = require('xlsx-renderer');
 
 const transporter = nodemailer.createTransport({
     host: "email-smtp.ap-southeast-1.amazonaws.com",
@@ -72,45 +69,9 @@ function formatDate(date) {
     return moment(date).format('YYYY-MM-DD[T]HH:mm:ss.SSS[Z]')
 }
 
-async function convertTemplate(dataForGenerate) {
-    const handler = new TemplateHandler();
-
-    try {
-        const templateFile = await getFileFromURL("https://github.com/xauuu/upload/raw/main/template.docx");
-        const result = await handler.process(templateFile, dataForGenerate);
-        return result;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-}
-
-
-async function convertTemplateXlsx(dataForGenerate) {
-    const renderer = new Renderer();
-    try {
-        const data = await getFileFromURL("https://github.com/xauuu/upload/raw/main/template.xlsx")
-        const report = await renderer.renderFromArrayBuffer(data, dataForGenerate);
-        const result = await report.xlsx.writeBuffer()
-        return result
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-
-}
-
-async function getFileFromURL(url) {
-    const response = await fetch(url);
-    if (!response.ok) return
-    return await response.buffer()
-}
-
 exports = {
     sendMail,
     formattedApprovals,
     replaceHtmlContent,
-    formatDate,
-    convertTemplate,
-    convertTemplateXlsx
+    formatDate
 }

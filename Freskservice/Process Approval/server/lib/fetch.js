@@ -1,6 +1,4 @@
 const moment = require('moment');
-const fetch = require("node-fetch");
-const base64 = require('base-64');
 
 async function getGroupApprovalRule(app_code, process_code, current_state) {
     const { response: groupApprovalRes } = await $request.invokeTemplate("getGroupApprovalRule", {
@@ -93,15 +91,18 @@ async function getEmailTemplate(email_code) {
     return JSON.parse(response).records[0].data;
 }
 
-async function updateTicket(args, ticket_id, body) {
-    const response = await fetch("https://trusisor.freshservice.com/api/v2/tickets/" + ticket_id, {
-        method: 'PUT',
-        body,
-        headers: {
-            "Authorization": "Basic " + base64.encode(args.iparams.apikey + ":X"),
-        }
+async function getDepartment(id) {
+    const { response } = await $request.invokeTemplate("getDepartment", {
+        context: { id }
     });
-    return response
+    return JSON.parse(response).department;
+}
+
+async function updateRequestedItem(ticket_id, id, body) {
+    await $request.invokeTemplate("updateRequestedItem", {
+        context: { ticket_id, id },
+        body: JSON.stringify(body)
+    });
 }
 
 exports = {
@@ -116,5 +117,6 @@ exports = {
     requestApproval,
     getServiceCategory,
     getEmailTemplate,
-    updateTicket
+    getDepartment,
+    updateRequestedItem
 };
