@@ -1,0 +1,38 @@
+{
+    "getGroupApprovalRule": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.approval_rule_id %>/records?query=app_code%20%3A%20%27<%= context.app_code %>%27%20AND%20process_code%20%3A%20%27<%= context.process_code %>%27%20AND%20current_state%20%3A%20%27<%= context.current_state %>%27",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getRequestedItems": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/tickets/<%= context.ticket_id %>/requested_items",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getServiceCategory": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.service_category_id %>/records?query=service_item_id%20%3A%20%27<%= context.service_item_id %>%27",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    }
+}

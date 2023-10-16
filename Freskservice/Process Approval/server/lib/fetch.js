@@ -105,6 +105,20 @@ async function updateRequestedItem(ticket_id, id, body) {
     });
 }
 
+async function updateTicket(ticket_id, body) {
+    await $request.invokeTemplate("updateTicket", {
+        context: { ticket_id },
+        body: JSON.stringify(body)
+    });
+}
+
+async function getRequesterGroup(id) {
+    const { response } = await $request.invokeTemplate("getRequesterGroup", {
+        context: { id }
+    });
+    return JSON.parse(response).requester_group;
+}
+
 exports = {
     getGroupApprovalRule,
     getProcessLog,
@@ -118,5 +132,7 @@ exports = {
     getServiceCategory,
     getEmailTemplate,
     getDepartment,
-    updateRequestedItem
+    updateRequestedItem,
+    updateTicket,
+    getRequesterGroup
 };

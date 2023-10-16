@@ -16,10 +16,10 @@ function generateProcess(list, selected) {
 
 function generateGroup(container, list, context) {
     const options = list?.map((item) => {
-        return { value: item.id, text: item.name };
+        return { value: String(item.id), text: item.name };
     });
     document.getElementById(container).choices = options
-    document.getElementById(container).value = context.detail?.[container]
+    document.getElementById(container).value = String(context.detail?.[container])
 }
 
 function generateState(id, list, context) {

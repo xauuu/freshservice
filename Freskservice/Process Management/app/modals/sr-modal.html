@@ -11,6 +11,8 @@
 <body>
     <div id="static-form-container">
         <fw-form id="formCreate">
+            <fw-form-control type="DROPDOWN" id="language" name="language" label="Language" required="true"
+                placeholder="Select Language"></fw-form-control>
             <fw-form-control type="DROPDOWN" id="service_item_id" name="service_item_id" label="Service Item"
                 required="true" placeholder="Select Service Item"></fw-form-control>
             <fw-form-control id="app_code" name="app_code" label="App Code" required="true"
@@ -20,10 +22,10 @@
             <fw-form-control type="PARAGRAPH" id="app_image" name="app_image" rows=3 maxlength=190 minlength=5
                 label="Enter App Image SVG" placeholder="App Image SVG">
             </fw-form-control>
-            <fw-form-control id="process_code" name="process_code" label="Enter Process Code" required="true"
-                placeholder="Process Code"></fw-form-control>
-            <fw-form-control id="process_name" name="process_name" label="Enter Process Name" required="true"
-                placeholder="Process Name"></fw-form-control>
+            <fw-form-control id="process_code" name="process_code" label="Process Code" required="true"
+                placeholder="Enter Process Code"></fw-form-control>
+            <fw-form-control id="process_name" name="process_name" label="Process Name" required="true"
+                placeholder="Enter Process Name"></fw-form-control>
             <fw-form-control id="process_url" name="process_url" label="Process_URL" required="true"
                 placeholder="Enter Process_URL"></fw-form-control>
             <fw-form-control type="PARAGRAPH" id="process_image" name="process_image" rows=3 maxlength=190 minlength=5
@@ -49,6 +51,10 @@
         window.frsh_init().then(function (client) {
             var context = {}
             var formCreate = document.querySelector("#formCreate")
+            document.getElementById("language").choices = [
+                { value: 'en', text: 'English' },
+                { value: 'vi', text: 'Vietnamese' }
+            ];
             document.getElementById("closeModal").addEventListener('click', function () {
                 client.instance.close();
             })

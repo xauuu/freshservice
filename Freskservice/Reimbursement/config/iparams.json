@@ -1,0 +1,49 @@
+{
+    "domain": {
+        "display_name": "Domain",
+        "description": "Please enter your domain",
+        "type": "text",
+        "required": true
+    },
+    "apikey": {
+        "display_name": "API key",
+        "description": "Please enter your api key",
+        "type": "text",
+        "required": true
+    },
+    "template_type": {
+        "display_name": "Template Type",
+        "description": "Please select the template type",
+        "type": "dropdown",
+        "options": [
+            "Word",
+            "Excel"
+        ],
+        "required": true,
+        "default_value": "Word"
+    },
+    "template_url": {
+        "display_name": "Template URL",
+        "description": "Please enter your template url",
+        "type": "paragraph",
+        "required": true
+    },
+    "approval_rule_id": {
+        "display_name": "Group Approval Rule ID",
+        "description": "Please enter your Approval Rule ID",
+        "type": "text",
+        "required": true
+    },
+    "service_category_id": {
+        "display_name": "Service Category ID",
+        "description": "Please enter your service category id",
+        "type": "text",
+        "required": true
+    },
+    "service_item_id": {
+        "display_name": "Service Item",
+        "description": "Please enter your service item id",
+        "type": "text",
+        "required": true
+    }
+}

@@ -26,7 +26,7 @@ exports = {
       if (changes.gf_int_01[0] < changes.gf_int_01[1] || changes.gf_int_01[1] == 0) {
         const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[1])
         console.log("DEBUG-APPROVAL: Group Approval Rule", approvalRule)
-        if (!approvalRule || Boolean(approvalRule.is_automator)) return
+        if (!approvalRule) return
         await handleApproval(args, ticket, approvalRule, true, requestedItems)
       }
       if (changes.gf_int_01[0] > changes.gf_int_01[1]) {
@@ -90,17 +90,20 @@ exports = {
 async function handleApproval(args, ticket, approvalRule, isUpdated = false, requestedItems) {
   console.log("APPROVAL")
   let requesters = [];
+  let approver = ""
   if (approvalRule.approver == 1) {
     //reporting manager
     const currentRequester = await fetch.getRequester(ticket.requester_id);
     const directRequester = await fetch.getRequester(currentRequester.reporting_manager_id);
     requesters = [directRequester];
+    approver = `Reporting Manager: ${directRequester?.first_name} ${directRequester?.last_name}`
   } else if (approvalRule.approver == 2) {
     //department head
     const department = await fetch.getDepartment(ticket.department_id)
     if (department.head_user_id) {
       const requester = await fetch.getRequester(department.head_user_id);
       requesters = [requester]
+      approver = `Head of ${ticket.department_name} Department: ${requester?.first_name} ${requester?.last_name}`
     }
   } else if (approvalRule.approver == 3) {
     //selected department
@@ -114,22 +117,33 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
         })
         const requester = await fetch.getRequester(department?.head_user_id);
         requesters = [requester]
+        approver = `Head of ${department?.name} Department: ${requester?.first_name} ${requester?.last_name}`
       }
     }
   } else if (approvalRule.approver == 4) {
     //group
-    requesters = await fetch.getRequesters(approvalRule.next_approval_group);
+    const [list, detail] = await Promise.all([fetch.getRequesters(approvalRule.next_approval_group), fetch.getRequesterGroup(approvalRule.next_approval_group)]);
+    requesters = list
+    approver = `Group ${detail.name}`
   }
   console.log('DEBUG: Group Approval', requesters)
+  fetch.updateTicket(ticket.id, {
+    "custom_fields": {
+      "ticket_status": approvalRule.name,
+      "pending_approver": `Pending ${approver}`,
+    }
+  })
   if (requesters && requesters.length > 0) {
     await Promise.all(requesters.map(async (item) => {
       await fetch.requestApproval(ticket.id, item.id, approvalRule.approval_type, `${item.first_name} ${item.last_name}, please approve.`);
-    })).catch(function (err) {
-      console.log(err);
+    })).then(async function () {
+      console.log('All requests were successful');
+      if (isUpdated)
+        sendEmailTemplate(approvalRule.approval_email_template_code, args.data, args.data.requester.email)
+      sendEmailTemplate(approvalRule.email_template_code, args.data, requesters.map(r => r.primary_email).join(","))
+    }).catch(function (err) {
+      console.error('An error occurred:', err);
     });
-    if (isUpdated)
-      sendEmailTemplate(approvalRule.approval_email_template_code, args.data, args.data.requester.email)
-    sendEmailTemplate(approvalRule.email_template_code, args.data, requesters.map(r => r.primary_email).join(","))
     // const approvals = await fetch.getTicketApprovals(ticket.id)
     // const jsonApprovals = JSON.stringify(utils.formattedApprovals(approvals))
     // const newVisible = processLog.sr_visible_to?.concat(';', requesters.map(r => r.id).join(";"))
