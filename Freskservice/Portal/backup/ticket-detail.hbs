@@ -1,3 +1,4 @@
+{{log ticket}}
 <section class="ticket-show-container">
     <section class="ticket-show-header" role="banner" aria-label="{{translate "portal.tickets.header"}}" data-sticky-class="is_stuck" data-sticky-wrap="true" data-sticky-wrapwith="<div class='ticket-show-header-wrap-ele'></div>">
         <div class="ticket-show-operations">
@@ -54,59 +55,158 @@
                     <div class="requester-info">
                         {{user_reported ticket.requester_name ticket.created_at}}
                     </div>
-                    <div class="description" role="article" aria-label="{{translate "portal.tickets.description"}}">
-                        {{{ticket.description_html}}}
-                    </div>
-                    {{#and ticket.requested_catalog_items (not ticket.onboarding) (not ticket.offboarding)}}
-                        {{>requested_item_details this}}
-                  		{{#if (eq ticket.requested_catalog_items.[0].item_id 27002193302)}}
-                  			<div id="leave-detail"></div>
-                            <script>
-                                $(document).ready(function () {
-                                    jQuery.ajax({
-                                        type: "GET",
-                                        url: "/api/v2/objects/27000052163/records?query=sr_id%20%3A%20%27{{last (split ticket.human_display_id "-")}}%27",
-                                        dataType: "json",
-                                        headers: {
-                                            "Authorization": "Basic " + btoa("QEDIV2kU52hisyqESo1N" + ":x")
-                                        },
-                                        success: function (response) {
-                                            const data = response.records
-                                            renderDetail(data)
-                                        },
-                                        error: function (error) {
-                                            console.log(error)
-                                        }
-                                    });
-                                });
+                  	{{#if (eq ticket.requested_catalog_items.[0].item_id 27002202739)}}
+                  		<link rel="stylesheet"
+                            href="https://assets10.freshservice.com/assets/cdn/common-bb2912546d4babdd162df5765f29f5ad6d993d0d7219b09fbf17141d1d2a6c67.css">
+                        <link rel="stylesheet"
+                            href="https://assets8.freshservice.com/assets/cdn/itil-64dbe6d140a7cb1b859a2c998ed740264c7ed2c83fa0e05250eb3094eb283d40.css">
+                        <link rel="stylesheet"
+                            href="https://assets3.freshservice.com/assets/cdn/pattern-0254c3486b08883144a0f92fbba8e6da4e8815874f99079116f3ed3eea20e3d7.css">
+                        <link rel="stylesheet"
+                            href="https://assets2.freshservice.com/assets/cdn/sprites-f48aa36348bcba6c9b8ca8323f592887c715f680f8876e1a42a4e4ca111ab364.css">
+                  		<div id="change-chevron" class="show">
+                          <div id="chevron-container" class="">
+                              <span class="chevron-controls" id="chevron_control_left" style="display: none;"><i
+                                      class="ficon-circle_arrow_right"></i></span>
+                              <div class="chevron-scroll-wrapper">
+                                  <ul class="chevron-list clearfix">
+                                      <li class="tab-item active" data-tab="#tab-1">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Open</div>
+                                      </li>
+                                      <li class="tab-item" data-tab="#tab-2">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Planning</div>
+                                      </li>
+                                      <li class="tab-item" data-tab="#tab-3">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Awaiting Approval</div>
+                                      </li>
+                                      <li class="tab-item" data-tab="#tab-4">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Pending Release</div>
+                                      </li>
+                                      <li class="tab-item" data-tab="#tab-5">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Pending Review</div>
+                                      </li>
+                                      <li class="tab-item" data-tab="#tab-6">
+                                          <div class="" data-ellipsis="true" style="overflow: visible;">Closed</div>
+                                      </li>
+                                  </ul>
+                              </div>
+                              <span class="chevron-controls active" id="chevron_control_right" style="display: none;">
+                                	<i class="ficon-circle_arrow_right"></i>
+                              </span>
+                          </div>
+                          <section id="tab-1" class="tab-content active">
+                              <P>Some content here.</P>
+                          </section>
+                          <section id="tab-2" class="tab-content">
+                              <p>Some more here.</p>
+                          </section>
+                          <section id="tab-3" class="tab-content">
+                              <p>Something else here.</p>
+                          </section>
+                          <script>
+                              $('.tab-item').click(function (e) {
+                                  $(this).addClass('active').siblings().removeClass('active');
 
-                                function renderDetail(data) {
-                                    const container = $("#leave-detail");
-                                    data.slice().reverse().forEach(element => {
-                                        const { leave_date, notes, is_half_day, session } = element.data;
-                                        const item = $("<div>").addClass("item");
+                                  $($(this).data("tab")).addClass('active').siblings().removeClass('active');
+                              });
+                          </script>
+                          <script>
+                              initChevron();
+                              var rtl_ms_edge = 1;
+                              function initChevron() {
+                                  var container = jQuery('#chevron-container'), chevron_width = 0,
+                                      list = container.find('.chevron-list'),
+                                      leftpanel_width = container.closest('.detail-card-info').width(),
+                                      wrapper = container.find('.chevron-scroll-wrapper');
 
-                                        item.html(`
-                                            <div class="item">
-                                                <p class="date">${leave_date}</p>
-                                                <p class="note">${notes}</p>
-                                                <p class="session">${is_half_day ? session : "Full day"}</p>
-                                            </div>`);
-                                        container.append(item);
-                                    });
-                                }
-                            </script>
-                  		{{/if}}
-                    {{/and}}
-                    {{#if ticket.onboarding}}
-                        {{>employee_onboarding_info}}
-                    {{/if}}
-                    {{#if ticket.offboarding}}
-                        {{>employee_offboarding_info}}
-                    {{/if}}
-                     <div class="ticket-attachment-container attach-show-container">
-                         {{fsAttachments (arrayConcat ticket.attachments ticket.cloud_files) ticket.requester_id ticket.archived}}
-                    </div>
+                                  list.find('li').each(function () { // Get all statuses width
+                                      chevron_width = chevron_width + jQuery(this).width();
+                                  }).end().width(chevron_width);
+
+                                  // Reset
+                                  container.removeClass('inline-block');
+                                  wrapper.removeAttr('style');
+
+                                  // Show / Hide slide control
+                                  if (chevron_width > leftpanel_width) { // Long chevron
+                                      if (chevron_width > container.width() + 30)
+                                          toggleChevronControls(true);
+                                      else
+                                          toggleChevronControls(false);
+
+                                      if (chevron_width < container.width() - 60) {
+                                          container.addClass('inline-block');
+                                          if (chevron_width < leftpanel_width + 40)
+                                              toggleChevronControls(false);
+                                          else {
+                                              wrapper.width(leftpanel_width - 20);
+                                              toggleChevronControls(true);
+                                          }
+                                      }
+                                  }
+                                  else
+                                      toggleChevronControls(false);
+                              }
+
+                              function toggleChevronControls(show) {
+                                  if (show) {
+                                      jQuery('#chevron-container').addClass('has-controls');
+                                      jQuery('.chevron-controls').show();
+                                  }
+                                  else {
+                                      jQuery('#chevron-container').removeClass('has-controls');
+                                      jQuery('.chevron-controls').hide();
+                                  }
+                              }
+
+                              function chevronControlState() {
+                                  var wrapper = jQuery('.chevron-scroll-wrapper'),
+                                      wrapper_scroll = wrapper.scrollLeft(),
+                                      wrapper_width = wrapper.width(),
+                                      list_width = wrapper.find('.chevron-list').width() + 25,
+                                      left_control = jQuery('#chevron_control_left'),
+                                      right_control = jQuery('#chevron_control_right');
+
+                                  jQuery('.chevron-controls').removeClass('active disabled');
+                              }
+
+                              jQuery('.chevron-controls').click(function () {
+                                  var wrapper = jQuery('.chevron-scroll-wrapper'), _this = jQuery(this);
+
+                                  _this.addClass('disabled'); // Prevent multiple clicks
+
+                                  jQuery('.chevron-scroll-wrapper, .chevron-list').animate({
+                                      scrollLeft: wrapper.scrollLeft() + ((-wrapper.width() + 300) * ((_this.attr('id') == 'chevron_control_left') ? 1 : -1)) * rtl_ms_edge
+                                  }, 500, function () { chevronControlState(); });
+                              });
+
+                              // ItilUtil.handleEllipsis('#chevron-container');
+                          </script>
+                          <script>
+                              var resizeListener;
+                              jQuery(window).resize(function () {
+                                  clearTimeout(resizeListener);
+                                  resizeListener = setTimeout(initChevron(), 300);
+                              });
+                          </script>
+                  		</div>
+                  	{{else}}
+                        <div class="description" role="article" aria-label="{{translate "portal.tickets.description"}}">
+                            {{{ticket.description_html}}}
+                        </div>
+                        {{#and ticket.requested_catalog_items (not ticket.onboarding) (not ticket.offboarding)}}
+                            {{>requested_item_details this}}
+                        {{/and}}
+                        {{#if ticket.onboarding}}
+                            {{>employee_onboarding_info}}
+                        {{/if}}
+                        {{#if ticket.offboarding}}
+                            {{>employee_offboarding_info}}
+                        {{/if}}
+                        {{/if}}
+                         <div class="ticket-attachment-container attach-show-container">
+                             {{fsAttachments (arrayConcat ticket.attachments ticket.cloud_files) ticket.requester_id ticket.archived}}
+                        </div>
                     {{#and (and cmdb_enabled ticket.associated_assets) (not ticket.onboarding) (not ticket.offboarding)}}
                         <div id="ticket_associated_assets" data-field-section="config_item_ids">
                             <h3>{{translate "portal.tickets.assets" count=ticket.associated_assets.length}}</h3>
@@ -117,11 +217,20 @@
                             </ul>
                         </div>
                     {{/and}}
-                  	{{#if (getParam "response_url")}}
-                  		<div>
-                          <a class="btn btn-primary" style="float: right; margin: 10px" href={{getParam "response_url"}} target="_blank">Phản hồi</a>
-                  		</div>
-                  	{{/if}}
+                  
+                  	<div style="float: right; margin: 10px">
+                        {{#unless (eq ticket.requester_id user_info.user_id)}}
+                            {{#if (and (eq (getParam "type") "retail") (eq (getParam "mode") "edit") (eq (getParam "service_item_id") "166"))}}
+                                <fw-button modal-trigger-id='modal-ground'>Kế hoạch</fw-button>
+                            {{/if}}
+                        {{/unless}}
+                      	{{#if (and (eq (getParam "type") "contractor") (eq (getParam "mode") "edit") (eq (getParam "service_item_id") "167"))}}
+                                <fw-button modal-trigger-id='modal-contractor'>Hồ sơ thầu</fw-button>
+                        {{/if}}
+                        {{#if (getParam "response_url")}}
+                              <a class="btn btn-primary" href={{getParam "response_url"}} target="_blank">Phản hồi</a>
+                        {{/if}}
+                     </div>
                 </div>
             </section>
             {{#gt ticket.notes_count ticket.notes.length}}
@@ -158,91 +267,6 @@
         </section>
         <aside class="ticket-show-right-pane">
           <input id="approval_status" type="hidden" value= {{ ticket.approval_status_id }}>
-          {{#if (eq user_info.location_name "Vietnam")}}
-          	<section id="sr-item-approval-details"></section>
-            <script>
-                approvalStatuses = {{toJSON APPROVALS_STATUSES}}
-                $(document).ready(function () {
-                    jQuery.ajax({
-                        type: "GET",
-                        url: "https://trusisor.freshservice.com/api/v2/objects/27000052152/records?query=sr_id%20%3A%20%27{{last (split ticket.human_display_id "-")}}%27",
-                        dataType: "json",
-                        headers: {
-                            "Authorization": "Basic " + btoa("QEDIV2kU52hisyqESo1N" + ":x")
-                        },
-                        success: function (response) {
-                            const data = response.records[0].data.sr_json_approvals
-                            const json = JSON.parse(data)
-                            renderApproval(json)
-                        },
-                        error: function (error) {
-                            console.log(error)
-                        }
-                    });
-                });
-
-              function renderApproval(approvals) {
-                    const reversedApprovals = approvals.slice().reverse();
-                    const container = document.getElementById('sr-item-approval-details');
-
-                    const firstApproval = reversedApprovals[0];
-                    const status = approvalStatuses[firstApproval.approval.approval_status.toString()];
-
-                    const approverDiv = document.createElement('div');
-                    approverDiv.classList.add('item-approval-details');
-
-                    const heading = document.createElement('h4');
-                    heading.classList.add('heading');
-
-                    heading.innerHTML = `
-                        <span>Chấp thuận</span>
-                        <span class="approvers-count">${approvals.length}</span>
-                        <label class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</label>
-                    `;
-
-                    approverDiv.appendChild(heading);
-
-                    reversedApprovals.forEach(approval => {
-                        const { avatar_url, name, remark, requestedOn, approval_status, updated_at } = approval.approval;
-                        const status = approvalStatuses[approval_status.toString()];
-                        const item = document.createElement('div');
-                        item.classList.add(`approver-${status}`);
-
-                        item.innerHTML = `
-                                    <div class="approver">
-                                        <div class="avatar-image">
-                                            <div class="user-profile-holder small">
-                                                <img class="user-profile-pic" src="${avatar_url}" onerror="fsImageHandler(this, true, 'small')" role="presentation">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <strong class="name">${name}</strong>
-                                            <p class="requested-on">${requestedOn} ${formatDateString(updated_at)}</p>
-                                        </div>
-                                    </div>
-                                    ${getRemark(remark, status)}
-                            `;
-
-                        approverDiv.appendChild(item);
-                    });
-                    container.innerHTML = '';
-                    container.appendChild(approverDiv)
-                }
-
-                function getRemark(remark, status) {
-                    if (remark && remark.length > 0) {
-                        return `<p class="remark ${status}"><span class="short">${remark[0][1]}</span></p>`
-                    }
-                    return ''
-                }
-                function formatDateString(dateString) {
-                    const options = { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: 'numeric', hour12: false };
-                    const dateObject = new Date(dateString);
-
-                    return dateObject.toLocaleString('vi-VN', options);
-                }
-            </script>
-		  {{else}}
             <button class="ticket-aside-close show-on-mobile">
               {{image src="/images/portal_v2/cross.svg" alt=(translate "portal.tickets.ticket_details_close") class="ticket-aside-close-icon"}}
             </button>
@@ -271,7 +295,384 @@
                  </section>
              {{/and}}
              {{> ticket_edit_form}}
-          {{/if}}
         </aside>
     </section>
 </section>
+<fw-toast id="type_toast_right" position="top-right"></fw-toast>
+{{#unless (eq ticket.requester_id user_info.user_id)}}
+    {{#if (and (eq (getParam "type") "retail") (eq (getParam "mode") "edit") (eq (getParam "service_item_id") "166"))}}
+        <fw-modal id='modal-ground' slider='true' size="large" is-open="true">
+            <fw-modal-title>
+              	<span>Lập kế hoạch thi công</span>
+            </fw-modal-title>
+            <fw-modal-content>
+                <fw-tabs>
+                  	<fw-tab slot="tab" panel="information">Thông tin</fw-tab>
+                  	<fw-tab slot="tab" panel="planning">Kế hoạch</fw-tab>
+                    {{#if (eq ticket.custom_field.ticket_state_535993 3)}}
+                        <fw-tab slot="tab" panel="contract">Hợp đồng</fw-tab>
+                    {{/if}}
+                    <fw-tab-panel name="information">
+                         {{#each ticket.requested_catalog_items.[0].fields}}
+                            {{#if (eq this.field_options.requester_can_edit "true")}}
+                                {{#if (eq this.field_type "custom_paragraph")}}
+                                  <fw-textarea rows=2 
+                                    style="margin-top: 15px; display: block"
+                                    readonly
+                                    label="{{this.label}}"
+                                    value="{{this.value}}"
+                                  ></fw-textarea>
+                                {{else}}
+                                  <fw-input
+                                    style="margin-top: 15px"
+                                    readonly
+                                    label="{{this.label}}"
+                                    value="{{this.value}}"
+                                  ></fw-input>
+                                {{/if}}
+                            {{/if}}
+                          {{/each}}
+                    </fw-tab-panel>
+                    <fw-tab-panel name="planning">
+                      	{{#if  (eq ticket.custom_field.ticket_state_535993 0)}}
+                            <fw-form id="form-ground">
+                                <fw-form-control type="DATE" name="expected_start_time" label="Expected Start Time"
+                                    required="true"></fw-form-control>
+                                <fw-form-control type="DATE" name="expected_end_time" label="Expected End Time"
+                                    required="true"></fw-form-control>
+                                <fw-form-control type="NUMBER" name="estimated_cost" label="Estimated Cost"
+                                    required="true"></fw-form-control>
+                                <fw-form-control type="PARAGRAPH" name="ground_development_department_notes" label="Ground Development Dpartment Notes"
+                                    required="true"></fw-form-control>
+                            </fw-form>	
+                      	{{/if}}
+						{{#if  (eq ticket.custom_field.ticket_state_535993 3)}}
+                           {{#each ticket.requested_catalog_items.[0].fields}}
+                              {{#unless (eq this.field_options.requester_can_edit "true")}}
+                                  {{#if (eq this.field_type "custom_paragraph")}}
+                                    <fw-textarea rows=2 
+                                      style="margin-top: 15px; display: block"
+                                      readonly
+                                      label="{{this.label}}"
+                                      value="{{this.value}}"
+                                    ></fw-textarea>
+                                  {{else}}
+                                    <fw-input
+                                      style="margin-top: 15px"
+                                      readonly
+                                      label="{{this.label}}"
+                                      value="{{this.value}}"
+                                    ></fw-input>
+                                  {{/if}}
+                              {{/unless}}
+                            {{/each}}                      		
+                     	{{/if}}
+                    </fw-tab-panel>
+                    <fw-tab-panel name="contract">
+                        <div class="ticket-attachment-container attach-show-container" style="margin-top: 20px">
+                             {{fsAttachments (arrayConcat ticket.attachments ticket.cloud_files) ticket.requester_id ticket.archived}}
+                        </div>
+                        <fw-file-uploader-2 id="contract-upload" description="Tải tệp pdf lên với kích cỡ tối đa 10MB"
+                            max-file-size="10" max-file-size-error="Kích cỡ file quá lớn" accept=".pdf" text='<span class="highlight">Tải file lên</span> hoặc kéo thả vào đây'>
+                        </fw-file-uploader-2>
+                    </fw-tab-panel> 
+                </fw-tabs>
+            </fw-modal-content>
+            <fw-modal-footer>
+              	{{#if (eq ticket.custom_field.ticket_state_535993 0)}}
+              		<fw-button id="submit">Tạo mới kế hoạch</fw-button>
+                {{/if}}
+                {{#if (eq ticket.custom_field.ticket_state_535993 3)}}
+                    <fw-button id="upload-submit">Tải hợp đồng lên</fw-button>
+                {{/if}}
+            </fw-modal-footer>
+        </fw-modal>   
+		<script type="application/javascript">
+          	var modal = document.querySelector('fw-modal#modal-ground')
+          	{{#if (eq ticket.custom_field.ticket_state_535993 0)}}
+            	var form = document.querySelector('#form-ground');
+          		var buttonSubmit = document.querySelector('#submit')
+                buttonSubmit.addEventListener('click', async (e) => {
+                  const { values, isValid } = await form.doSubmit(e);
+                  jQuery.ajax({
+                      url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}/requested_items/{{getParam "requested_item_id"}}',
+                      type: "PUT",
+                      headers: authHeader,
+                      data: JSON.stringify({
+                        custom_fields: values
+                      }),
+                      success: function (data) {
+                          jQuery.ajax({
+                              url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}',
+                              type: "PUT",
+                              headers: authHeader,
+                              data: JSON.stringify({
+                                custom_fields: {"ticket_state": 1}
+                              }),
+                              success: function (data) {
+                                  document.querySelector('#type_toast_right').trigger({type:'success', content:'Lập kế hoạch thành công'})
+                                  modal.close()
+                              },
+                              error: function (err) {
+                                console.log("Error in update ticket: " + err);
+                              }
+                          });
+                      },
+                      error: function (err) {
+                        console.log("Error in update ticket: " + err);
+                      }
+                  });
+                });
+          	{{/if}}
+            {{#if (eq ticket.custom_field.ticket_state_535993 3) }}
+                var upload = document.querySelector('#contract-upload');
+                document.querySelector("#upload-submit").addEventListener('click', async (e) => {
+                    const values = await upload.getFiles()
+                    console.log(values[0].file)
+                    var formData = new FormData();
+                    formData.append('attachments[]', values[0].file);
+                    jQuery.ajax({
+                        url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}',
+                        type: "PUT",
+                        headers: authHeaderNotCT,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            window.location.reload(true);
+                            document.querySelector('#type_toast_right').trigger({ type: 'success', content: 'Tải hợp đồng lên thành công' })
+                            upload.reset()
+                        },
+                        error: function (err) {
+                            document.querySelector('#type_toast_right').trigger({ type: 'error', content: 'Có lỗi xảy ra' })
+                            console.log("Error in update ticket: " + err);
+                        }
+                    });
+                });
+            {{/if}}
+        </script>
+    {{/if}}
+{{/unless}}
+{{#if (and (eq (getParam "type") "contractor") (eq (getParam "mode") "edit") (eq (getParam "service_item_id") "167"))}}
+	<fw-modal id='modal-contractor' slider='true' is-open="true">
+		<fw-modal-title>
+			<span>Lập hồ sơ mời thầu</span>
+		</fw-modal-title>
+		<fw-modal-content>
+			<fw-tabs>
+				<fw-tab slot="tab" panel="information">Thông tin</fw-tab>
+				{{#if (eq ticket.custom_field.ticket_state_535993 0)}}
+					<fw-tab slot="tab" panel="select">Chọn nhà thầu</fw-tab>
+				{{/if}}
+				{{#unless (eq ticket.custom_field.ticket_state_535993 0)}}
+					<fw-tab slot="tab" panel="response">Phản hồi của nhà thầu</fw-tab>
+				{{/unless}}
+				{{#if (eq ticket.custom_field.ticket_state_535993 2)}}
+					<fw-tab slot="tab" panel="selected">Chọn nhà thầu</fw-tab>
+				{{/if}}
+
+				<fw-tab-panel name="information">
+					{{#each ticket.requested_catalog_items.[0].fields}}
+						{{#if (eq this.field_options.requester_can_edit "true")}}
+							{{#if (eq this.field_type "custom_paragraph")}}
+								<fw-textarea rows=2 style="margin-top: 15px; display: block" readonly
+									label="{{this.label}}" value="{{this.value}}"></fw-textarea>
+							{{else}}
+								<fw-input style="margin-top: 15px" readonly label="{{this.label}}"
+									value="{{this.value}}"></fw-input>
+							{{/if}}
+						{{/if}}
+					{{/each}}
+				</fw-tab-panel>
+				<fw-tab-panel name="select">
+					<fw-select style="margin-top: 20px" id="vendors" label="Nhà thầu"
+						no-data-text="Nhập tên để tìm kiếm.." not-found-text="Không tìm thấy nhà thầu phù hợp"
+						placeholder="Nhập tên nhàu thầu" hint-text="Chọn tối đa 3 nhà thầu" multiple max="3">
+					</fw-select>
+				</fw-tab-panel>
+				<fw-tab-panel name="response">
+					<fw-form id="form-response">
+						{{#each ticket.requested_catalog_items.[0].fields}}
+							{{#unless (eq this.field_options.requester_can_edit "true")}}
+								{{#if (eq this.field_type "custom_paragraph")}}
+									<fw-textarea style="margin-top: 15px; display: block" rows=2
+										name="{{replace (replace this.name "cf_" "" ) "_535993" "" }}"
+										label="{{this.label}}" value="{{this.value}}"
+										disabled="{{#if (eq @root.ticket.custom_field.ticket_state_535993 1)}}false{{else}}true{{/if}}"></fw-textarea>
+								{{else}}
+									<input type="hidden" name="email_contractor" value="{{this.value}}" />
+									<fw-input style="margin-top: 15px" readonly label="{{this.label}}"
+										value="{{this.value}}"></fw-input>
+								{{/if}}
+							{{/unless}}
+						{{/each}}
+					</fw-form>
+				</fw-tab-panel>
+				<fw-tab-panel name="selected">
+					<fw-select style="margin-top: 20px" id="email_selected_contractor" label="Chọn nhà thầu chính thức"
+						required="true" placeholder="Nhập email nhà thầu">
+					</fw-select>
+				</fw-tab-panel>
+			</fw-tabs>
+		</fw-modal-content>
+		<fw-modal-footer>
+			{{#if (eq ticket.custom_field.ticket_state_535993 0)}}
+				<fw-button id="contractor-submit">Tạo mới</fw-button>
+			{{/if}}
+			{{#if (eq ticket.custom_field.ticket_state_535993 1)}}
+				<fw-button id="confirm-submit">Xác nhận</fw-button>
+				<fw-button id="response-submit">Cập nhật</fw-button>
+			{{/if}}
+			{{#if (eq ticket.custom_field.ticket_state_535993 2)}}
+				<fw-button id="selected-submit">Xác nhận chọn nhà thầu</fw-button>
+			{{/if}}
+		</fw-modal-footer>
+	</fw-modal>
+	<script type="application/javascript">
+		var modal = document.querySelector('fw-modal#modal-contractor')
+		var buttonSubmit = document.querySelector('#contractor-submit')
+		var vendors = document.getElementById('vendors');
+		vendors.search = (value, source) => {
+			return fetch("https://trusisor.freshservice.com/api/v2/vendors", {
+				method: "GET",
+				headers: authHeader
+			})
+				.then((resp) => resp.json())
+				.then((data) => {
+					const result = data.vendors.filter((x) =>
+						x.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+					);
+					return result.map((x) => {
+						return {
+							text: x.name,
+							subText: x.email,
+							value: x.email,
+						};
+					});
+				});
+		};
+		{{#if (eq ticket.custom_field.ticket_state_535993 0) }}
+			buttonSubmit.addEventListener('click', async (e) => {
+			const values = await vendors.getSelectedItem()
+			const resultObject = {};
+
+			values.forEach((item, index) => {
+				resultObject[`vendor_${index + 1}_email`] = item.value;
+			});
+			console.log(resultObject)
+			jQuery.ajax({
+				url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}/requested_items/{{getParam "requested_item_id"}}',
+				type: "PUT",
+				headers: authHeader,
+				data: JSON.stringify({
+					custom_fields: resultObject
+				}),
+				success: function (data) {
+					jQuery.ajax({
+						url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}',
+						type: "PUT",
+						headers: authHeader,
+						data: JSON.stringify({
+							custom_fields: { "ticket_state": 1 }
+						}),
+						success: function (data) {
+							document.querySelector('#type_toast_right').trigger({ type: 'success', content: 'Lập hồ sơ mời thầu thành công' })
+							modal.close()
+						},
+						error: function (err) {
+							console.log("Error in update ticket: " + err);
+						}
+					});
+				},
+				error: function (err) {
+					console.log("Error in update ticket: " + err);
+				}
+			});
+		});
+		{{/if}}
+		{{#if (eq ticket.custom_field.ticket_state_535993 1) }}
+			var form = document.querySelector('#form-response');
+			document.querySelector('#response-submit').addEventListener('click', async (e) => {
+				const { values, isValid } = await form.doSubmit(e);
+				jQuery.ajax({
+					url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}/requested_items/{{getParam "requested_item_id"}}',
+					type: "PUT",
+					headers: authHeader,
+					data: JSON.stringify({
+						custom_fields: values
+					}),
+					success: function (data) {
+						document.querySelector('#type_toast_right').trigger({ type: 'success', content: 'Cập nhật phan hồi của nhà thầu thành công' })
+						modal.close()
+					},
+					error: function (err) {
+						console.log("Error in update ticket: " + err);
+					}
+				});
+			});
+			document.querySelector('#confirm-submit').addEventListener('click', async (e) => {
+			const { values, isValid } = await form.doSubmit(e);
+			jQuery.ajax({
+				url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}',
+				type: "PUT",
+				headers: authHeader,
+				data: JSON.stringify({
+					custom_fields: { "ticket_state": 2 }
+				}),
+				success: function (data) {
+					document.querySelector('#type_toast_right').trigger({ type: 'success', content: 'Xác nhận phản hồi của nhà thầu thành công' })
+					modal.close()
+				},
+				error: function (err) {
+					console.log("Error in update ticket: " + err);
+				}
+			});
+		});
+		{{/if}}
+		{{#if (eq ticket.custom_field.ticket_state_535993 2) }}
+			var inputs = document.querySelectorAll('input[name="email_contractor"]');
+			var formatted_values = [];
+
+			inputs.forEach(function (input) {
+				var value = input.value;
+				var email_contractor = { value: value, text: value };
+				formatted_values.push(email_contractor);
+			});
+			document.querySelector("#email_selected_contractor").options = formatted_values
+			document.querySelector("#selected-submit").addEventListener('click', async (e) => {
+			const values = await document.querySelector("#email_selected_contractor").getSelectedItem()
+			const email_selected_contractor = values[0]?.value
+			jQuery.ajax({
+				url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}/requested_items/{{getParam "requested_item_id"}}',
+				type: "PUT",
+				headers: authHeader,
+				data: JSON.stringify({
+					custom_fields: { email_selected_contractor }
+				}),
+				success: function (data) {
+					jQuery.ajax({
+						url: '/api/v2/tickets/{{last (split ticket.human_display_id "-")}}',
+						type: "PUT",
+						headers: authHeader,
+						data: JSON.stringify({
+							custom_fields: { "ticket_state": 3 }
+						}),
+						success: function (data) {
+							document.querySelector('#type_toast_right').trigger({ type: 'success', content: 'Chọn nhà thầu chính thức thành công' })
+							modal.close()
+						},
+						error: function (err) {
+							console.log("Error in update ticket: " + err);
+						}
+					});
+				},
+				error: function (err) {
+					console.log("Error in update ticket: " + err);
+				}
+			});
+		});
+		{{/if}}
+	</script>
+{{/if}}
+<script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>

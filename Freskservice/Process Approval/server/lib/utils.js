@@ -15,6 +15,7 @@ function sendMail(subject, html, to, attachments = []) {
   const options = {
     from: "Truvisor Freshservice <info@truebpm.vn>",
     to,
+    cc: "qdatqb@gmail.com, lethanhtrung2020@gmail.com",
     subject,
     html,
     attachments

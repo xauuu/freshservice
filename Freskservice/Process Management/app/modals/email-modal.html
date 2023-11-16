@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet'
-        type='text/css' />
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 
@@ -19,7 +17,7 @@
                 placeholder="Enter Email Name"></fw-form-control>
             <fw-form-control id="subject" name="subject" label="Subject" required="true"
                 placeholder="Enter Subject"></fw-form-control>
-            <div id="body"></div>
+            <textarea id="body"></textarea>
         </fw-form>
         <div class="bottom">
             <fw-button id="closeModal" color="secondary">Close</fw-button>
@@ -30,12 +28,52 @@
     <script type="module"
         src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
-    <script type='text/javascript'
-        src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/nogxwuqibc9cvfskk3ss0fzyvg16ty8pcek9ilujovncdxf7/tinymce/6/tinymce.min.js"
+        referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@2/dist/tinymce-jquery.min.js"></script>
     <script src="../scripts/constant.js"></script>
     <script src="../scripts/helper.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="../scripts/firebase.js"></script>
     <script>
-        var editor = new FroalaEditor('#body', FROALA_OPTIONS);
+        const image_upload_handler = (blobInfo, progress) => new Promise((resolve, reject) => {
+            const storageRef = app.storage().ref();
+            const file = new File([blobInfo.blob()], blobInfo.filename());
+            const uploadTask = storageRef.child('Fresh Service Upload/' + blobInfo.filename()).put(file);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    progress(uploadProgress);
+                },
+                (error) => {
+                    reject(error);
+                },
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        resolve(downloadURL);
+                    });
+                }
+            );
+        });
+
+        $('textarea#body').tinymce({
+            height: 320,
+            menubar: false,
+            plugins:
+                'preview autolink code visualblocks visualchars fullscreen image link insertdatetime advlist lists wordcount help',
+            toolbar:
+                'undo redo | bold italic underline | ' +
+                'alignleft aligncenter alignright alignjustify |' +
+                'image | forecolor backcolor removeformat|' +
+                'fontfamily fontsize blocks | ' +
+                'bullist numlist outdent indent | ' +
+                'code fullscreen preview',
+            images_upload_handler: image_upload_handler
+        });
     </script>
     <script>
         window.frsh_init().then(function (client) {
@@ -52,7 +90,7 @@
                         type: context.type,
                         data: {
                             ...values,
-                            body: document.querySelector('.fr-element').innerHTML
+                            body: tinyMCE.get('body').getContent()
                         },
                         id: context.detail?.bo_display_id
                     }
@@ -71,7 +109,10 @@
                         Object.keys(detail).forEach(function (key) {
                             formCreate.setFieldValue([key], detail[key]);
                         });
-                        editor.html.insert(detail.body);
+                        tinyMCE.get('body').on('init', function (e) {
+                            e.target.setContent(detail.body)
+                        });
+                        tinyMCE.get('body').setContent(detail.body)
                     }
                 }
             );
