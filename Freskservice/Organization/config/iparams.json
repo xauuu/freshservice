@@ -1,0 +1,20 @@
+{
+    "domain": {
+        "display_name": "domain",
+        "description": "Please enter your domain",
+        "type": "text",
+        "required": true
+    },
+    "apikey": {
+        "display_name": "apikey",
+        "description": "Please enter your apikey",
+        "type": "text",
+        "required": true
+    },
+    "workspace_id": {
+        "display_name": "workspace_id",
+        "description": "Please enter your workspace_id",
+        "type": "text",
+        "required": true
+    }
+}

@@ -22,7 +22,9 @@
         "getDepartment": {},
         "updateRequestedItem": {},
         "updateTicket": {},
-        "getRequesterGroup": {}
+        "getRequesterGroup": {},
+        "getAgentGroup": {},
+        "createApprovalLog": {}
       }
     }
   },

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>New Department</title>
+        <style>
+            .bottom {
+                display: flex;
+                gap: 15px;
+                justify-content: end;
+                position: fixed;
+                bottom: 0;
+                right: 8px;
+                background-color: white;
+                padding-top: 20px;
+                padding-bottom: 10px;
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="static-form-container">
+            <fw-select
+                id="parent_department"
+                type="DROPDOWN"
+                name="parent_department"
+                placeholder="Enter Parent Department"
+                label="Parent Department"
+            ></fw-select>
+            <fw-form id="fw-static-form">
+                <fw-form-control id="name" type="TEXT" name="name" label="Department Name" required></fw-form-control>
+                <fw-form-control id="hod" type="DROPDOWN" name="head_user_id" placeholder="Head of Department" label="Head of Department"></fw-form-control>
+                <fw-form-control id="description" type="PARAGRAPH" name="description" label="Department Description"></fw-form-control>
+            </fw-form>
+            <fw-select id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
+
+            <div class="bottom">
+                <fw-button id="closeModal" color="secondary">Close</fw-button>
+                <fw-button id="submit" color="primary">Create</fw-button>
+            </div>
+        </div>
+        <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
+        <script>
+            window.frsh_init().then(function (client) {
+                var form = document.querySelector("#fw-static-form");
+                document.getElementById("closeModal").addEventListener("click", function () {
+                    client.instance.close();
+                });
+                document.querySelector("#submit").addEventListener("click", async (e) => {
+                    const { values, isValid } = await form.doSubmit(e);
+                    const parentSelected = await document.getElementById("parent_department").getSelectedItem();
+                    const parent = parentSelected[0];
+                    if (parent) {
+                        var parent_department = {
+                            parent_department_id: Number(parent.value)
+                        };
+                    }
+                    const relatedGroup = await document.getElementById("related_group_ids").getSelectedItem();
+                    if (relatedGroup.length > 0) {
+                        var related_group = {
+                            related_group_ids: relatedGroup.map((item) => item.value).join(";")
+                        };
+                    }
+                    client.instance.send({
+                        message: {
+                            type: "CREATE_DEPARTMENT",
+                            data: {
+                                ...values,
+                                head_user_id: Number(values.head_user_id),
+                                custom_fields: {
+                                    is_visible: true,
+                                    ...parent_department,
+                                    ...related_group
+                                }
+                            }
+                        }
+                    });
+                });
+
+                client.instance.receive(function (event) {
+                    let data = event.helper.getData();
+                    if (data.close_modal) client.instance.close();
+                });
+                client.instance.context().then(function (c) {
+                    context = c.data;
+                    const { requesters, departments, requester_groups } = context;
+                    generateDepartment("parent_department", departments);
+                    generateRequesters("hod", requesters);
+                    generateRequesterGroup("related_group_ids", requester_groups);
+                });
+            });
+            function generateDepartment(container, list) {
+                const options = list?.map((item) => {
+                    return { value: String(item.id), text: `${item.name}` };
+                });
+                document.getElementById(container).options = options;
+            }
+            function generateRequesters(container, list) {
+                const options = list?.map((item) => {
+                    return { value: String(item.id), text: `${item.first_name} ${item.last_name} (${item.primary_email})` };
+                });
+                document.getElementById(container).choices = options;
+            }
+            function generateRequesterGroup(container, list) {
+                const options = list?.map((item) => {
+                    return { value: String(item.id), text: `${item.name}` };
+                });
+                document.getElementById(container).options = options;
+            }
+        </script>
+    </body>
+</html>

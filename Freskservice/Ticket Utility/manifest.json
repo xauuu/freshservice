@@ -17,7 +17,8 @@
         "addAgentToTicket": {},
         "getAllAgent": {},
         "getScheduleByAgent": {},
-        "updateScheduleCalendar": {}
+        "updateScheduleCalendar": {},
+        "getRequesters": {}
       }
     }
   },

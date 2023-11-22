@@ -11,8 +11,8 @@
 <body>
     <div id="static-form-container">
         <fw-form id="formCreate">
-            <fw-form-control type="DROPDOWN" id="language" name="language" label="Language" required="true"
-                placeholder="Select Language"></fw-form-control>
+            <fw-form-control type="DROPDOWN" id="workspace_id" name="workspace_id" label="Workspace" required="true"
+                placeholder="Select Workspace"></fw-form-control>
             <fw-form-control type="DROPDOWN" id="service_item_id" name="service_item_id" label="Service Item"
                 required="true" placeholder="Select Service Item"></fw-form-control>
             <fw-form-control id="app_code" name="app_code" label="App Code" required="true"
@@ -22,6 +22,8 @@
             <fw-form-control type="PARAGRAPH" id="app_image" name="app_image" rows=3 maxlength=190 minlength=5
                 label="Enter App Image SVG" placeholder="App Image SVG">
             </fw-form-control>
+            <fw-form-control type="PARAGRAPH" id="app_description" name="app_description" rows=3 maxlength=190
+                minlength=5 label="App Description" placeholder="Enter App Description"></fw-form-control>
             <fw-form-control id="process_code" name="process_code" label="Process Code" required="true"
                 placeholder="Enter Process Code"></fw-form-control>
             <fw-form-control id="process_name" name="process_name" label="Process Name" required="true"
@@ -41,7 +43,6 @@
             <fw-button id="submit" color="primary">Save</fw-button>
         </div>
     </div>
-
     <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
     <script type="module"
         src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
@@ -51,10 +52,7 @@
         window.frsh_init().then(function (client) {
             var context = {}
             var formCreate = document.querySelector("#formCreate")
-            document.getElementById("language").choices = [
-                { value: 'en', text: 'English' },
-                { value: 'vi', text: 'Vietnamese' }
-            ];
+
             document.getElementById("closeModal").addEventListener('click', function () {
                 client.instance.close();
             })
@@ -70,16 +68,19 @@
                 });
 
             });
+
             client.instance.receive(function (event) {
                 let data = event.helper.getData();
                 if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
             });
+
             client.instance.context().then(
                 function (c) {
                     context = c.data
                     if (context.type === ACTION_TYPES.SERVICE_REQUEST_CREATE || context.type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
                         const { detail, data } = context
                         generateSelect("service_item_id", data.serviceItems, context)
+                        generateWorkspace("workspace_id", data.workspaces, context)
                         if (!detail) return
                         Object.keys(detail).forEach(function (key) {
                             formCreate.setFieldValue([key], detail[key]);
@@ -94,6 +95,14 @@
             });
             document.getElementById(container).choices = options
             document.getElementById(container).value = String(context.detail?.service_item_id)
+        }
+
+        function generateWorkspace(container, list, context) {
+            const options = list?.map((item) => {
+                return { value: String(item.data.workspace_id), text: item.data.name };
+            });
+            document.getElementById(container).choices = options
+            document.getElementById(container).value = String(context.detail?.workspace_id)
         }
     </script>
 </body>

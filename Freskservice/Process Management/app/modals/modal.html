@@ -14,8 +14,6 @@
             <fw-tabs>
                 <fw-tab slot="tab" panel="information">Information</fw-tab>
                 <fw-tab slot="tab" panel="approval">Approval/Submit</fw-tab>
-                <fw-tab slot="tab" panel="reject">Reject</fw-tab>
-                <fw-tab slot="tab" panel="expired">Expired</fw-tab>
                 <fw-tab-panel name="information">
                     <fw-form-control type="DROPDOWN" id="app_code" name="app_code" label="App Name" required="true"
                         placeholder="Enter App Name"></fw-form-control>
@@ -38,38 +36,27 @@
                             label="Is attach file"></fw-form-control>
                     </div>
                     <fw-form-control type="DROPDOWN" id="email_template_code" name="email_template_code"
-                        label="Email Template" placeholder="Enter Email Template"></fw-form-control>
+                        label="Approval Email Template" placeholder="Enter Email Template"></fw-form-control>
                 </fw-tab-panel>
                 <fw-tab-panel name="approval">
                     <fw-form-control type="DROPDOWN" id="approver" name="approver" label="Approver"
                         placeholder="Select Approver"></fw-form-control>
                     <fw-form-control type="DROPDOWN" id="next_approval_group" name="next_approval_group"
-                        label="Next Approval Group" placeholder="Select Next Approval Group" disabled></fw-form-control>
+                        label="Requester Approval Group" placeholder="Select Requester Group Approval"
+                        disabled></fw-form-control>
+                    <fw-form-control type="DROPDOWN" id="next_agent_group_approval" name="next_agent_group_approval"
+                        label="Agent Approval Group" placeholder="Select Agent Group Approval "
+                        disabled></fw-form-control>
                     <fw-form-control type="CHECKBOX" id="is_not_send_approval" name="is_not_send_approval"
                         label="Do not Send Approval Email"></fw-form-control>
                     <fw-form-control type="DROPDOWN" id="approval_type" name="approval_type" label=" Approval Type"
                         placeholder="Select Approval Type"></fw-form-control>
-                    <fw-form-control type="DROPDOWN" id="new_state" name="new_state" label="New State"
-                        placeholder="Select New State"></fw-form-control>
-                    <fw-form-control type="DROPDOWN" id="approval_email_template_code"
-                        name="approval_email_template_code" label="Email Template"
-                        placeholder="Enter Email Template"></fw-form-control>
-                </fw-tab-panel>
-                <fw-tab-panel name="reject">
-                    <fw-form-control type="DROPDOWN" id="reject_next_approval_group" name="reject_next_approval_group"
-                        label="Reject Approval Group" placeholder="Select Reject Approval Group"></fw-form-control>
+                    <!-- <fw-form-control type="DROPDOWN" id="new_state" name="new_state" label="Approved New State"
+                        placeholder="Select Approved New State"></fw-form-control>
                     <fw-form-control type="DROPDOWN" id="reject_new_state" name="reject_new_state"
-                        label="Reject New State" placeholder="Select Reject New State"></fw-form-control>
-                    <fw-form-control type="DROPDOWN" id="reject_email_template_code" name="reject_email_template_code"
-                        label="Reject Email Template" placeholder="Enter Reject Email Template"></fw-form-control>
-                </fw-tab-panel>
-                <fw-tab-panel name="expired">
-                    <fw-form-control type="DROPDOWN" id="expired_next_approval_group" name="expired_next_approval_group"
-                        label="Expired Approval Group" placeholder="Select Expired Approval Group"></fw-form-control>
+                        label="Rejected New State" placeholder="Select Rejected New State"></fw-form-control> -->
                     <fw-form-control type="DROPDOWN" id="expired_new_state" name="expired_new_state"
-                        label="Expired New State" placeholder="Select expired New State"></fw-form-control>
-                    <fw-form-control type="DROPDOWN" id="expired_email_template_code" name="expired_email_template_code"
-                        label="Expired Email Template" placeholder="Enter Expired Email Template"></fw-form-control>
+                        label="Expired New State" placeholder="Select Expired New State"></fw-form-control>
                 </fw-tab-panel>
             </fw-tabs>
         </fw-form>
@@ -103,14 +90,16 @@
                         const newStateList = states?.filter(item => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.detail.value)
                         generateState('current_state', newStateList, context)
                         generateState('new_state', newStateList, context)
-                        generateState('reject_new_state', newStateList, context)
-                        generateState('expired_new_state', newStateList, context)
+                        // generateState('reject_new_state', newStateList, context)
+                        // generateState('expired_new_state', newStateList, context)
                     }
                     if (e.detail.field == 'approver') {
                         if (e.detail.value == 4) {
                             document.getElementById("next_approval_group").disabled = false
+                            document.getElementById("next_agent_group_approval").disabled = false
                         } else {
-                            document.getElementById("next_approval_group").disabled = true
+                            document.getElementById("next_approval_group").disabled = false
+                            document.getElementById("next_agent_group_approval").disabled = false
                         }
                     }
                     if (e.detail.field == 'is_state_end') {
@@ -160,23 +149,27 @@
                                 ""
                             )
                             generateGroup("next_approval_group", data.requesterGroups, context)
-                            generateGroup("reject_next_approval_group", data.requesterGroups, context)
-                            generateGroup("expired_next_approval_group", data.requesterGroups, context)
+                            generateGroup("next_agent_group_approval", data.agentGroups, context)
+                            // generateGroup("reject_next_approval_group", data.requesterGroups, context)
+                            // generateGroup("expired_next_approval_group", data.requesterGroups, context)
                             const newStates = states?.filter(item => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code)
                             generateState('current_state', newStates, context)
                             generateState('new_state', newStates, context)
                             generateState('reject_new_state', newStates, context)
                             generateState('expired_new_state', newStates, context)
                             generateEmailTemplate('email_template_code', data.templates, context)
-                            generateEmailTemplate('approval_email_template_code', data.templates, context)
-                            generateEmailTemplate('reject_email_template_code', data.templates, context)
-                            generateEmailTemplate('expired_email_template_code', data.templates, context)
+                            // generateEmailTemplate('approval_email_template_code', data.templates, context)
+                            // generateEmailTemplate('reject_email_template_code', data.templates, context)
+                            // generateEmailTemplate('expired_email_template_code', data.templates, context)
 
                             if (!detail) return
                             Object.keys(detail).forEach(function (key) {
                                 formCreate.setFieldValue([key], detail[key]);
                             });
-                            if (detail.approver == 4) document.getElementById("next_approval_group").disabled = false
+                            if (detail.approver == 4) {
+                                document.getElementById("next_approval_group").disabled = false
+                                document.getElementById("next_agent_group_approval").disabled = false
+                            }
                             if (Boolean(detail.is_state_end)) document.getElementById("is_end").style.display = "block"
                         }
                     }

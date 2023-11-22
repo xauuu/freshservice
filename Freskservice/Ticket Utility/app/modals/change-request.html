@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://assets2.freshservice.com/assets/cdn/sprites-f48aa36348bcba6c9b8ca8323f592887c715f680f8876e1a42a4e4ca111ab364.css">
+    <link rel="stylesheet" href="https://xauuu.github.io/freshservice-script/tabs.css" />
+    <link rel="stylesheet" href="../styles/change-request.css">
+</head>
+
+<body>
+    <div id="change-chevron" class="show">
+        <div id="chevron-container" class="">
+            <span class="chevron-controls" id="chevron_control_left" style="display: none;">
+                <i class="ficon-circle_arrow_right"></i></span>
+            <div class="chevron-scroll-wrapper">
+                <ul class="chevron-list clearfix">
+                    <li class="custom-tab-item active" data-tab="#information">
+                        <div class="" data-ellipsis="true" style="overflow: visible;">Request</div>
+                        <span class="ficon-checkmark-round fsize-24"></span>
+                    </li>
+                    <li class="custom-tab-item" data-tab="#demands">
+                        <div class="" data-ellipsis="true" style="overflow: visible;">Impact Analysis</div>
+                    </li>
+                    <li class="custom-tab-item" data-tab="#assessment">
+                        <div class="" data-ellipsis="true" style="overflow: visible;">Review</div>
+                    </li>
+                    <li class="custom-tab-item" data-tab="#finalize">
+                        <div class="" data-ellipsis="true" style="overflow: visible;">Implementation</div>
+                    </li>
+                </ul>
+            </div>
+            <span class="chevron-controls" id="chevron_control_right" style="display: none;">
+                <i class="ficon-circle_arrow_right"></i>
+            </span>
+        </div>
+        <div class="problem-details">
+            <fw-form id="formCreate">
+                <section id="information" class="custom-tab-content active">
+                    <div class="itil-content-title">Request</div>
+                    <fw-form-control type="TEXT" id="title" name="title" label="Title"></fw-form-control>
+                    <fw-form-control type="PARAGRAPH" id="request_description" name="request_description"
+                        label="Request Description"></fw-form-control>
+                    <fw-form-control type="DROPDOWN" id="category" name="category" label="Category"></fw-form-control>
+                    <fw-form-control type="DATE" id="expected_complete_date" name="expected_complete_date"
+                        label="Expected Complete Date"></fw-form-control>
+                </section>
+                <section id="demands" class="custom-tab-content">
+                    <div class="itil-content-title">Impact Analysis</div>
+                    <fw-form-control type="DROPDOWN" id="demands_gathering_assignee" name="demands_gathering_assignee"
+                        label="Demands Gathering Assignee"></fw-form-control>
+                    <fw-form-control type="PARAGRAPH" id="demands" name="demands" label="Demands"></fw-form-control>
+                    <fw-form-control type="DROPDOWN" id="priority" name="priority" label="Priority"></fw-form-control>
+                    <fw-form-control type="DATE" id="time_to_deploy" name="time_to_deploy"
+                        label="Time To Deploy"></fw-form-control>
+                </section>
+                <section id="assessment" class="custom-tab-content">
+                    <div class="itil-content-title">Review</div>
+                    <fw-form-control type="DROPDOWN" id="assessment_assignee" name="assessment_assignee"
+                        label="Assessment Assignee"></fw-form-control>
+                    <fw-form-control type="PARAGRAPH" id="assessment" name="assessment"
+                        label="Assessment"></fw-form-control>
+                </section>
+                <section id="finalize" class="custom-tab-content">
+                    <div class="itil-content-title">Implementation</div>
+                    <fw-form-control type="DROPDOWN" id="finalize_requirement_assignee"
+                        name="finalize_requirement_assignee" label="Finalize Requirement Assignee"></fw-form-control>
+                    <fw-form-control type="PARAGRAPH" id="final_requirements" name="final_requirements"
+                        label="Final Requirements"></fw-form-control>
+                </section>
+            </fw-form>
+        </div>
+        <div class="footer">
+            <fw-button>Save</fw-button>
+            <fw-button>Save</fw-button>
+        </div>
+    </div>
+    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="module"
+        src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
+    <script src="../scripts/change-request.js"></script>
+    <script src="../scripts/helper.js"></script>
+    <script>
+        var formCreate = document.querySelector("#formCreate")
+        window.frsh_init().then(function (client) {
+            generateSelect()
+            client.instance.receive(function (event) {
+                const data = event.helper.getData();
+                if (data.type === ACTIONS.FILTER_AGENT) {
+                }
+            });
+            client.instance.context().then(
+                async function (context) {
+                    const { serviceRequest, requesters } = context.data
+                    const detail = serviceRequest.custom_fields
+                    const requesterChoices = requesters?.map(item => {
+                        return {
+                            value: item.id,
+                            text: `${item.first_name} ${item.last_name}`
+                        };
+                    });
+                    document.getElementById("demands_gathering_assignee").choices = requesterChoices;
+                    document.getElementById("assessment_assignee").choices = requesterChoices;
+                    document.getElementById("finalize_requirement_assignee").choices = requesterChoices;
+
+                    Object.keys(detail).forEach(function (key) {
+                        formCreate.setFieldValue([key], detail[key]);
+                    });
+                }
+            );
+        });
+        function generateSelect() {
+            const category = [
+                { value: 'Application', text: 'Application' },
+                { value: 'Hardware', text: 'Hardware' },
+                { value: 'Network', text: 'Network' }
+            ]
+            const priority = [
+                { value: 'Low', text: 'Low' },
+                { value: 'Medium', text: 'Medium' },
+                { value: 'High', text: 'Hight' }
+            ]
+            document.getElementById("category").choices = category;
+            document.getElementById("priority").choices = priority;
+        }
+    </script>
+</body>
+
+</html>

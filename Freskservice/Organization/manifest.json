@@ -1,0 +1,28 @@
+{
+  "platform-version": "2.3",
+  "product": {
+    "freshservice": {
+      "location": {
+        "full_page_app": {
+          "url": "index.html",
+          "icon": "styles/images/logo.jpg"
+        }
+      },
+      "requests": {
+        "getDepartments": {},
+        "getDepartment": {},
+        "getRequester": {},
+        "getRequesters": {},
+        "createDepartment": {},
+        "updateDepartment": {},
+        "getRequesterGroup": {},
+        "getAgentGroup": {},
+        "getWorkspaces": {}
+      }
+    }
+  },
+  "engines": {
+    "node": "18.16.1",
+    "fdk": "9.0.5"
+  }
+}

@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <script src="{{{appclient}}}"></script>
+        <link rel="stylesheet" type="text/css" href="styles/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+    </head>
+
+    <body>
+        <fw-tabs>
+            <fw-tab slot="tab" panel="organization">Organization</fw-tab>
+            <fw-tab slot="tab" panel="requester">Requester Group</fw-tab>
+            <fw-tab slot="tab" panel="agent">Agent Group</fw-tab>
+            <div style="padding: 10px">
+                <fw-tab-panel name="organization">
+                    <div class="wrapper">
+                        <fw-select style="width: 300px" id="departments" placeholder="Enter Department Name" option-label-path="name" option-value-path="id">
+                        </fw-select>
+                        <div class="right-container">
+                            <fw-button id="new-department" color="primary"> New Department </fw-button>
+                            <fw-kebab-menu id="icon-kebab-menu" variant="icon"></fw-kebab-menu>
+                        </div>
+                    </div>
+                    <div id="chart-container"></div>
+                    <div id="tree" style="display: none; margin-top: 20px"></div>
+                </fw-tab-panel>
+                <fw-tab-panel name="requester">
+                    <div class="right-container">
+                        <fw-button id="new-requester-group" color="primary"> New Request Group </fw-button>
+                    </div>
+                    <fw-data-table id="datatable-requester"></fw-data-table>
+                    <div class="right-container">
+                        <fw-pagination id="pagination-requester"></fw-pagination>
+                    </div>
+                </fw-tab-panel>
+                <fw-tab-panel name="agent">
+                    <div class="right-container">
+                        <fw-button id="new-agent-group" color="primary"> New Agent Group </fw-button>
+                        <fw-select style="width: 200px" id="workspace" value="all"> </fw-select>
+                    </div>
+                    <fw-data-table id="datatable-agent"></fw-data-table>
+                    <div class="right-container">
+                        <fw-pagination id="pagination-agent"></fw-pagination>
+                    </div>
+                </fw-tab-panel>
+            </div>
+        </fw-tabs>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.min.js"></script>
+    <script src="./scripts/bootstrap-treeview.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
+    <script src="scripts/app.js"></script>
+</html>

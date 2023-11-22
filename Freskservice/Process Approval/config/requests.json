@@ -178,5 +178,29 @@
             }
         },
         "options": {}
+    },
+    "getAgentGroup": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/groups/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "createApprovalLog": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/27000052793/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
     }
 }

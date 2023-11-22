@@ -1,9 +1,25 @@
 {
-    "getAllScheduled": {
+    "getDepartments": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.scheduled_id %>/records?query=is_active%20%3A%20%271%27%20AND%20object_id%20%3A%20%27<%= context.ticket_id %>%27%20",
+            "path": "/api/v2/departments",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            },
+            "query": {
+                "page": "<%= context.page %>",
+                "per_page": "100"
+            }
+        },
+        "options": {}
+    },
+    "getDepartment": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/departments/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -11,35 +27,11 @@
         },
         "options": {}
     },
-    "getScheduleByAgent": {
+    "getRequester": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.scheduled_id %>/records?query=is_active%20%3A%20%271%27%20AND%20agent_email%20%3A%20%27<%= context.agent_email %>%27%20",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "getAllAssetType": {
-        "schema": {
-            "method": "GET",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.asset_type_id %>/records?query=is_active%20%3A%20%271%27",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "getAllAgent": {
-        "schema": {
-            "method": "GET",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/agents",
+            "path": "/api/v2/requesters/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -51,7 +43,24 @@
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/requesters?active=true",
+            "path": "/api/v2/requesters",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            },
+            "query": {
+                "page": "<%= context.page %>",
+                "per_page": "100",
+                "include_agents": "true"
+            }
+        },
+        "options": {}
+    },
+    "createDepartment": {
+        "schema": {
+            "method": "POST",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/departments",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -59,59 +68,55 @@
         },
         "options": {}
     },
-    "getDetailSR": {
+    "updateDepartment": {
+        "schema": {
+            "method": "PUT",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/departments/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getRequesterGroup": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/tickets/<%= context.id %>/requested_items",
+            "path": "/api/v2/requester_groups",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
+            },
+            "query": {
+                "page": "<%= context.page %>",
+                "per_page": "100"
             }
         },
         "options": {}
     },
-    "addAgentToTicket": {
+    "getAgentGroup": {
         "schema": {
-            "method": "PUT",
+            "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/tickets/<%= context.id %>",
+            "path": "/api/v2/groups",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
+            },
+            "query": {
+                "page": "<%= context.page %>",
+                "per_page": "100"
             }
         },
         "options": {}
     },
-    "createCheckStock": {
+    "getWorkspaces": {
         "schema": {
-            "method": "POST",
+            "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/service_catalog/items/<%= iparam.check_stock_id %>/place_request",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "createScheduleCalendar": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/service_catalog/items/<%= iparam.scheduled_calendar_id %>/place_request",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateScheduleCalendar": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/tickets/<%= context.ticket_id %>/requested_items/<%= context.id %>",
+            "path": "/api/v2/objects/<%= iparam.workspace_id %>/records?query=is_active%20%3A%20%271%27",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

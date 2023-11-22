@@ -1,11 +1,11 @@
-const moment = require('moment');
+const moment = require("moment");
 
 async function getGroupApprovalRule(app_code, process_code, current_state) {
     const { response: groupApprovalRes } = await $request.invokeTemplate("getGroupApprovalRule", {
         context: { app_code, process_code, current_state }
     });
     const groupApproval = JSON.parse(groupApprovalRes).records[0]?.data;
-    return groupApproval
+    return groupApproval;
 }
 
 async function getRequester(requester_id) {
@@ -38,7 +38,7 @@ async function getProcessLog(app_code, process_code, ticket_id) {
         context: { app_code, process_code, ticket_id }
     });
     const currentState = JSON.parse(currentStateRes).records[0]?.data;
-    return currentState
+    return currentState;
 }
 
 async function createProcessLog(data) {
@@ -46,18 +46,18 @@ async function createProcessLog(data) {
         body: JSON.stringify({ data: data })
     });
     const currentState = JSON.parse(currentStateRes)?.custom_object.data;
-    return currentState
+    return currentState;
 }
 
-async function updateProcessLog(id, newState, sr_json_approvals, sr_visible_to = '') {
+async function updateProcessLog(id, newState, sr_json_approvals, sr_visible_to = "") {
     await $request.invokeTemplate("updateProcessLog", {
         context: { id },
         body: JSON.stringify({
             data: {
-                "sr_state": newState,
-                "updated_date": moment(new Date()).format('YYYY-MM-DD[T]HH:mm:ss.SSS[Z]'),
-                "sr_json_approvals": sr_json_approvals,
-                "sr_visible_to": sr_visible_to
+                sr_state: newState,
+                updated_date: moment(new Date()).format("YYYY-MM-DD[T]HH:mm:ss.SSS[Z]"),
+                sr_json_approvals: sr_json_approvals,
+                sr_visible_to: sr_visible_to
             }
         })
     });
@@ -81,7 +81,7 @@ async function getServiceCategory(service_item_id) {
     const { response } = await $request.invokeTemplate("getServiceCategory", {
         context: { service_item_id }
     });
-    return JSON.parse(response).records[0]?.data;;
+    return JSON.parse(response).records[0]?.data;
 }
 
 async function getEmailTemplate(email_code) {
@@ -119,6 +119,27 @@ async function getRequesterGroup(id) {
     return JSON.parse(response).requester_group;
 }
 
+async function getAgentGroup(id) {
+    try {
+        const { response } = await $request.invokeTemplate("getAgentGroup", {
+            context: { id }
+        });
+        return JSON.parse(response).group;
+    } catch (error) {
+        return [];
+    }
+}
+
+async function createApprovalLog(data) {
+    try {
+        await $request.invokeTemplate("createApprovalLog", {
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.log("Error in create approval log", error);
+    }
+}
+
 exports = {
     getGroupApprovalRule,
     getProcessLog,
@@ -134,5 +155,7 @@ exports = {
     getDepartment,
     updateRequestedItem,
     updateTicket,
-    getRequesterGroup
+    getRequesterGroup,
+    getAgentGroup,
+    createApprovalLog
 };

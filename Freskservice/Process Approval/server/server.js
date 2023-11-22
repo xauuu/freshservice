@@ -64,7 +64,7 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
         if (department.head_user_id) {
             const requester = await fetch.getRequester(department.head_user_id);
             requesters = [requester];
-            approver = `Head of ${ticket.department_name} Department: ${requester?.first_name} ${requester?.last_name}`;
+            approver = `Head of ${department?.name} Department (${requester?.first_name} ${requester?.last_name})`;
         }
     } else if (approvalRule.approver == 3) {
         //selected department
@@ -78,25 +78,26 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
                 });
                 const requester = await fetch.getRequester(department?.head_user_id);
                 requesters = [requester];
-                approver = `Head of ${department?.name} Department: ${requester?.first_name} ${requester?.last_name}`;
+                approver = `Head of ${department?.name} Department (${requester?.first_name} ${requester?.last_name})`;
             }
         }
     } else if (approvalRule.approver == 4) {
         //group
-        const [list, detail] = await Promise.all([
+        const [list, detail, agent] = await Promise.all([
             fetch.getRequesters(approvalRule.next_approval_group),
-            fetch.getRequesterGroup(approvalRule.next_approval_group)
+            fetch.getRequesterGroup(approvalRule.next_approval_group),
+            fetch.getAgentGroup(approvalRule.next_agent_group_approval)
         ]);
         requesters = list;
-        approver = `Group ${detail.name}`;
+        approver = `Requester Group ${detail.name}`;
+        if (agent && agent?.members?.length > 0) {
+            const agentList = agent.members.map((item) => ({ id: item }));
+            requesters = [...requesters, ...agentList];
+            approver += ` & Agent Group ${agent.name}`;
+        }
     }
     console.log("DEBUG: Group Approval", requesters);
-    fetch.updateTicket(ticket.id, {
-        custom_fields: {
-            ticket_status: approvalRule.name,
-            pending_approver: `Pending ${approver}`
-        }
-    });
+
     if (requesters && requesters.length > 0) {
         if (Boolean(approvalRule.is_not_send_approval)) {
             console.log("Is only send email");
@@ -114,34 +115,42 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
         }
         await Promise.all(
             requesters.map(async (item) => {
-                await fetch.requestApproval(
-                    requestedItems.custom_fields.approval_process_id || ticket.id,
-                    item.id,
-                    approvalRule.approval_type,
-                    `${item.first_name} ${item.last_name}, please approve.`
-                );
+                const body = await getBody(approvalRule.email_template_code, placeholder);
+                await fetch.requestApproval(ticket.id, item.id, approvalRule.approval_type, body);
             })
         )
             .then(function () {
                 console.log("All requests were successful");
-                sendEmailTemplate(approvalRule.email_template_code, placeholder, args.data.requester.email);
-                sendEmailTemplate(
-                    approvalRule.approval_email_template_code,
-                    placeholder,
-                    requesters
-                        .map((r) => {
-                            return r.primary_email || r.email;
-                        })
-                        .join(",")
-                );
+                fetch.createApprovalLog({
+                    data: {
+                        action_by: "System",
+                        action_date: new Date().toISOString(),
+                        comment: `Send request approval to ${approver}`,
+                        process: "Request Approval",
+                        ticket_number: Number(ticket.id),
+                        ticket_id: `${getType(ticket.type_name)}-${ticket.id}`
+                    }
+                });
+                fetch.updateTicket(ticket.id, {
+                    custom_fields: {
+                        ticket_status: approvalRule.name,
+                        pending_approver: `Pending ${approver}`
+                    }
+                });
+                // sendEmailTemplate(approvalRule.email_template_code, placeholder, args.data.requester.email);
+                // sendEmailTemplate(
+                //     approvalRule.approval_email_template_code,
+                //     placeholder,
+                //     requesters
+                //         .map((r) => {
+                //             return r.primary_email || r.email;
+                //         })
+                //         .join(",")
+                // );
             })
             .catch(function (err) {
                 console.error("An error occurred:", err);
             });
-        // const approvals = await fetch.getTicketApprovals(ticket.id)
-        // const jsonApprovals = JSON.stringify(utils.formattedApprovals(approvals))
-        // const newVisible = processLog.sr_visible_to?.concat(';', requesters.map(r => r.id).join(";"))
-        // fetch.updateProcessLog(processLog.bo_display_id, approvalRule.new_state, jsonApprovals, newVisible);
     }
 }
 
@@ -176,5 +185,29 @@ async function sendEmailTemplate(template_code, data, to_list) {
         utils.sendMail(subject, body, to_list);
     } catch (error) {
         console.log("Error Send email template", error);
+    }
+}
+
+async function getBody(template_code, data) {
+    try {
+        if (!template_code) return;
+        const emailTemplate = await fetch.getEmailTemplate(template_code);
+        if (!emailTemplate) return "Please Approval";
+        const templateBody = Handlebars.compile(emailTemplate.body);
+        const body = templateBody(data);
+        return body;
+    } catch (error) {
+        console.log("Error Send email template", error);
+    }
+}
+
+function getType(type) {
+    switch (type) {
+        case "Request":
+            return "REQ";
+        case "Service Request":
+            return "SR";
+        default:
+            return "Ticket";
     }
 }

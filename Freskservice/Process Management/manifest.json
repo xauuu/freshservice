@@ -5,7 +5,7 @@
       "location": {
         "full_page_app": {
           "url": "index.html",
-          "icon": "styles/images/icon.svg"
+          "icon": "styles/images/logo.jpg"
         }
       },
       "requests": {
@@ -33,7 +33,8 @@
         "updateConditionDetail": {},
         "getAllRequesterGroup": {},
         "getAllServiceItem": {},
-        "getAllWorkspace": {}
+        "getAllWorkspace": {},
+        "getAllAgentGroup": {}
       }
     }
   },
