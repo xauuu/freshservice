@@ -1,14 +1,14 @@
-let clientApp = null;
-let requesterGroups = [];
-let categories = [];
-let templates = [];
-let apps = [];
-let stateChange = [];
-let states = [];
-let workflows = [];
-let serviceItems = [];
-let agentGroups = [];
-let workspaces = [];
+var clientApp = null;
+var requesterGroups = [];
+var categories = [];
+var templates = [];
+var apps = [];
+var stateChange = [];
+var states = [];
+var workflows = [];
+var serviceItems = [];
+var agentGroups = [];
+var workspaces = [];
 
 const categoryContainer = document.getElementById("listSRCategory");
 const emailContainer = document.getElementById("listEmail");
@@ -124,6 +124,13 @@ function initHandlers() {
                 break;
             case ACTION_TYPES.CONDITION_UPDATE:
                 await handleUpdateCondition(id, { ...data, condition_type: Number(data.condition_type) });
+                break;
+            case ACTION_TYPES.SERVICE_ITEM:
+                const sr = categories.find((item) => item.data.app_code == data.app_code && item.data.process_code == data.process_code);
+                await getConditionFields(sr);
+                break;
+            case ACTION_TYPES.CUSTOM_OBJECT:
+                await getCustomObjects(data);
                 break;
         }
     });
@@ -274,14 +281,14 @@ async function getAllGroupApproval() {
 function generateGroupApproval(records) {
     let html = "";
     records?.forEach((item) => {
-        const { name, app_code, process_code, current_state, expired_new_state } = item.data;
+        const { name, app_code, process_code, current_state, expired_new_state, configuration_type } = item.data;
         const rowData = JSON.stringify(item.data);
         const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
+                      <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${name}
                       </th>
-                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
-                      <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
                       <td class="px-4 py-3"> ${
                           states.find((item) => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == current_state)
                               ?.data.state_name || ""
@@ -291,6 +298,7 @@ function generateGroupApproval(records) {
                               (item) => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == expired_new_state
                           )?.data.state_name || ""
                       }</td>
+                      <td class="px-4 py-3"> ${configuration_type}</td>
                   </tr>`;
         html += row;
     });
@@ -311,9 +319,16 @@ function approvalClickHandler(event) {
 
 async function getAllRequesterGroup() {
     try {
-        const response = await clientApp.request.invokeTemplate("getAllRequesterGroup", {});
-        const data = JSON.parse(response.response);
-        requesterGroups = data.requester_groups;
+        await Promise.all(
+            Array.from({ length: 5 }).map(async (_, index) => {
+                const res = await clientApp.request.invokeTemplate("getAllRequesterGroup", {
+                    context: { page: index + 1 }
+                });
+                const data = JSON.parse(res.response).requester_groups;
+                if (data.length == 0) return;
+                requesterGroups.push(...data);
+            })
+        );
     } catch (error) {
         console.error(error);
     }
@@ -321,9 +336,16 @@ async function getAllRequesterGroup() {
 
 async function getAllAgentGroup() {
     try {
-        const response = await clientApp.request.invokeTemplate("getAllAgentGroup", {});
-        const data = JSON.parse(response.response);
-        agentGroups = data.groups;
+        await Promise.all(
+            Array.from({ length: 5 }).map(async (_, index) => {
+                const res = await clientApp.request.invokeTemplate("getAllAgentGroup", {
+                    context: { page: index + 1 }
+                });
+                const data = JSON.parse(res.response).groups;
+                if (data.length == 0) return;
+                agentGroups.push(...data);
+            })
+        );
     } catch (error) {
         console.error(error);
     }
@@ -409,8 +431,55 @@ async function getAllSRCategory() {
         categories = data.records;
         apps = getUniqueAppInfo(data.records);
         generateFilter();
+        generateStateFilter();
         categoryContainer.innerHTML = html;
         categoryContainer.addEventListener("click", categoryClickHandler);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getConditionFields(sr) {
+    const [customObject, serviceItem] = await Promise.all([
+        getDetailCustomObject(sr.data.related_custom_object),
+        getServiceItem(sr.data.service_item_id, sr.data.workspace_id)
+    ]);
+    console.log(customObject, serviceItem);
+    clientApp.instance.send({ message: { type: ACTION_TYPES.SERVICE_ITEM, data: [...serviceItem?.custom_fields, ...customObject?.fields] } });
+}
+
+async function getCustomObjects(id) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getCustomObjects", {
+            context: { id }
+        });
+        const data = JSON.parse(response.response)?.custom_objects;
+        console.log(data);
+        clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT, data } });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getServiceItem(id, workspace_id) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getServiceItem", {
+            context: { id, workspace_id }
+        });
+        const data = JSON.parse(response.response)?.service_item;
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getDetailCustomObject(id) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getDetailCustomObject", {
+            context: { id }
+        });
+        const data = JSON.parse(response.response)?.custom_object;
+        return data;
     } catch (error) {
         console.error(error);
     }
@@ -422,12 +491,12 @@ function generateStateApprovalHTML(records) {
         const { app_code, process_code, state_name, state } = item.data;
         const rowData = JSON.stringify(item.data);
         const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
+                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
+                      <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${state_name}
                       </td>
                       <td class="px-4 py-3"> ${state}</td>
-                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
-                      <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
                   </tr>`;
         html += row;
     });
@@ -454,82 +523,6 @@ async function getAllStateApproval() {
     }
 }
 
-// function generateWorkflowHTML(records) {
-//   let html = "";
-//   records?.forEach((item) => {
-//     const { app_code, process_code, workflow_name, workflow_code } = item.data;
-//     const rowData = JSON.stringify(item.data);
-//     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-//                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-//                         ${workflow_name}
-//                       </td>
-//                       <td class="px-4 py-3">${workflow_code}</td>
-//                       <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
-//                       <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-//                   </tr>`;
-//     html += row;
-//   });
-//   return html;
-// };
-
-// function workflowClickHandler(event) {
-//   const clickedRow = event.target.closest("tr");
-//   if (!clickedRow) return
-//   const rowData = clickedRow.getAttribute("data-item");
-//   openModal(ACTION_TYPES.WORKFLOW_UPDATE, JSON.parse(rowData))
-// }
-
-// async function getAllWorkflow() {
-//   try {
-//     const response = await clientApp.request.invokeTemplate("getAllWorkflow", {});
-//     const data = JSON.parse(response.response);
-//     workflows = data.records
-//     const html = generateWorkflowHTML(workflows);
-//     workflowContainer.innerHTML = html;
-//     workflowContainer.addEventListener("click", workflowClickHandler);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
-// function generateConditionHTML(records) {
-//   let html = "";
-//   records?.forEach((item) => {
-//     const { app_code, process_code, name, field_name } = item.data;
-//     const rowData = JSON.stringify(item.data);
-//     const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-//                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-//                         ${name}
-//                       </td>
-//                       <td class="px-4 py-3">${field_name}</td>
-//                       <td class="px-4 py-3">${(apps.find(item => item.app_code == app_code))?.app_name || ''}</td>
-//                       <td class="px-4 py-3">${(categories.find(item => item.data.process_code == process_code))?.data.process_name || ''}</td>
-//                   </tr>`;
-//     html += row;
-//   });
-//   return html;
-// };
-
-// function conditionClickHandler(event) {
-//   const clickedRow = event.target.closest("tr");
-//   if (!clickedRow) return
-//   const rowData = clickedRow.getAttribute("data-item");
-//   openModal(ACTION_TYPES.CONDITION_UPDATE, JSON.parse(rowData))
-// }
-
-// async function getAllCondition() {
-//   try {
-//     const response = await clientApp.request.invokeTemplate("getAllCondition", {});
-//     const data = JSON.parse(response.response);
-//     conditions = data.records
-//     const html = generateConditionHTML(conditions);
-//     conditionContainer.innerHTML = html;
-//     conditionContainer.addEventListener("click", conditionClickHandler);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
 function generateFilter() {
     html = "";
     apps.forEach((item) => {
@@ -550,6 +543,29 @@ function handleFilterChange(e) {
     }
     const html = generateGroupApproval(list);
     updateListGroupApproval(html);
+}
+
+function generateStateFilter() {
+    html = "";
+    apps.forEach((item) => {
+        const { app_code, app_name } = item;
+        const option = document.createElement("option");
+        option.value = app_code;
+        option.text = app_name;
+        document.getElementById("appStateFilter").append(option);
+    });
+    document.getElementById("appStateFilter").addEventListener("change", handleStateFilterChange);
+}
+
+function handleStateFilterChange(e) {
+    const selectedCategories = e.target.value;
+    let list = states;
+    if (selectedCategories) {
+        list = states.filter((item) => item.data.app_code == selectedCategories);
+    }
+    const html = generateStateApprovalHTML(list);
+    stateContainer.innerHTML = html;
+    stateContainer.addEventListener("click", stateClickHandler);
 }
 
 function generateSRFilter() {

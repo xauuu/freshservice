@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Department</title>
+        <title>New Department</title>
         <style>
             .bottom {
                 display: flex;
@@ -30,22 +30,15 @@
                 label="Parent Department"
             ></fw-select>
             <fw-form id="fw-static-form">
-                <fw-form-control id="name" type="TEXT" name="name" label="Department Name"></fw-form-control>
-                <fw-form-control
-                    id="head_user_id"
-                    type="DROPDOWN"
-                    name="head_user_id"
-                    placeholder="Head of Department"
-                    label="Head of Department"
-                ></fw-form-control>
+                <fw-form-control id="name" type="TEXT" name="name" label="Department Name" required></fw-form-control>
+                <fw-form-control id="hod" type="DROPDOWN" name="head_user_id" placeholder="Head of Department" label="Head of Department"></fw-form-control>
                 <fw-form-control id="description" type="PARAGRAPH" name="description" label="Department Description"></fw-form-control>
             </fw-form>
             <fw-select id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
 
             <div class="bottom">
                 <fw-button id="closeModal" color="secondary">Close</fw-button>
-                <fw-button id="view" color="primary">View</fw-button>
-                <fw-button id="submit" color="primary">Edit</fw-button>
+                <fw-button id="submit" color="primary">Create</fw-button>
             </div>
         </div>
         <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
@@ -54,45 +47,38 @@
         <script>
             window.frsh_init().then(function (client) {
                 var form = document.querySelector("#fw-static-form");
-                var context;
                 document.getElementById("closeModal").addEventListener("click", function () {
                     client.instance.close();
                 });
-
                 document.querySelector("#submit").addEventListener("click", async (e) => {
                     const { values, isValid } = await form.doSubmit(e);
                     const parentSelected = await document.getElementById("parent_department").getSelectedItem();
                     const parent = parentSelected[0];
                     if (parent) {
-                        var custom_field = {
+                        var parent_department = {
                             parent_department_id: Number(parent.value)
                         };
                     }
-                    if (values.head_user_id) var head_user_id = { head_user_id: Number(values.head_user_id) };
                     const relatedGroup = await document.getElementById("related_group_ids").getSelectedItem();
                     if (relatedGroup.length > 0) {
                         var related_group = {
-                            related_group_ids: String(relatedGroup.map((item) => item.value).join(";"))
+                            related_group_ids: relatedGroup.map((item) => item.value).join(";")
                         };
                     }
                     client.instance.send({
                         message: {
-                            type: "UPDATE_DEPARTMENT",
+                            type: "CREATE_DEPARTMENT",
                             data: {
-                                name: values.name,
-                                description: values.description,
-                                ...head_user_id,
+                                ...values,
+                                head_user_id: Number(values.head_user_id),
                                 custom_fields: {
-                                    ...custom_field,
+                                    is_visible: true,
+                                    ...parent_department,
                                     ...related_group
                                 }
-                            },
-                            id: context.department.id
+                            }
                         }
                     });
-                });
-                document.querySelector("#view").addEventListener("click", async (e) => {
-                    window.open(`https://trusisor.freshservice.com/itil/departments/${context.department.id}`, "_blank").focus();
                 });
 
                 client.instance.receive(function (event) {
@@ -101,35 +87,29 @@
                 });
                 client.instance.context().then(function (c) {
                     context = c.data;
-                    const { department, requesters, departments, requester_groups } = context;
-                    generateDepartment("parent_department", departments, context);
-                    generateRequesters("head_user_id", requesters, context);
-                    generateRequesterGroup("related_group_ids", requester_groups, context);
-                    Object.keys(department).forEach(function (key) {
-                        form.setFieldValue([key], department[key]);
-                    });
+                    const { requesters, departments, requester_groups } = context;
+                    generateDepartment("parent_department", departments);
+                    generateRequesters("hod", requesters);
+                    generateRequesterGroup("related_group_ids", requester_groups);
                 });
             });
-            function generateDepartment(container, list, context) {
+            function generateDepartment(container, list) {
                 const options = list?.map((item) => {
                     return { value: String(item.id), text: `${item.name}` };
                 });
                 document.getElementById(container).options = options;
-                document.getElementById(container).value = String(context.department?.custom_fields.parent_department_id);
             }
-            function generateRequesters(container, list, context) {
+            function generateRequesters(container, list) {
                 const options = list?.map((item) => {
                     return { value: String(item.id), text: `${item.first_name} ${item.last_name} (${item.primary_email})` };
                 });
                 document.getElementById(container).choices = options;
-                document.getElementById(container).value = String(context.department?.head_user_id);
             }
-            function generateRequesterGroup(container, list, context) {
+            function generateRequesterGroup(container, list) {
                 const options = list?.map((item) => {
                     return { value: String(item.id), text: `${item.name}` };
                 });
                 document.getElementById(container).options = options;
-                document.getElementById(container).value = context.department?.custom_fields.related_group_ids?.split(";");
             }
         </script>
     </body>

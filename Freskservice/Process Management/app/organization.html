@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <script src="{{{appclient}}}"></script>
+        <link rel="stylesheet" type="text/css" href="styles/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+    </head>
+
+    <body>
+        <aside class="back-container" aria-label="Previous page navigation">
+            <a href="index.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M18.0001 11H8.41405L10.7071 8.70696C10.8026 8.61471 10.8787 8.50437 10.9312 8.38236C10.9836 8.26036 11.0112 8.12914 11.0123 7.99636C11.0135 7.86358 10.9882 7.7319 10.9379 7.60901C10.8876 7.48611 10.8133 7.37446 10.7194 7.28056C10.6256 7.18667 10.5139 7.11242 10.391 7.06214C10.2681 7.01186 10.1364 6.98655 10.0037 6.98771C9.87088 6.98886 9.73966 7.01645 9.61765 7.06886C9.49565 7.12127 9.3853 7.19745 9.29306 7.29296L5.29306 11.293C5.19993 11.3859 5.12604 11.4962 5.07563 11.6177C5.02522 11.7392 4.99927 11.8694 4.99927 12.001C4.99927 12.1325 5.02522 12.2627 5.07563 12.3842C5.12604 12.5057 5.19993 12.6161 5.29306 12.709L9.29306 16.709C9.48166 16.8911 9.73426 16.9919 9.99646 16.9896C10.2587 16.9874 10.5095 16.8822 10.6949 16.6968C10.8803 16.5114 10.9855 16.2606 10.9877 15.9984C10.99 15.7362 10.8892 15.4836 10.7071 15.295L8.41405 13H18.0001C18.2653 13 18.5196 12.8946 18.7072 12.7071C18.8947 12.5195 19.0001 12.2652 19.0001 12C19.0001 11.7347 18.8947 11.4804 18.7072 11.2929C18.5196 11.1053 18.2653 11 18.0001 11Z"
+                        fill="#2F2F38"
+                    />
+                </svg>
+            </a>
+            <span> Organization Management </span>
+        </aside>
+        <fw-tabs>
+            <fw-tab slot="tab" panel="organization">Organization</fw-tab>
+            <fw-tab slot="tab" panel="requester">Requester Group</fw-tab>
+            <fw-tab slot="tab" panel="agent">Agent Group</fw-tab>
+            <div style="padding: 10px">
+                <fw-tab-panel name="organization">
+                    <div class="wrapper">
+                        <fw-select style="width: 300px" id="departments" placeholder="Enter Department Name" option-label-path="name" option-value-path="id">
+                        </fw-select>
+                        <div class="right-container">
+                            <fw-button id="new-department" color="primary"> New Department </fw-button>
+                            <fw-kebab-menu id="icon-kebab-menu" variant="icon"></fw-kebab-menu>
+                        </div>
+                    </div>
+                    <div id="chart-container"></div>
+                    <div id="tree" style="display: none; margin-top: 20px"></div>
+                </fw-tab-panel>
+                <fw-tab-panel name="requester">
+                    <div class="right-container">
+                        <fw-button id="new-requester-group" color="primary"> New Request Group </fw-button>
+                    </div>
+                    <fw-data-table id="datatable-requester"></fw-data-table>
+                    <div class="right-container">
+                        <fw-pagination id="pagination-requester"></fw-pagination>
+                    </div>
+                </fw-tab-panel>
+                <fw-tab-panel name="agent">
+                    <div class="right-container">
+                        <fw-button id="new-agent-group" color="primary"> New Agent Group </fw-button>
+                        <fw-select style="width: 200px" id="workspace" value="all"> </fw-select>
+                    </div>
+                    <fw-data-table id="datatable-agent"></fw-data-table>
+                    <div class="right-container">
+                        <fw-pagination id="pagination-agent"></fw-pagination>
+                    </div>
+                </fw-tab-panel>
+            </div>
+        </fw-tabs>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.min.js"></script>
+    <script src="./scripts/bootstrap-treeview.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
+    <script src="scripts/organization.js"></script>
+</html>

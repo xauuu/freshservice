@@ -11,29 +11,28 @@ exports = {
         const changes = args.data.ticket.changes;
         try {
             if (!SERVICE_REQUESTS.includes(ticket.type_name) || !(changes.gf_int_01 && changes.gf_int_01.length > 0)) return;
-            // utils.sendMail("SR Update", JSON.stringify(ticket), "qdatqb@gmail.com")
 
             const requestedItems = await fetch.getRequestedItems(ticket.id);
-            console.log(requestedItems);
             const serviceCategory = await fetch.getServiceCategory(requestedItems.service_item_id);
             if (!serviceCategory) return;
-
             console.log("START", ticket.id);
-            // const processLog = await fetch.getProcessLog(serviceCategory.app_code, serviceCategory.process_code, ticket.id)
-            // console.log("DEBUG: Process Data Log", processLog)
 
             if (changes.gf_int_01[0] < changes.gf_int_01[1] || changes.gf_int_01[1] == 0) {
                 const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[1]);
                 console.log("DEBUG-APPROVAL: Group Approval Rule", approvalRule);
                 if (!approvalRule) return;
+                if (approvalRule.configuration_type == "condition") {
+                    handleCondition(ticket, requestedItems.custom_fields, approvalRule.condition_field, approvalRule.condition_values);
+                    return;
+                }
                 await handleApproval(args, ticket, approvalRule, true, requestedItems);
             }
-            if (changes.gf_int_01[0] > changes.gf_int_01[1]) {
-                const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[0]);
-                console.log("DEBUG-REJECT: Group Approval Rule", approvalRule);
-                // if (!approvalRule) return;
-                // await handleRejection(args, ticket, approvalRule);
-            }
+            // if (changes.gf_int_01[0] > changes.gf_int_01[1]) {
+            //     const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[0]);
+            //     console.log("DEBUG-REJECT: Group Approval Rule", approvalRule);
+            //     if (!approvalRule) return;
+            //     await handleRejection(args, ticket, approvalRule);
+            // }
             console.log("END", ticket.id);
         } catch (error) {
             console.log(error);
@@ -99,20 +98,20 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
     console.log("DEBUG: Group Approval", requesters);
 
     if (requesters && requesters.length > 0) {
-        if (Boolean(approvalRule.is_not_send_approval)) {
-            console.log("Is only send email");
-            sendEmailTemplate(approvalRule.email_template_code, placeholder, args.data.requester.email);
-            sendEmailTemplate(
-                approvalRule.approval_email_template_code,
-                placeholder,
-                requesters
-                    .map((r) => {
-                        return r.primary_email || r.email;
-                    })
-                    .join(",")
-            );
-            return;
-        }
+        // if (Boolean(approvalRule.is_not_send_approval)) {
+        //     console.log("Is only send email");
+        //     sendEmailTemplate(approvalRule.email_template_code, placeholder, args.data.requester.email);
+        //     sendEmailTemplate(
+        //         approvalRule.approval_email_template_code,
+        //         placeholder,
+        //         requesters
+        //             .map((r) => {
+        //                 return r.primary_email || r.email;
+        //             })
+        //             .join(",")
+        //     );
+        //     return;
+        // }
         await Promise.all(
             requesters.map(async (item) => {
                 const body = await getBody(approvalRule.email_template_code, placeholder);
@@ -210,4 +209,68 @@ function getType(type) {
         default:
             return "Ticket";
     }
+}
+
+async function handleCondition(ticket, fields, field, values) {
+    if (!field && !isValidJSONString(values)) return;
+    const conditions = JSON.parse(values);
+    for (const condition of conditions) {
+        const check = await checkOperation(ticket, fields, field, condition);
+        if (check) break;
+    }
+}
+
+async function checkOperation(ticket, fields, field, condition) {
+    switch (condition.operator) {
+        case "condition":
+            return false;
+        case "equals":
+            if (fields[field] == condition.value) {
+                updateState(ticket, Number(condition.state));
+                return true;
+            }
+            return false;
+        case "contains":
+            if (fields[field]?.includes(condition.value)) {
+                updateState(ticket, Number(condition.state));
+                return true;
+            }
+            return false;
+        // case "include_any":
+        //     if (condition.value?.includes(fields[field])) {
+        //         updateState(ticket, Number(condition.state));
+        //         return true;
+        //     }
+        //     return false;
+        case "between":
+            return false;
+        case "greater_than":
+            return false;
+        case "greater_than_or_equal":
+            return false;
+        case "less_than":
+            return false;
+        case "less_than_or_equal":
+            return false;
+        default:
+            return false;
+    }
+}
+
+function isValidJSONString(str) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function updateState(ticket, ticket_state) {
+    fetch
+        .updateTicket(ticket.id, {
+            custom_fields: { ticket_state }
+        })
+        .then((data) => console.log("Update State", data))
+        .catch((error) => console.error("Error updating state:", error));
 }

@@ -1,294 +1,47 @@
 <html>
+    <head>
+        <script src="{{{appclient}}}"></script>
+        <link rel="stylesheet" type="text/css" href="styles/style.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
+    </head>
 
-<head>
-  <script src="{{{appclient}}}"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css" rel="stylesheet" />
-  <link rel="stylesheet" type="text/css" href="styles/style.css" />
-</head>
-
-<body>
-  <div class="mx-auto max-w-full">
-    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-      <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent"
-        role="tablist">
-        <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="service_request-tab"
-            data-tabs-target="#service_request" type="button" role="tab" aria-controls="service_request"
-            aria-selected="true">Service Request</button>
-        </li>
-        <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="state-tab" data-tabs-target="#state"
-            type="button" role="tab" aria-controls="state" aria-selected="false">State</button>
-        </li>
-        <!-- <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="workflow-tab" data-tabs-target="#workflow"
-            type="button" role="tab" aria-controls="workflow" aria-selected="false">Workflow</button>
-        </li> -->
-        <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="approval-tab" data-tabs-target="#approval"
-            type="button" role="tab" aria-controls="approval" aria-selected="false">State Change</button>
-        </li>
-        <!-- <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="condition-tab" data-tabs-target="#condition"
-            type="button" role="tab" aria-controls="condition" aria-selected="false">Condition</button>
-        </li> -->
-        <li class="mr-2" role="presentation">
-          <button class="inline-block p-4 border-b-2 rounded-t-lg" id="email_template-tab"
-            data-tabs-target="#email_template" type="button" role="tab" aria-controls="email_template"
-            aria-selected="false">Email Template</button>
-        </li>
-      </ul>
-    </div>
-    <div id="myTabContent">
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 map-container" id="service_request" role="tabpanel"
-        aria-labelledby="service_request-tab">
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">Service Request Category</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createSR"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add record
-                </button>
-                <select id="workspaceFilter" class="border border-gray-300 rounded-md py-1 px-3 font-medium text-sm">
-                  <option value="" selected>All workspaces</option>
-                </select>
-              </div>
+    <body>
+        <div class="px-4 py-8">
+            <!-- <div class="mx-auto max-w-screen-sm text-center mb-8">
+                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Our Team</h2>
+                <p class="font-light text-gray-500 sm:text-xl dark:text-gray-400">
+                    Explore the whole collection of open-source web components and elements built with the utility classes from Tailwind
+                </p>
+            </div> -->
+            <div class="space-y-0 grid grid-cols-5 gap-8">
+                <a href="process.html" class="text-center">
+                    <div class="flex justify-center items-center w-14 h-14 mx-auto mb-4 rounded-full bg-gray-100">
+                        <svg class="w-10 h-10 text-purple-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                fill-rule="evenodd"
+                                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold">Process</h3>
+                    <p class="text-gray-500">Plan it, create it, launch it</p>
+                </a>
+                <a href="organization.html" class="text-center">
+                    <div class="flex justify-center items-center w-14 h-14 mx-auto mb-4 rounded-full bg-gray-100">
+                        <svg class="w-10 h-10 text-purple-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                fill-rule="evenodd"
+                                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3 class="mb-2 text-xl font-bold">Organization</h3>
+                    <p class="text-gray-500">Plan it, create it, launch it</p>
+                </a>
             </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4"></th>
-                    <th scope="col" class="px-4 py-4">Workspace</th>
-                    <th scope="col" class="px-4 py-4">Process Name</th>
-                    <th scope="col" class="px-4 py-4">Process Code</th>
-                    <th scope="col" class="px-4 py-4">App Name</th>
-                    <th scope="col" class="px-4 py-4">App Code</th>
-                  </tr>
-                </thead>
-                <tbody id="listSRCategory">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 map-container" id="workflow" role="tabpanel"
-        aria-labelledby="workflow-tab">
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">Workflow</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createWorkflow"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add record
-                </button>
-              </div>
-            </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4">Workflow Name</th>
-                    <th scope="col" class="px-4 py-4">Workflow Code</th>
-                    <th scope="col" class="px-4 py-4">App Code</th>
-                    <th scope="col" class="px-4 py-4">Process Code</th>
-                  </tr>
-                </thead>
-                <tbody id="listWorkflow">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="approval" role="tabpanel"
-        aria-labelledby="approval-tab">
-        <!-- Start block -->
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">State Change</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createButton"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add State Change
-                </button>
-                <select id="appFilter" class="border border-gray-300 rounded-md py-1 px-3 font-medium text-sm">
-                  <option value="" selected>All apps</option>
-                </select>
-              </div>
-            </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4">Name</th>
-                    <th scope="col" class="px-4 py-4">App Name</th>
-                    <th scope="col" class="px-4 py-4">Process Name</th>
-                    <th scope="col" class="px-4 py-4">Current State</th>
-                    <th scope="col" class="px-4 py-3">Expired State</th>
-                  </tr>
-                </thead>
-                <tbody id="listCO">
-                  <tr class="border-b dark:border-gray-700">
-                    <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    </th>
-                    <td class="px-4 py-3"></td>
-                    <td class="px-4 py-3"></td>
-                    <td class="px-4 py-3"></td>
-                    <td class="px-4 py-3"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 map-container" id="condition" role="tabpanel"
-        aria-labelledby="condition-tab">
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">Condition</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createCondition"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add record
-                </button>
-              </div>
-            </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4">Name</th>
-                    <th scope="col" class="px-4 py-4">Field Name</th>
-                    <th scope="col" class="px-4 py-4">App Name</th>
-                    <th scope="col" class="px-4 py-4">Process Name</th>
-                  </tr>
-                </thead>
-                <tbody id="listCondition">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 map-container" id="email_template" role="tabpanel"
-        aria-labelledby="email_template-tab">
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">Email Template</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createEmailTemplate"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add record
-                </button>
-              </div>
-            </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4">Email Code</th>
-                    <th scope="col" class="px-4 py-4">Email Name</th>
-                    <th scope="col" class="px-4 py-4">Subject</th>
-                  </tr>
-                </thead>
-                <tbody id="listEmail">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 map-container" id="state" role="tabpanel"
-        aria-labelledby="state-tab">
-        <section class="bg-gray-50 dark:bg-gray-900 antialiased">
-          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-              <div class="w-full md:w-1/2">
-                <h5 class="mr-3 font-semibold dark:text-white">State</h5>
-              </div>
-              <div
-                class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                <button type="button" id="createState"
-                  class="flex items-center justify-center border border-blue-800 rounded-md py-1 px-3 font-medium text-sm text-white bg-blue-800 hover:bg-blue-900">
-                  <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                  Add record
-                </button>
-              </div>
-            </div>
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg m-4">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-                  <tr>
-                    <th scope="col" class="px-4 py-4">State Name</th>
-                    <th scope="col" class="px-4 py-4">State</th>
-                    <th scope="col" class="px-4 py-4">App Name</th>
-                    <th scope="col" class="px-4 py-4">Process Name</th>
-                  </tr>
-                </thead>
-                <tbody id="listState">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
-<script src="scripts/constant.js"></script>
-<script src="scripts/app.js"></script>
-
+        </div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
 </html>
