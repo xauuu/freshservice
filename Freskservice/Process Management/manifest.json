@@ -33,7 +33,15 @@
         "createDepartment": {},
         "updateDepartment": {},
         "getRequester": {},
-        "getRequesters": {}
+        "getRequesters": {},
+        "getStateApprovalByApp": {},
+        "getStateChangeApprovalByApp": {},
+        "getDocumentTemplate": {},
+        "updateDocumentTemplate": {},
+        "createDocumentTemplate": {},
+        "getTabsConfig": {},
+        "updateTabsConfig": {},
+        "createTabsConfig": {}
       }
     }
   },

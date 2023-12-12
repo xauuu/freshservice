@@ -10,6 +10,7 @@ var serviceItems = [];
 var agentGroups = [];
 var workspaces = [];
 
+const loading = document.getElementById("loading");
 const categoryContainer = document.getElementById("listSRCategory");
 const emailContainer = document.getElementById("listEmail");
 const workflowContainer = document.getElementById("listWorkflow");
@@ -18,28 +19,27 @@ const approvalContainer = document.getElementById("listCO");
 const conditionContainer = document.getElementById("listCondition");
 
 async function initApp(_client) {
+    toggleLoading();
     clientApp = _client;
     await getAllServiceItem();
     await getAllSRCategory();
     await getAllStateApproval();
     await Promise.all([getAllEmailTemplate(), getAllGroupApproval(), getAllRequesterGroup(), getAllAgentGroup()]);
+    toggleLoading(false);
     clientApp.events.on("app.activated", initHandlers);
 }
 
-function openModal(type, detail = null) {
+async function openModal(type, detail = null) {
+    toggleLoading();
     const titleMap = {
         [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: "Add Email Template",
         [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: "Edit Email Template",
         [ACTION_TYPES.GROUP_APPROVAL_CREATE]: "Add State Change",
         [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: "Edit State Change",
-        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: "Add Category",
-        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: "Edit Category",
+        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: "Add Service Request",
+        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: "Edit Service Request",
         [ACTION_TYPES.STATE_APPROVAL_CREATE]: "Add State",
         [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "Edit State"
-        // [ACTION_TYPES.WORKFLOW_CREATE]: 'Add Workflow',
-        // [ACTION_TYPES.WORKFLOW_UPDATE]: 'Edit Workflow',
-        // [ACTION_TYPES.CONDITION_CREATE]: 'Add Condition',
-        // [ACTION_TYPES.CONDITION_UPDATE]: 'Edit Condition',
     };
     const templateMap = {
         [ACTION_TYPES.GROUP_APPROVAL_CREATE]: "modals/modal.html",
@@ -50,10 +50,6 @@ function openModal(type, detail = null) {
         [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: "modals/sr-modal.html",
         [ACTION_TYPES.STATE_APPROVAL_CREATE]: "modals/state-modal.html",
         [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "modals/state-modal.html"
-        // [ACTION_TYPES.WORKFLOW_CREATE]: 'modals/workflow-modal.html',
-        // [ACTION_TYPES.WORKFLOW_UPDATE]: 'modals/workflow-modal.html',
-        // [ACTION_TYPES.CONDITION_CREATE]: 'modals/condition-modal.html',
-        // [ACTION_TYPES.CONDITION_UPDATE]: 'modals/condition-modal.html',
     };
     const listMap = {
         [ACTION_TYPES.GROUP_APPROVAL_CREATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups },
@@ -66,11 +62,21 @@ function openModal(type, detail = null) {
         [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories }
     };
 
+    if (type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
+        const [state, template, tabs] = await Promise.all([
+            getDataSR(detail?.app_code, detail?.process_code),
+            getDocumentTemplate(detail?.service_item_id),
+            getTabsConfig(detail?.service_item_id)
+        ]);
+        var more = { state, template, tabs };
+    }
     clientApp.interface.trigger("showModal", {
         title: titleMap[type],
         template: templateMap[type],
-        data: { type, detail, data: listMap[type] }
+        data: { type, detail, data: { ...listMap[type], ...more } }
     });
+
+    toggleLoading(false);
 }
 
 function initHandlers() {
@@ -113,24 +119,26 @@ function initHandlers() {
             case ACTION_TYPES.STATE_APPROVAL_UPDATE:
                 await handleUpdateState(id, data);
                 break;
-            case ACTION_TYPES.WORKFLOW_CREATE:
-                await handleCreateWorkflow({ ...data, is_active: Number(data.is_active) });
-                break;
-            case ACTION_TYPES.WORKFLOW_UPDATE:
-                await handleUpdateWorkflow(id, { ...data, is_active: Number(data.is_active) });
-                break;
-            case ACTION_TYPES.CONDITION_CREATE:
-                await handleCreateCondition({ ...data, condition_type: Number(data.condition_type) });
-                break;
-            case ACTION_TYPES.CONDITION_UPDATE:
-                await handleUpdateCondition(id, { ...data, condition_type: Number(data.condition_type) });
-                break;
             case ACTION_TYPES.SERVICE_ITEM:
                 const sr = categories.find((item) => item.data.app_code == data.app_code && item.data.process_code == data.process_code);
                 await getConditionFields(sr);
                 break;
             case ACTION_TYPES.CUSTOM_OBJECT:
                 await getCustomObjects(data);
+                break;
+            case ACTION_TYPES.CUSTOM_OBJECT_FIELDS:
+                const fields = await getDetailCustomObject(data);
+                await clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT_FIELDS, data: fields?.fields } });
+                break;
+            case ACTION_TYPES.CREATE_DOCUMENT_TEMPLATE:
+                createDocumentTemplate(data);
+                break;
+            case ACTION_TYPES.DOCUMENT_TEMPLATE:
+                if (id) updateDocumentTemplate(id, data);
+                else createDocumentTemplate(data);
+                break;
+            case ACTION_TYPES.TABS_CONFIG:
+                handleTabsConfig(data);
                 break;
         }
     });
@@ -231,6 +239,92 @@ async function handleUpdateState(id, data) {
         handleSuccess(ACTION_TYPES.STATE_APPROVAL_UPDATE, "Successfully updated State Approval");
     } catch (error) {
         showNotification("error", "An error occurred");
+        console.log(error);
+    }
+}
+
+function createDocumentTemplate(data) {
+    clientApp.request
+        .invokeTemplate("createDocumentTemplate", {
+            body: JSON.stringify({ data })
+        })
+        .then(
+            function (data) {
+                console.log(data);
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+}
+
+function updateDocumentTemplate(id, data) {
+    clientApp.request
+        .invokeTemplate("updateDocumentTemplate", {
+            context: { id },
+            body: JSON.stringify({ data })
+        })
+        .then(
+            function (data) {
+                console.log(data);
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+}
+
+async function getDocumentTemplate(id) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getDocumentTemplate", {
+            context: { id }
+        });
+        const data = JSON.parse(response.response);
+        return data.records[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function createTabsConfig(data) {
+    clientApp.request
+        .invokeTemplate("createTabsConfig", {
+            body: JSON.stringify({ data })
+        })
+        .then(
+            function (data) {
+                console.log(data);
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+}
+
+function updateTabsConfig(id, data) {
+    clientApp.request
+        .invokeTemplate("updateTabsConfig", {
+            context: { id },
+            body: JSON.stringify({ data })
+        })
+        .then(
+            function (data) {
+                console.log(data);
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+}
+
+async function getTabsConfig(id) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getTabsConfig", {
+            context: { id }
+        });
+        const data = JSON.parse(response.response);
+        return data.records;
+    } catch (error) {
         console.log(error);
     }
 }
@@ -444,8 +538,8 @@ async function getConditionFields(sr) {
         getDetailCustomObject(sr.data.related_custom_object),
         getServiceItem(sr.data.service_item_id, sr.data.workspace_id)
     ]);
-    console.log(customObject, serviceItem);
-    clientApp.instance.send({ message: { type: ACTION_TYPES.SERVICE_ITEM, data: [...serviceItem?.custom_fields, ...customObject?.fields] } });
+    const fields = [...(serviceItem?.custom_fields ?? []), ...(customObject?.fields ?? [])];
+    await clientApp.instance.send({ message: { type: ACTION_TYPES.SERVICE_ITEM, data: fields } });
 }
 
 async function getCustomObjects(id) {
@@ -453,9 +547,8 @@ async function getCustomObjects(id) {
         const response = await clientApp.request.invokeTemplate("getCustomObjects", {
             context: { id }
         });
-        const data = JSON.parse(response.response)?.custom_objects;
-        console.log(data);
-        clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT, data } });
+        const custom_objects = JSON.parse(response.response)?.custom_objects;
+        await clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT, data: custom_objects } });
     } catch (error) {
         console.error(error);
     }
@@ -627,6 +720,58 @@ async function getAllServiceItem() {
     }
 }
 
+async function getStateApprovalByApp(app_code, process_code) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getStateApprovalByApp", {
+            context: { app_code, process_code }
+        });
+        const data = JSON.parse(response.response);
+        return data.records;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getStateChangeApprovalByApp(app_code, process_code) {
+    try {
+        const response = await clientApp.request.invokeTemplate("getStateChangeApprovalByApp", {
+            context: { app_code, process_code }
+        });
+        const data = JSON.parse(response.response);
+        return data.records;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getDataSR(app_code, process_code) {
+    const [states, state_changes] = await Promise.all([getStateApprovalByApp(app_code, process_code), getStateChangeApprovalByApp(app_code, process_code)]);
+    return { states, state_changes };
+}
+
+function handleTabsConfig(data) {
+    const { service_item_id, tabs } = data;
+    Promise.all(
+        tabs?.map(async (item) => {
+            const body = {
+                service_item_id,
+                tab_code: item.tab_code,
+                tab_name: item.tab_name,
+                custom_object_id: item.custom_object_id,
+                is_table: Number(item.is_table),
+                fields: JSON.stringify(item.fields),
+                fields_id: Array.isArray(item.fields) ? item.fields.map((field) => field.name).join(";") : ""
+            };
+            console.log(body);
+            if (item.bo_display_id) {
+                updateTabsConfig(item.bo_display_id, body);
+            } else {
+                createTabsConfig(body);
+            }
+        })
+    );
+}
+
 function mappingServiceCatalog(workspace, list) {
     return list?.map((item) => {
         return {
@@ -634,6 +779,11 @@ function mappingServiceCatalog(workspace, list) {
             name: `[${workspace.name}] ${item.name}`
         };
     });
+}
+
+function toggleLoading(isLoading = true) {
+    if (isLoading) loading.style.display = "block";
+    else loading.style.display = "none";
 }
 
 document.addEventListener("DOMContentLoaded", () => {

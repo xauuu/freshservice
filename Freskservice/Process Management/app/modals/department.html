@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Department</title>
         <style>
+            #static-form-container {
+                margin-bottom: 100px;
+                /* overflow-y: auto; */
+            }
             .bottom {
                 display: flex;
                 gap: 15px;
@@ -22,30 +26,50 @@
 
     <body>
         <div id="static-form-container">
-            <fw-select
-                id="parent_department"
-                type="DROPDOWN"
-                name="parent_department"
-                placeholder="Enter Parent Department"
-                label="Parent Department"
-            ></fw-select>
-            <fw-form id="fw-static-form">
-                <fw-form-control id="name" type="TEXT" name="name" label="Department Name"></fw-form-control>
-                <fw-form-control
-                    id="head_user_id"
-                    type="DROPDOWN"
-                    name="head_user_id"
-                    placeholder="Head of Department"
-                    label="Head of Department"
-                ></fw-form-control>
-                <fw-form-control id="description" type="PARAGRAPH" name="description" label="Department Description"></fw-form-control>
-            </fw-form>
-            <fw-select id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
+            <fw-tabs>
+                <fw-tab slot="tab" panel="information">Information</fw-tab>
+                <fw-tab slot="tab" panel="rg">Requester Group</fw-tab>
+                <fw-tab slot="tab" panel="ag">Agent Group</fw-tab>
+                <fw-tab-panel name="information">
+                    <fw-form id="fw-static-form">
+                        <fw-form-control id="name" type="TEXT" name="name" label="Department Name"></fw-form-control>
+                        <fw-form-control
+                            id="head_user_id"
+                            type="DROPDOWN"
+                            name="head_user_id"
+                            placeholder="Head of Department"
+                            label="Head of Department"
+                        ></fw-form-control>
+                        <fw-form-control id="description" type="PARAGRAPH" name="description" label="Department Description"></fw-form-control>
 
+                        <fw-select
+                            id="parent_department"
+                            type="DROPDOWN"
+                            name="parent_department"
+                            placeholder="Enter Parent Department"
+                            label="Parent Department"
+                        ></fw-select>
+                    </fw-form>
+                </fw-tab-panel>
+                <fw-tab-panel name="rg">
+                    <fw-select style="margin-top: 15px" id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
+                    <fw-data-table style="margin-top: 10px" id="dt-requester"></fw-data-table>
+                </fw-tab-panel>
+                <fw-tab-panel name="ag">
+                    <fw-select
+                        style="margin-top: 15px"
+                        id="related_agent_group_ids"
+                        multiple
+                        name="related_agent_group_ids"
+                        label="Related Agent Groups"
+                    ></fw-select>
+                    <fw-data-table style="margin-top: 10px" id="dt-agent"></fw-data-table>
+                </fw-tab-panel>
+            </fw-tabs>
             <div class="bottom">
                 <fw-button id="closeModal" color="secondary">Close</fw-button>
                 <fw-button id="view" color="primary">View</fw-button>
-                <fw-button id="submit" color="primary">Edit</fw-button>
+                <fw-button id="submit" color="primary">Save</fw-button>
             </div>
         </div>
         <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
@@ -69,10 +93,17 @@
                         };
                     }
                     if (values.head_user_id) var head_user_id = { head_user_id: Number(values.head_user_id) };
-                    const relatedGroup = await document.getElementById("related_group_ids").getSelectedItem();
-                    if (relatedGroup.length > 0) {
+
+                    const relatedRequesterGroups = await document.getElementById("related_group_ids").getSelectedItem();
+                    if (relatedRequesterGroups.length > 0) {
                         var related_group = {
-                            related_group_ids: String(relatedGroup.map((item) => item.value).join(";"))
+                            related_group_ids: relatedRequesterGroups.map((item) => item.value).join(";")
+                        };
+                    }
+                    const relatedAgentGroups = await document.getElementById("related_agent_group_ids").getSelectedItem();
+                    if (relatedAgentGroups.length > 0) {
+                        var related_agent_group = {
+                            related_agent_group_ids: relatedAgentGroups.map((item) => item.value).join(";")
                         };
                     }
                     client.instance.send({
@@ -84,7 +115,8 @@
                                 ...head_user_id,
                                 custom_fields: {
                                     ...custom_field,
-                                    ...related_group
+                                    ...related_group,
+                                    ...related_agent_group
                                 }
                             },
                             id: context.department.id
@@ -95,19 +127,29 @@
                     window.open(`https://trusisor.freshservice.com/itil/departments/${context.department.id}`, "_blank").focus();
                 });
 
+                document.getElementById("related_group_ids").addEventListener("fwChange", function (e) {
+                    generateDT("dt-requester", e.detail.meta.selectedOptions);
+                });
+                document.getElementById("related_agent_group_ids").addEventListener("fwChange", function (e) {
+                    generateDT("dt-agent", e.detail.meta.selectedOptions);
+                });
+
                 client.instance.receive(function (event) {
                     let data = event.helper.getData();
                     if (data.close_modal) client.instance.close();
                 });
                 client.instance.context().then(function (c) {
                     context = c.data;
-                    const { department, requesters, departments, requester_groups } = context;
+                    const { department, requesters, departments, requester_groups, agent_groups } = context;
                     generateDepartment("parent_department", departments, context);
                     generateRequesters("head_user_id", requesters, context);
                     generateRequesterGroup("related_group_ids", requester_groups, context);
+                    generateRequesterGroup("related_agent_group_ids", agent_groups, context);
                     Object.keys(department).forEach(function (key) {
                         form.setFieldValue([key], department[key]);
                     });
+                    document.getElementById("related_group_ids").setSelectedValues(department?.custom_fields.related_group_ids?.split(";"));
+                    document.getElementById("related_agent_group_ids").setSelectedValues(department?.custom_fields.related_agent_group_ids?.split(";"));
                 });
             });
             function generateDepartment(container, list, context) {
@@ -117,6 +159,7 @@
                 document.getElementById(container).options = options;
                 document.getElementById(container).value = String(context.department?.custom_fields.parent_department_id);
             }
+
             function generateRequesters(container, list, context) {
                 const options = list?.map((item) => {
                     return { value: String(item.id), text: `${item.first_name} ${item.last_name} (${item.primary_email})` };
@@ -124,12 +167,38 @@
                 document.getElementById(container).choices = options;
                 document.getElementById(container).value = String(context.department?.head_user_id);
             }
+
             function generateRequesterGroup(container, list, context) {
                 const options = list?.map((item) => {
-                    return { value: String(item.id), text: `${item.name}` };
+                    return { ...item, value: String(item.id), text: `${item.name}` };
                 });
                 document.getElementById(container).options = options;
-                document.getElementById(container).value = context.department?.custom_fields.related_group_ids?.split(";");
+            }
+
+            function generateDT(container, list) {
+                var datatable = document.getElementById(container);
+                datatable.columns = [
+                    {
+                        key: "text",
+                        text: "Group Name"
+                    }
+                ];
+                datatable.rows = list;
+                datatable.rowActions = [
+                    {
+                        name: "edit",
+                        handler: (rowData) => {
+                            console.log(rowData);
+                            if (container.includes("requester"))
+                                window.open(`https://trusisor.freshservice.com/admin/requester_groups/${rowData.id}/edit`, "_blank").focus();
+                            if (container.includes("agent"))
+                                window
+                                    .open(`https://trusisor.freshservice.com/ws/${rowData.workspace_id}/admin/agent_groups/${rowData.id}/edit`, "_blank")
+                                    .focus();
+                        },
+                        graphicsProps: { name: "edit" }
+                    }
+                ];
             }
         </script>
     </body>

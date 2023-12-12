@@ -16,6 +16,7 @@ var iconDataSource = [
     }
 ];
 
+const loading = document.getElementById("loading");
 const departmentSelect = document.getElementById("departments");
 const menu = document.getElementById("icon-kebab-menu");
 const wsSelect = document.getElementById("workspace");
@@ -39,8 +40,10 @@ document.onreadystatechange = function () {
 };
 
 async function onActivated() {
+    toggleLoading();
     await Promise.all([getDepartments(), getRequesters(), getAgentGroup(), getRequesterGroup(), getWorkspaces()]);
     generateDeptSelect(departments);
+    toggleLoading(false);
     generateWorkspaceSelect();
     menu.options = iconDataSource;
     generateDatatableRequester();
@@ -48,11 +51,12 @@ async function onActivated() {
 }
 
 function onEventHandled() {
+    toggleLoading();
     document.getElementById("new-department").addEventListener("click", () => {
         client.interface.trigger("showModal", {
             title: "New Department",
             template: "modals/new-department.html",
-            data: { requesters, departments, requester_groups }
+            data: { requesters, departments, requester_groups, agent_groups }
         });
     });
 
@@ -78,6 +82,15 @@ function onEventHandled() {
     wsSelect.addEventListener("fwChange", (e) => {
         generateDatatableAgent(e.detail.value);
     });
+
+    departmentSelect.addEventListener("fwChange", (e) => {
+        const root = e.detail.meta.selectedOptions[0];
+        const list = departments.filter((item) => item.custom_fields.parent_department_id == e.detail.value);
+        renderOrgChart(root, list);
+        renderTreeView(root, list);
+    });
+
+    toggleLoading(false);
 }
 
 function onReceived() {
@@ -97,12 +110,6 @@ function onReceived() {
 function generateDeptSelect(departments) {
     const rootDepartments = departments.filter((item) => item.custom_fields.is_root && !item.custom_fields.parent_department_id);
     departmentSelect.options = rootDepartments;
-    departmentSelect.addEventListener("fwChange", (e) => {
-        const root = e.detail.meta.selectedOptions[0];
-        const list = departments.filter((item) => item.custom_fields.parent_department_id == e.detail.value);
-        renderOrgChart(root, list);
-        renderTreeView(root, list);
-    });
 }
 
 function renderOrgChart(root, list) {
@@ -122,43 +129,49 @@ function renderOrgChart(root, list) {
                 $container.scrollLeft(($container[0].scrollWidth - $container.width()) / 2);
             }
         });
-
-    var modalOpen = false;
+    var clickEnabled = true;
     chart.$chartContainer.on("click", ".node", async function () {
+        if (!clickEnabled) {
+            return;
+        }
         var $this = $(this);
-
-        nodeClickHandled($this.attr("id"), modalOpen);
+        clickEnabled = false;
+        nodeClickHandled($this.attr("id"));
+        setTimeout(function () {
+            clickEnabled = true;
+        }, 1000);
     });
 }
 
 function renderTreeView(root, list) {
     const dataTree = [{ ...root, text: root.name, nodes: getDeptTreeView(list) }];
+    var clickEnabled = true;
 
     treeContainer.treeview({
         data: dataTree,
         levels: 2,
         onNodeSelected: function (event, node) {
-            var modalOpen = false;
-            nodeClickHandled(node.id, modalOpen);
+            if (!clickEnabled) {
+                return;
+            }
+            clickEnabled = false;
+            nodeClickHandled(node.id);
+            setTimeout(function () {
+                clickEnabled = true;
+            }, 1000);
         }
     });
 }
 
-async function nodeClickHandled(id, modalOpen) {
-    if (modalOpen) {
-        return;
-    }
-    try {
-        modalOpen = true;
-        const department = await getDepartment(id);
-        client.interface.trigger("showModal", {
-            title: department.name,
-            template: "modals/department.html",
-            data: { department, departments, requesters, requester_groups }
-        });
-    } finally {
-        modalOpen = false;
-    }
+async function nodeClickHandled(id) {
+    toggleLoading();
+    const department = await getDepartment(id);
+    client.interface.trigger("showModal", {
+        title: department.name,
+        template: "modals/department.html",
+        data: { department, departments, requesters, requester_groups, agent_groups }
+    });
+    toggleLoading(false);
 }
 
 function getDeptOrgChart(list) {
@@ -431,4 +444,9 @@ function showNotification(type, message) {
 
 function handleErr(error) {
     console.log(error);
+}
+
+function toggleLoading(isLoading = true) {
+    if (isLoading) loading.style.display = "block";
+    else loading.style.display = "none";
 }

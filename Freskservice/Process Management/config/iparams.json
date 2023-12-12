@@ -35,27 +35,21 @@
         "type": "text",
         "required": true
     },
-    "workflow_id": {
-        "display_name": "workflow_id",
-        "description": "Please enter your workflow_id",
-        "type": "text",
-        "required": true
-    },
-    "condition_id": {
-        "display_name": "condition_id",
-        "description": "Please enter your condition_id",
-        "type": "text",
-        "required": true
-    },
-    "condition_detail_id": {
-        "display_name": "condition_detail_id",
-        "description": "Please enter your condition_detail_id",
-        "type": "text",
-        "required": true
-    },
     "workspace_id": {
         "display_name": "workspace_id",
         "description": "Please enter your workspace_id",
+        "type": "text",
+        "required": true
+    },
+    "document_template_id": {
+        "display_name": "document_template_id",
+        "description": "Please enter your document_template_id",
+        "type": "text",
+        "required": true
+    },
+    "tabs_id": {
+        "display_name": "tabs_id",
+        "description": "Please enter your tabs_id",
         "type": "text",
         "required": true
     }

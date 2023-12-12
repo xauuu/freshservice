@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>New Department</title>
         <style>
+            #static-form-container {
+                margin-bottom: 50px;
+            }
             .bottom {
                 display: flex;
                 gap: 15px;
@@ -34,7 +37,8 @@
                 <fw-form-control id="hod" type="DROPDOWN" name="head_user_id" placeholder="Head of Department" label="Head of Department"></fw-form-control>
                 <fw-form-control id="description" type="PARAGRAPH" name="description" label="Department Description"></fw-form-control>
             </fw-form>
-            <fw-select id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
+            <fw-select style="margin-top: 10px" id="related_group_ids" multiple name="related_group_ids" label="Related Requester Groups"></fw-select>
+            <fw-select style="margin-top: 15px" id="related_agent_group_ids" multiple name="related_agent_group_ids" label="Related Agent Groups"></fw-select>
 
             <div class="bottom">
                 <fw-button id="closeModal" color="secondary">Close</fw-button>
@@ -59,10 +63,16 @@
                             parent_department_id: Number(parent.value)
                         };
                     }
-                    const relatedGroup = await document.getElementById("related_group_ids").getSelectedItem();
-                    if (relatedGroup.length > 0) {
+                    const relatedRequesterGroups = await document.getElementById("related_group_ids").getSelectedItem();
+                    if (relatedRequesterGroups.length > 0) {
                         var related_group = {
-                            related_group_ids: relatedGroup.map((item) => item.value).join(";")
+                            related_group_ids: relatedRequesterGroups.map((item) => item.value).join(";")
+                        };
+                    }
+                    const relatedAgentGroups = await document.getElementById("related_agent_group_ids").getSelectedItem();
+                    if (relatedAgentGroups.length > 0) {
+                        var related_agent_group = {
+                            related_agent_group_ids: relatedAgentGroups.map((item) => item.value).join(";")
                         };
                     }
                     client.instance.send({
@@ -74,7 +84,8 @@
                                 custom_fields: {
                                     is_visible: true,
                                     ...parent_department,
-                                    ...related_group
+                                    ...related_group,
+                                    ...related_agent_group
                                 }
                             }
                         }
@@ -87,10 +98,11 @@
                 });
                 client.instance.context().then(function (c) {
                     context = c.data;
-                    const { requesters, departments, requester_groups } = context;
+                    const { requesters, departments, requester_groups, agent_groups } = context;
                     generateDepartment("parent_department", departments);
                     generateRequesters("hod", requesters);
                     generateRequesterGroup("related_group_ids", requester_groups);
+                    generateRequesterGroup("related_agent_group_ids", agent_groups, context);
                 });
             });
             function generateDepartment(container, list) {
