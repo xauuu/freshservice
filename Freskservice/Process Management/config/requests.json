@@ -11,30 +11,6 @@
         },
         "options": {}
     },
-    "createGroupApproval": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.group_approval_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateGroupApproval": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.group_approval_id %>/records/<%= context.id %>",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
     "getAllRequesterGroup": {
         "schema": {
             "method": "GET",
@@ -63,30 +39,6 @@
         },
         "options": {}
     },
-    "createEmailTemplate": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateEmailTemplate": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.email_template_id %>/records/<%= context.id %>",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
     "getAllSRCategory": {
         "schema": {
             "method": "GET",
@@ -99,59 +51,11 @@
         },
         "options": {}
     },
-    "createSRCategory": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.sr_category_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateSRCategory": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.sr_category_id %>/records/<%= context.id %>",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
     "getAllStateApproval": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
             "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "createStateApproval": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateStateApproval": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.state_approval_id %>/records/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -340,11 +244,11 @@
         },
         "options": {}
     },
-    "createDocumentTemplate": {
+    "createCustomObject": {
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.document_template_id %>/records",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>/records",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -352,11 +256,11 @@
         },
         "options": {}
     },
-    "updateDocumentTemplate": {
+    "updateCustomObject": {
         "schema": {
             "method": "PUT",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.document_template_id %>/records/<%= context.id %>",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>/records/<%= context.id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -364,11 +268,11 @@
         },
         "options": {}
     },
-    "getDocumentTemplate": {
+    "queryCustomObject": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.document_template_id %>/records?query=service_item_id : '<%= context.id %>'",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>/records?query=<%= context.query %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"
@@ -376,35 +280,23 @@
         },
         "options": {}
     },
-    "createTabsConfig": {
-        "schema": {
-            "method": "POST",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.tabs_id %>/records",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "updateTabsConfig": {
-        "schema": {
-            "method": "PUT",
-            "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.tabs_id %>/records/<%= context.id %>",
-            "headers": {
-                "Authorization": "Basic <%= encode(iparam.apikey) %>",
-                "Content-Type": "application/json"
-            }
-        },
-        "options": {}
-    },
-    "getTabsConfig": {
+    "getAllCustomObject": {
         "schema": {
             "method": "GET",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/<%= iparam.tabs_id %>/records?query=service_item_id : '<%= context.id %>'",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getTicketFields": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/ticket_form_fields",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

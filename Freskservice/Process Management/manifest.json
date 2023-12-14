@@ -10,17 +10,9 @@
       },
       "requests": {
         "getAllGroupApproval": {},
-        "createGroupApproval": {},
-        "updateGroupApproval": {},
         "getAllEmailTemplate": {},
-        "createEmailTemplate": {},
-        "updateEmailTemplate": {},
         "getAllSRCategory": {},
-        "createSRCategory": {},
-        "updateSRCategory": {},
         "getAllStateApproval": {},
-        "createStateApproval": {},
-        "updateStateApproval": {},
         "getAllRequesterGroup": {},
         "getAllServiceItem": {},
         "getAllWorkspace": {},
@@ -36,12 +28,11 @@
         "getRequesters": {},
         "getStateApprovalByApp": {},
         "getStateChangeApprovalByApp": {},
-        "getDocumentTemplate": {},
-        "updateDocumentTemplate": {},
-        "createDocumentTemplate": {},
-        "getTabsConfig": {},
-        "updateTabsConfig": {},
-        "createTabsConfig": {}
+        "updateCustomObject": {},
+        "createCustomObject": {},
+        "queryCustomObject": {},
+        "getAllCustomObject": {},
+        "getTicketFields": {}
       }
     }
   },

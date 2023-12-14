@@ -63,9 +63,13 @@ function generateDataTable(values) {
             handler: (rowData) => {
                 toggleButton(false);
                 modal.open();
-                form.setFieldsValue(rowData);
+                form.setFieldsValue({
+                    ...rowData,
+                    agent_groups_id: rowData.agent_groups_id?.split(";"),
+                    requester_groups_id: rowData.requester_groups_id?.split(";")
+                });
                 setTimeout(() => {
-                    document.getElementById("fields").value = rowData.fields_id?.split(";");
+                    document.getElementById("fields").setSelectedValues(rowData.fields_id?.split(";"));
                 }, 1000);
             },
             graphicsProps: { name: "edit" }

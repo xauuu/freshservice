@@ -5,16 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
         <link rel="stylesheet" href="../styles/style.css" />
+        <style>
+            fw-tab-panel {
+                margin-bottom: 50px;
+            }
+        </style>
     </head>
 
     <body>
         <div id="static-form-container">
-            <fw-form id="formCreate">
-                <fw-tabs>
-                    <fw-tab slot="tab" panel="information">Information</fw-tab>
-                    <fw-tab slot="tab" panel="approval">Approval/Submit</fw-tab>
-                    <fw-tab slot="tab" panel="condition">Condition</fw-tab>
-                    <fw-tab-panel name="information">
+            <fw-tabs>
+                <fw-tab slot="tab" panel="information">Information</fw-tab>
+                <fw-tab slot="tab" panel="approval">Approval/Submit</fw-tab>
+                <fw-tab slot="tab" panel="condition">Condition</fw-tab>
+                <fw-tab slot="tab" panel="file">Generate File</fw-tab>
+                <fw-tab-panel name="information">
+                    <fw-form id="formCreate">
                         <fw-form-control
                             type="DROPDOWN"
                             id="app_code"
@@ -62,8 +68,10 @@
                             label="Configuration Type"
                             placeholder="Select Configuration Type"
                         ></fw-form-control>
-                    </fw-tab-panel>
-                    <fw-tab-panel name="approval">
+                    </fw-form>
+                </fw-tab-panel>
+                <fw-tab-panel name="approval">
+                    <fw-form id="formApproval">
                         <fw-form-control type="DROPDOWN" id="approver" name="approver" label="Approver" placeholder="Select Approver"></fw-form-control>
                         <fw-form-control
                             type="DROPDOWN"
@@ -116,16 +124,100 @@
                             label="Send Warning Email Before"
                             placeholder="Send Warning Email Before"
                         ></fw-form-control>
-                    </fw-tab-panel>
-                    <fw-tab-panel name="condition">
+                    </fw-form>
+                </fw-tab-panel>
+                <fw-tab-panel name="condition">
+                    <fw-form id="formCondition">
+                        <fw-form-control type="DROPDOWN" id="object_type" name="object_type" label="Object Type" placeholder="Select type"></fw-form-control>
+                        <fw-form-control
+                            style="display: none"
+                            type="DROPDOWN"
+                            id="condition_custom_object"
+                            name="custom_object_id"
+                            label="Custom Object"
+                            placeholder="Select custom object"
+                        ></fw-form-control>
                         <fw-form-control type="DROPDOWN" id="condition_field" name="condition_field" label="Field" placeholder="Select Field"></fw-form-control>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px">
-                            <fw-button id="new-condition" color="secondary">Add New</fw-button>
-                        </div>
-                        <fw-data-table id="data-table-values" label="Values"></fw-data-table>
-                    </fw-tab-panel>
-                </fw-tabs>
-            </fw-form>
+                    </fw-form>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px">
+                        <fw-button id="new-condition" color="secondary">Add New</fw-button>
+                    </div>
+                    <fw-data-table id="data-table-values" label="Values"></fw-data-table>
+                </fw-tab-panel>
+                <fw-tab-panel name="file">
+                    <fw-form id="formDocument">
+                        <fw-form-control
+                            type="MULTI_SELECT"
+                            id="custom_object_id"
+                            name="custom_object_id"
+                            label="Related Custom Object"
+                            required="true"
+                            placeholder="Select Related Custom Object"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="document_template_code"
+                            name="document_template_code"
+                            label="Select Document Template"
+                            placeholder="Select Document Template"
+                            required="true"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="output_type"
+                            name="output_type"
+                            label="Output Type"
+                            required="true"
+                            placeholder="Select type"
+                        ></fw-form-control>
+                        <fw-form-control type="CHECKBOX" id="attach_to_ticket" name="attach_to_ticket" label="Attach to Ticket"></fw-form-control>
+                        <fw-form-control type="CHECKBOX" id="create_attachment" name="create_attachment" label="Create Attachment"></fw-form-control>
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="attachment_object_id"
+                            name="attachment_object_id"
+                            label="Attachment Object"
+                            required="true"
+                            placeholder="Select Attachment Object"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="CHECKBOX"
+                            id="send_email_attachment"
+                            name="send_email_attachment"
+                            label="Send Email Attachment"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="file_email_template"
+                            name="email_template_code"
+                            label="Email Template"
+                            placeholder="Select Email Template"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="MULTI_SELECT"
+                            id="agent_groups_id"
+                            name="agent_groups_id"
+                            label="Send Email to Agent Groups"
+                            placeholder="Select Agent Groups"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="MULTI_SELECT"
+                            id="requester_groups_id"
+                            name="requester_groups_id"
+                            label="Send Email to Requester Groups"
+                            placeholder="Select Requester Groups"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="PARAGRAPH"
+                            id="to_list"
+                            name="to_list"
+                            label="Send To (list email ; separator)"
+                            placeholder="Enter Email"
+                        ></fw-form-control>
+                        <fw-form-control type="DROPDOWN" id="new_state" name="new_state" label="New State" placeholder="Select State"></fw-form-control>
+                    </fw-form>
+                </fw-tab-panel>
+            </fw-tabs>
             <div class="bottom">
                 <fw-button id="closeModal" color="secondary">Close</fw-button>
                 <fw-button id="submit" color="primary">Save</fw-button>
@@ -162,7 +254,11 @@
                     var categories = [];
                     var states = [];
                     var formCreate = document.querySelector("#formCreate");
+                    var formApproval = document.querySelector("#formApproval");
+                    var formDocument = document.querySelector("#formDocument");
+                    var formCondition = document.querySelector("#formCondition");
                     generateSelect();
+                    generateDataTable([], []);
                     document.getElementById("closeModal").addEventListener("click", function () {
                         client.instance.close();
                     });
@@ -178,6 +274,7 @@
                                 (item) => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == e.detail.value
                             );
                             generateState("current_state", newStateList, context);
+                            generateState("new_state", newStateList, context);
                             generateState("expired_new_state", newStateList, context);
                             generateState("condition-state", newStateList, context);
                             client.instance.send({
@@ -190,6 +287,8 @@
                                 }
                             });
                         }
+                    });
+                    formApproval.addEventListener("fwFormValueChanged", (e) => {
                         if (e.detail.field == "approver") {
                             if (e.detail.value == 4) {
                                 document.getElementById("next_approval_group").disabled = false;
@@ -200,19 +299,99 @@
                             }
                         }
                     });
+                    formCondition.addEventListener("fwFormValueChanged", (e) => {
+                        if (e.detail.field == "object_type") {
+                            const type = e.detail.value;
+                            if (type === "custom_object") {
+                                document.getElementById("condition_custom_object").style.display = "block";
+                            } else {
+                                document.getElementById("condition_custom_object").style.display = "none";
+                                client.instance.send({
+                                    message: {
+                                        type: ACTION_TYPES.GET_FIELDS_BY_TYPE,
+                                        data: {
+                                            app_code: document.getElementById("app_code").value,
+                                            process_code: document.getElementById("process_code").value,
+                                            object_type: e.detail.value
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        if (e.detail.field == "custom_object_id") {
+                            client.instance.send({
+                                message: {
+                                    type: ACTION_TYPES.GET_FIELDS_BY_TYPE,
+                                    data: {
+                                        object_type: "custom_object",
+                                        object_id: e.detail.value
+                                    }
+                                }
+                            });
+                        }
+                    });
                     document.querySelector("#submit").addEventListener("click", async (e) => {
                         const { values, isValid } = await formCreate.doSubmit(e);
-                        const table = document.getElementById("data-table-values");
-                        await table.selectAllRows();
-                        const tableValues = await table.getSelectedRows();
+                        if (values.configuration_type === "file") {
+                            const { values: template } = await formDocument.doSubmit(e);
+                            const dataDocument = {
+                                state_change_id: String(values.bo_display_id),
+                                custom_object_id: template.custom_object_id?.join(";"),
+                                output_type: template.output_type,
+                                document_template_code: template.document_template_code,
+                                attach_to_ticket: Number(template.attach_to_ticket),
+                                create_attachment: Number(template.create_attachment),
+                                attachment_object_id: template.attachment_object_id,
+                                send_email_attachment: Number(template.send_email_attachment),
+                                email_template_code: template.email_template_code,
+                                agent_groups_id: template.agent_groups_id?.join(";"),
+                                requester_groups_id: template.requester_groups_id?.join(";"),
+                                to_list: template.to_list,
+                                new_state: template.new_state
+                            };
+                            client.instance.send({
+                                message: {
+                                    type: ACTION_TYPES.FILE_GENERATION,
+                                    data: dataDocument,
+                                    id: template?.bo_display_id
+                                }
+                            });
+                        }
+                        if (values.configuration_type === "approval") {
+                            const { values: approval } = await formApproval.doSubmit(e);
+                            client.instance.send({
+                                message: {
+                                    type: ACTION_TYPES.APPROVAL_STATE,
+                                    data: {
+                                        ...approval,
+                                        state_change_id: String(values.bo_display_id),
+                                        send_warning_email_before: approval.send_warning_email_before?.join(";")
+                                    },
+                                    id: approval?.bo_display_id
+                                }
+                            });
+                        }
+                        if (values.configuration_type === "condition") {
+                            const { values: condition } = await formCondition.doSubmit(e);
+                            const table = document.getElementById("data-table-values");
+                            await table.selectAllRows();
+                            const tableValues = await table.getSelectedRows();
+                            client.instance.send({
+                                message: {
+                                    type: ACTION_TYPES.CONDITIONS_CONFIGURATION,
+                                    data: {
+                                        ...condition,
+                                        state_change_id: String(values.bo_display_id),
+                                        condition_values: JSON.stringify(tableValues)
+                                    },
+                                    id: condition?.bo_display_id
+                                }
+                            });
+                        }
                         client.instance.send({
                             message: {
                                 type: context.type,
-                                data: {
-                                    ...values,
-                                    send_warning_email_before: values.send_warning_email_before?.join(";"),
-                                    condition_values: JSON.stringify(tableValues)
-                                },
+                                data: values,
                                 id: context.detail?.bo_display_id
                             }
                         });
@@ -220,11 +399,23 @@
                     client.instance.receive(function (event) {
                         let data = event.helper.getData();
                         if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
-                        if (data.type === ACTION_TYPES.SERVICE_ITEM) {
-                            const fields = data.data;
-                            generateFields("condition_field", fields);
-                            generateFields("condition_detail_field", fields);
-                            formCreate.setFieldValue("condition_field", context.detail?.condition_field);
+                        if (data.type === ACTION_TYPES.RELATED_CUSTOM_OBJECT) {
+                            const list = data.data;
+                            generateCustomObject("condition_custom_object", list);
+                            formCondition.setFieldValue("custom_object_id", context.data.condition?.data.custom_object_id);
+                        }
+                        if (data.type === ACTION_TYPES.GET_FIELDS_BY_TYPE) {
+                            const list = data.data;
+                            generateFields("condition_field", list);
+                            generateFields("condition_detail_field", list);
+                            formCondition.setFieldValue("condition_field", context.data.condition?.data?.condition_field);
+                        }
+                        if (data.type === ACTION_TYPES.CUSTOM_OBJECT) {
+                            const list = data.data;
+                            generateCustomObject("custom_object_id", list);
+                            generateCustomObject("attachment_object_id", list);
+                            formDocument.setFieldValue("custom_object_id", context.data.template?.data.custom_object_id?.split(";"));
+                            formDocument.setFieldValue("attachment_object_id", context.data.template?.data.attachment_object_id);
                         }
                     });
                     client.instance.context().then(function (c) {
@@ -240,25 +431,49 @@
                             );
                             generateGroup("next_approval_group", data.requesterGroups, context);
                             generateGroup("next_agent_group_approval", data.agentGroups, context);
+                            generateGroup("requester_groups_id", data.requesterGroups, context);
+                            generateGroup("agent_groups_id", data.agentGroups, context);
                             const newStates = states?.filter(
                                 (item) => item.data.app_code == context.detail?.app_code && item.data.process_code == context.detail?.process_code
                             );
                             generateState("current_state", newStates, context);
                             generateState("expired_new_state", newStates, context);
                             generateState("condition-state", newStates, context);
+                            generateState("new_state", newStates, context);
                             generateEmailTemplate("email_template_code", data.templates, context);
                             generateEmailTemplate("warning_email_template_code", data.templates, context);
+                            generateEmailTemplate("file_email_template", data.templates, context);
+                            generateDocumentTemplate("document_template_code", data.documentTemplates, context);
 
                             if (!detail) return;
                             Object.keys(detail).forEach(function (key) {
                                 formCreate.setFieldValue([key], detail[key]);
                             });
-                            formCreate.setFieldValue("send_warning_email_before", detail.send_warning_email_before?.split(";"));
-                            generateDataTable(detail.condition_values, newStates);
-                            if (detail.approver == 4) {
-                                document.getElementById("next_approval_group").disabled = false;
-                                document.getElementById("next_agent_group_approval").disabled = false;
-                            }
+                            setTimeout(() => {
+                                if (data.approval) {
+                                    if (data.approval.approver == 4) {
+                                        document.getElementById("next_approval_group").disabled = false;
+                                        document.getElementById("next_agent_group_approval").disabled = false;
+                                    }
+                                    Object.keys(data.approval.data).forEach(function (key) {
+                                        if (["send_warning_email_before"].includes(key)) formApproval.setFieldValue([key], data.approval.data[key]?.split(";"));
+                                        else formApproval.setFieldValue([key], data.approval.data[key]);
+                                    });
+                                }
+                                if (data.template) {
+                                    Object.keys(data.template.data).forEach(function (key) {
+                                        if (["custom_object_id", "agent_groups_id", "requester_groups_id"].includes(key))
+                                            formDocument.setFieldValue([key], data.template.data[key].split(";"));
+                                        else formDocument.setFieldValue([key], data.template.data[key]);
+                                    });
+                                }
+                                if (data.condition) {
+                                    Object.keys(data.condition.data).forEach(function (key) {
+                                        formCondition.setFieldValue([key], data.condition.data[key]);
+                                    });
+                                    generateDataTable(data.condition.data.condition_values, newStates);
+                                }
+                            }, 500);
                         }
                     });
                 });
@@ -269,7 +484,8 @@
                     ];
                     const configuration_type = [
                         { value: "approval", text: "Approval" },
-                        { value: "condition", text: "Condition" }
+                        { value: "condition", text: "Condition" },
+                        { value: "file", text: "Generate File" }
                     ];
                     const approver = [
                         { value: "1", text: "Reporting Manager" },
@@ -299,12 +515,26 @@
                         { value: "less_than", text: "Less than" },
                         { value: "less_than_or_equal", text: "Less than or Equal to" }
                     ];
+                    const output_type = [
+                        { value: "pdf", text: "PDF" },
+                        { value: "docx", text: "Word" },
+                        { value: "xlsx", text: "Excel" }
+                    ];
+
+                    const object_type = [
+                        { value: "ticket", text: "Ticket" },
+                        { value: "service_request", text: "Service Request" },
+                        { value: "custom_object", text: "Custom Object" }
+                    ];
+
                     document.getElementById("calendar_type").choices = calendar_type;
                     document.getElementById("approver").choices = approver;
                     document.getElementById("approval_type").choices = approval_type;
                     document.getElementById("configuration_type").choices = configuration_type;
                     document.getElementById("send_warning_email_before").choices = send_warning_email_before;
                     document.getElementById("operator").choices = operator;
+                    document.getElementById("output_type").choices = output_type;
+                    document.getElementById("object_type").choices = object_type;
                 }
             });
         </script>

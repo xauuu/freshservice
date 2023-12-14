@@ -3,28 +3,30 @@ var requesterGroups = [];
 var categories = [];
 var templates = [];
 var apps = [];
-var stateChange = [];
+var stateChanges = [];
 var states = [];
 var workflows = [];
 var serviceItems = [];
 var agentGroups = [];
 var workspaces = [];
+var documentTemplates = [];
+var iparams;
 
 const loading = document.getElementById("loading");
 const categoryContainer = document.getElementById("listSRCategory");
 const emailContainer = document.getElementById("listEmail");
-const workflowContainer = document.getElementById("listWorkflow");
 const stateContainer = document.getElementById("listState");
 const approvalContainer = document.getElementById("listCO");
-const conditionContainer = document.getElementById("listCondition");
+const documentContainer = document.getElementById("listDocument");
 
 async function initApp(_client) {
     toggleLoading();
     clientApp = _client;
+    iparams = await clientApp.iparams.get();
     await getAllServiceItem();
-    await getAllSRCategory();
-    await getAllStateApproval();
-    await Promise.all([getAllEmailTemplate(), getAllGroupApproval(), getAllRequesterGroup(), getAllAgentGroup()]);
+    await SERVICE_REQUEST.all();
+    await STATE_APPROVAL.all();
+    await Promise.all([EMAIL_TEMPLATE.all(), DOCUMENT_TEMPLATE.all(), STATE_CHANGE.all(), getAllRequesterGroup(), getAllAgentGroup()]);
     toggleLoading(false);
     clientApp.events.on("app.activated", initHandlers);
 }
@@ -39,7 +41,9 @@ async function openModal(type, detail = null) {
         [ACTION_TYPES.SERVICE_REQUEST_CREATE]: "Add Service Request",
         [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: "Edit Service Request",
         [ACTION_TYPES.STATE_APPROVAL_CREATE]: "Add State",
-        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "Edit State"
+        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "Edit State",
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE]: "Add Document Template",
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE]: "Edit Document Template"
     };
     const templateMap = {
         [ACTION_TYPES.GROUP_APPROVAL_CREATE]: "modals/modal.html",
@@ -49,26 +53,34 @@ async function openModal(type, detail = null) {
         [ACTION_TYPES.SERVICE_REQUEST_CREATE]: "modals/sr-modal.html",
         [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: "modals/sr-modal.html",
         [ACTION_TYPES.STATE_APPROVAL_CREATE]: "modals/state-modal.html",
-        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "modals/state-modal.html"
+        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: "modals/state-modal.html",
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE]: "modals/document-modal.html",
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE]: "modals/document-modal.html"
     };
     const listMap = {
-        [ACTION_TYPES.GROUP_APPROVAL_CREATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups },
-        [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups },
+        [ACTION_TYPES.GROUP_APPROVAL_CREATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups, documentTemplates },
+        [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups, documentTemplates },
         [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: {},
         [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: {},
-        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems, workspaces },
-        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems, workspaces },
+        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems, workspaces, requesterGroups, agentGroups },
+        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems, workspaces, requesterGroups, agentGroups },
         [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories },
-        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories }
+        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories },
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE]: {},
+        [ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE]: {}
     };
 
     if (type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
-        const [state, template, tabs] = await Promise.all([
-            getDataSR(detail?.app_code, detail?.process_code),
-            getDocumentTemplate(detail?.service_item_id),
-            getTabsConfig(detail?.service_item_id)
+        const [state, tabs] = await Promise.all([getDataSR(detail?.app_code, detail?.process_code), TABS_CONFIG.detail(detail?.service_item_id)]);
+        var more = { state, tabs };
+    }
+    if (type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
+        const [approval, template, condition] = await Promise.all([
+            APPROVAL_STATE.detail(detail?.bo_display_id),
+            FILE_GENERATION.detail(detail?.bo_display_id),
+            CONDITIONS_CONFIG.detail(detail?.bo_display_id)
         ]);
-        var more = { state, template, tabs };
+        var more = { approval, template, condition };
     }
     clientApp.interface.trigger("showModal", {
         title: titleMap[type],
@@ -92,36 +104,50 @@ function initHandlers() {
     document.getElementById("createState").addEventListener("click", function () {
         openModal(ACTION_TYPES.STATE_APPROVAL_CREATE);
     });
+    document.getElementById("createDocument").addEventListener("click", function () {
+        openModal(ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE);
+    });
     clientApp.instance.receive(async (e) => {
         const { type, data, id } = e.helper.getData();
         switch (type) {
             case ACTION_TYPES.GROUP_APPROVAL_CREATE:
-                await handleCreateGA(data);
+                await STATE_CHANGE.create(type, data);
                 break;
             case ACTION_TYPES.GROUP_APPROVAL_UPDATE:
-                await handleUpdateGA(id, data);
+                await STATE_CHANGE.update(type, id, data);
                 break;
             case ACTION_TYPES.EMAIL_TEMPLATE_CREATE:
-                await handleCreateET(data);
+                await EMAIL_TEMPLATE.create(type, data);
                 break;
             case ACTION_TYPES.EMAIL_TEMPLATE_UPDATE:
-                await handleUpdateET(id, data);
+                await EMAIL_TEMPLATE.update(type, id, data);
                 break;
             case ACTION_TYPES.SERVICE_REQUEST_CREATE:
-                await handleCreateSR({ ...data, is_active: Number(data.is_active) });
+                await SERVICE_REQUEST.create(type, { ...data, is_active: Number(data.is_active) });
                 break;
             case ACTION_TYPES.SERVICE_REQUEST_UPDATE:
-                await handleUpdateSR(id, { ...data, is_active: Number(data.is_active) });
+                await SERVICE_REQUEST.update(type, id, { ...data, is_active: Number(data.is_active) });
                 break;
             case ACTION_TYPES.STATE_APPROVAL_CREATE:
-                await handleCreateState(data);
+                await STATE_APPROVAL.create(type, data);
                 break;
             case ACTION_TYPES.STATE_APPROVAL_UPDATE:
-                await handleUpdateState(id, data);
+                await STATE_APPROVAL.update(type, id, data);
+                break;
+            case ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE:
+                DOCUMENT_TEMPLATE.create(type, data);
+                break;
+            case ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE:
+                DOCUMENT_TEMPLATE.update(type, id, data);
                 break;
             case ACTION_TYPES.SERVICE_ITEM:
                 const sr = categories.find((item) => item.data.app_code == data.app_code && item.data.process_code == data.process_code);
-                await getConditionFields(sr);
+                const custom_objects = await getCustomObjects(sr.data.workspace_id);
+                const related_ids = sr.data.related_custom_objects?.split(";");
+                if (related_ids && related_ids.length > 0) {
+                    const related_custom_objects = custom_objects.filter((item) => related_ids.includes(item.id.toString()));
+                    await clientApp.instance.send({ message: { type: ACTION_TYPES.RELATED_CUSTOM_OBJECT, data: related_custom_objects } });
+                }
                 break;
             case ACTION_TYPES.CUSTOM_OBJECT:
                 await getCustomObjects(data);
@@ -130,220 +156,406 @@ function initHandlers() {
                 const fields = await getDetailCustomObject(data);
                 await clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT_FIELDS, data: fields?.fields } });
                 break;
-            case ACTION_TYPES.CREATE_DOCUMENT_TEMPLATE:
-                createDocumentTemplate(data);
-                break;
-            case ACTION_TYPES.DOCUMENT_TEMPLATE:
-                if (id) updateDocumentTemplate(id, data);
-                else createDocumentTemplate(data);
-                break;
             case ACTION_TYPES.TABS_CONFIG:
                 handleTabsConfig(data);
+                break;
+            case ACTION_TYPES.FILE_GENERATION:
+                if (id) FILE_GENERATION.update(id, data);
+                else FILE_GENERATION.create(data);
+                break;
+            case ACTION_TYPES.APPROVAL_STATE:
+                if (id) APPROVAL_STATE.update(id, data);
+                else APPROVAL_STATE.create(data);
+                break;
+            case ACTION_TYPES.GET_FIELDS_BY_TYPE:
+                await getFieldsByType(data);
+                break;
+            case ACTION_TYPES.CONDITIONS_CONFIGURATION:
+                if (id) CONDITIONS_CONFIG.update(id, data);
+                else CONDITIONS_CONFIG.create(data);
                 break;
         }
     });
 }
 
-async function handleCreateGA(data) {
-    try {
-        await clientApp.request.invokeTemplate("createGroupApproval", {
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.GROUP_APPROVAL_CREATE, "Successfully created group approval");
-    } catch (error) {
-        handleError(error);
+const STATE_CHANGE = {
+    create: async (type, data) => {
+        try {
+            await clientApp.request.invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.group_approval_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    update: async (type, id, data) => {
+        try {
+            await clientApp.request.invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.group_approval_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    all: async () => {
+        try {
+            const response = await clientApp.request.invokeTemplate("getAllCustomObject", {
+                context: { custom_object_id: iparams.group_approval_id }
+            });
+            const data = JSON.parse(response.response);
+            stateChanges = data.records;
+            generateGroupApproval(stateChanges);
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleUpdateGA(id, data) {
-    try {
-        console.log(data);
-        await clientApp.request.invokeTemplate("updateGroupApproval", {
-            context: { id },
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.GROUP_APPROVAL_UPDATE, "Successfully updated group approval");
-    } catch (error) {
-        handleError(error);
+const SERVICE_REQUEST = {
+    create: async (type, data) => {
+        try {
+            await clientApp.request.invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.sr_category_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    update: async (type, id, data) => {
+        try {
+            await clientApp.request.invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.sr_category_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    all: async () => {
+        try {
+            const response = await clientApp.request.invokeTemplate("getAllCustomObject", {
+                context: { custom_object_id: iparams.sr_category_id }
+            });
+            const data = JSON.parse(response.response);
+            generateSRCategoryHTML(data.records);
+            categories = data.records;
+            apps = getUniqueAppInfo(data.records);
+            generateFilter();
+            generateStateFilter();
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleCreateET(data) {
-    try {
-        await clientApp.request.invokeTemplate("createEmailTemplate", {
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.EMAIL_TEMPLATE_CREATE, "Successfully created email template");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const EMAIL_TEMPLATE = {
+    create: async (type, data) => {
+        try {
+            await clientApp.request.invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.email_template_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    update: async (type, id, data) => {
+        try {
+            await clientApp.request.invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.email_template_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    all: async () => {
+        try {
+            const response = await clientApp.request.invokeTemplate("getAllCustomObject", {
+                context: { custom_object_id: iparams.email_template_id }
+            });
+            const data = JSON.parse(response.response);
+            generateEmailTemplateHTML(data.records);
+            templates = data.records;
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleUpdateET(id, data) {
-    try {
-        await clientApp.request.invokeTemplate("updateEmailTemplate", {
-            context: { id },
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.EMAIL_TEMPLATE_UPDATE, "Successfully updated email template");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const STATE_APPROVAL = {
+    create: async (type, data) => {
+        try {
+            await clientApp.request.invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.state_approval_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    update: async (type, id, data) => {
+        try {
+            await clientApp.request.invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.state_approval_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    all: async () => {
+        try {
+            const response = await clientApp.request.invokeTemplate("getAllCustomObject", {
+                context: { custom_object_id: iparams.state_approval_id }
+            });
+            const data = JSON.parse(response.response);
+            states = data.records;
+            generateStateApprovalHTML(states);
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleCreateSR(data) {
-    try {
-        await clientApp.request.invokeTemplate("createSRCategory", {
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.SERVICE_REQUEST_CREATE, "Successfully created Service Category");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const APPROVAL_STATE = {
+    create: (data) => {
+        clientApp.request
+            .invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.process_approval_state_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("CREATE APPROVAL_STATE", data);
+                },
+                function (error) {
+                    console.error("CREATE APPROVAL_STATE", error);
+                }
+            );
+    },
+    update: (id, data) => {
+        clientApp.request
+            .invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.process_approval_state_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("UPDATE APPROVAL_STATE", data);
+                },
+                function (error) {
+                    console.error("UPDATE APPROVAL_STATE", error);
+                }
+            );
+    },
+    detail: async (id) => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: `state_change_id : '${id}'`, custom_object_id: iparams.process_approval_state_id }
+            });
+            const data = JSON.parse(response.response);
+            return data.records[0];
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleUpdateSR(id, data) {
-    try {
-        await clientApp.request.invokeTemplate("updateSRCategory", {
-            context: { id },
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.SERVICE_REQUEST_UPDATE, "Successfully updated Service Category");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const FILE_GENERATION = {
+    create: (data) => {
+        clientApp.request
+            .invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.process_file_generation_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("CREATE FILE_GENERATION", data);
+                },
+                function (error) {
+                    console.error("CREATE FILE_GENERATION", error);
+                }
+            );
+    },
+    update: (id, data) => {
+        clientApp.request
+            .invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.process_file_generation_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("UPDATE FILE_GENERATION", data);
+                },
+                function (error) {
+                    console.error("UPDATE FILE_GENERATION", error);
+                }
+            );
+    },
+    detail: async (id) => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: `state_change_id : '${id}'`, custom_object_id: iparams.process_file_generation_id }
+            });
+            const data = JSON.parse(response.response);
+            return data.records[0];
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleCreateState(data) {
-    try {
-        await clientApp.request.invokeTemplate("createStateApproval", {
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.STATE_APPROVAL_CREATE, "Successfully created State Approval");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const DOCUMENT_TEMPLATE = {
+    create: async (type, data) => {
+        try {
+            await clientApp.request.invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.document_template_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    update: async (type, id, data) => {
+        try {
+            await clientApp.request.invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.document_template_id },
+                body: JSON.stringify({ data })
+            });
+            handleSuccess(type);
+        } catch (error) {
+            handleError(error);
+        }
+    },
+    all: async () => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: "", custom_object_id: iparams.document_template_id }
+            });
+            const data = JSON.parse(response.response);
+            documentTemplates = data.records;
+            generateDocumentTemplateHTML(documentTemplates);
+            // documentContainer.addEventListener("click", documentClickHandler);
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-async function handleUpdateState(id, data) {
-    try {
-        await clientApp.request.invokeTemplate("updateStateApproval", {
-            context: { id },
-            body: JSON.stringify({ data })
-        });
-        handleSuccess(ACTION_TYPES.STATE_APPROVAL_UPDATE, "Successfully updated State Approval");
-    } catch (error) {
-        showNotification("error", "An error occurred");
-        console.log(error);
+const TABS_CONFIG = {
+    create: (data) => {
+        clientApp.request
+            .invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.tabs_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("CREATE TABS_CONFIG", data);
+                },
+                function (error) {
+                    console.error("CREATE TABS_CONFIG", error);
+                }
+            );
+    },
+    update: (id, data) => {
+        clientApp.request
+            .invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.tabs_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("UPDATE TABS_CONFIG", data);
+                },
+                function (error) {
+                    console.error("UPDATE TABS_CONFIG", error);
+                }
+            );
+    },
+    detail: async (id) => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: `service_item_id : '${id}'`, custom_object_id: iparams.tabs_id }
+            });
+            const data = JSON.parse(response.response);
+            return data.records;
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-function createDocumentTemplate(data) {
-    clientApp.request
-        .invokeTemplate("createDocumentTemplate", {
-            body: JSON.stringify({ data })
-        })
-        .then(
-            function (data) {
-                console.log(data);
-            },
-            function (error) {
-                console.log(error);
-            }
-        );
-}
-
-function updateDocumentTemplate(id, data) {
-    clientApp.request
-        .invokeTemplate("updateDocumentTemplate", {
-            context: { id },
-            body: JSON.stringify({ data })
-        })
-        .then(
-            function (data) {
-                console.log(data);
-            },
-            function (error) {
-                console.log(error);
-            }
-        );
-}
-
-async function getDocumentTemplate(id) {
-    try {
-        const response = await clientApp.request.invokeTemplate("getDocumentTemplate", {
-            context: { id }
-        });
-        const data = JSON.parse(response.response);
-        return data.records[0];
-    } catch (error) {
-        console.log(error);
+const CONDITIONS_CONFIG = {
+    create: (data) => {
+        clientApp.request
+            .invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.process_condition_state_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("CREATE CONDITIONS_CONFIG", data);
+                },
+                function (error) {
+                    console.error("CREATE CONDITIONS_CONFIG", error);
+                }
+            );
+    },
+    update: (id, data) => {
+        clientApp.request
+            .invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.process_condition_state_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("UPDATE CONDITIONS_CONFIG", data);
+                },
+                function (error) {
+                    console.error("UPDATE CONDITIONS_CONFIG", error);
+                }
+            );
+    },
+    detail: async (id) => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: `state_change_id : '${id}'`, custom_object_id: iparams.process_condition_state_id }
+            });
+            const data = JSON.parse(response.response);
+            return data.records[0];
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
+};
 
-function createTabsConfig(data) {
-    clientApp.request
-        .invokeTemplate("createTabsConfig", {
-            body: JSON.stringify({ data })
-        })
-        .then(
-            function (data) {
-                console.log(data);
-            },
-            function (error) {
-                console.log(error);
-            }
-        );
-}
-
-function updateTabsConfig(id, data) {
-    clientApp.request
-        .invokeTemplate("updateTabsConfig", {
-            context: { id },
-            body: JSON.stringify({ data })
-        })
-        .then(
-            function (data) {
-                console.log(data);
-            },
-            function (error) {
-                console.log(error);
-            }
-        );
-}
-
-async function getTabsConfig(id) {
-    try {
-        const response = await clientApp.request.invokeTemplate("getTabsConfig", {
-            context: { id }
-        });
-        const data = JSON.parse(response.response);
-        return data.records;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-async function handleSuccess(type, message) {
-    showNotification("success", message);
+async function handleSuccess(type) {
+    showNotification("success", MESSAGES[type]);
     clientApp.instance.send({ message: { type: ACTION_TYPES.CLOSE_MODAL } });
     if (type === ACTION_TYPES.GROUP_APPROVAL_CREATE || type === ACTION_TYPES.GROUP_APPROVAL_UPDATE) {
-        approvalContainer.removeEventListener("click", approvalClickHandler);
-        getAllGroupApproval();
+        STATE_CHANGE.all();
     } else if (type === ACTION_TYPES.EMAIL_TEMPLATE_CREATE || type === ACTION_TYPES.EMAIL_TEMPLATE_UPDATE) {
-        emailContainer.removeEventListener("click", emailClickHandler);
-        getAllEmailTemplate();
+        EMAIL_TEMPLATE.all();
     } else if (type === ACTION_TYPES.SERVICE_REQUEST_CREATE || type === ACTION_TYPES.SERVICE_REQUEST_UPDATE) {
-        categoryContainer.removeEventListener("click", categoryClickHandler);
-        getAllSRCategory();
+        SERVICE_REQUEST.all();
     } else if (type === ACTION_TYPES.STATE_APPROVAL_CREATE || type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
-        stateContainer.removeEventListener("click", stateClickHandler);
-        getAllStateApproval();
+        STATE_APPROVAL.all();
+    } else if (type === ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE || type === ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE) {
+        DOCUMENT_TEMPLATE.all();
     }
 }
 
@@ -359,26 +571,14 @@ function showNotification(type, message) {
     });
 }
 
-async function getAllGroupApproval() {
-    try {
-        const response = await clientApp.request.invokeTemplate("getAllGroupApproval", {});
-        const data = JSON.parse(response.response);
-        stateChange = data.records;
-        const html = generateGroupApproval(stateChange);
-        approvalContainer.innerHTML = html;
-        approvalContainer.addEventListener("click", approvalClickHandler);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 function generateGroupApproval(records) {
-    let html = "";
+    approvalContainer.innerHTML = "";
     records?.forEach((item) => {
         const { name, app_code, process_code, current_state, expired_new_state, configuration_type } = item.data;
-        const rowData = JSON.stringify(item.data);
-        const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
+        const trElement = document.createElement("tr");
+        trElement.classList.add("border-b", "hover:bg-gray-50");
+
+        trElement.innerHTML = `<td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
                       <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
                       <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         ${name}
@@ -392,23 +592,101 @@ function generateGroupApproval(records) {
                               (item) => item.data.app_code == app_code && item.data.process_code == process_code && item.data.state == expired_new_state
                           )?.data.state_name || ""
                       }</td>
-                      <td class="px-4 py-3"> ${configuration_type}</td>
-                  </tr>`;
-        html += row;
+                      <td class="px-4 py-3"> ${configuration_type}</td>`;
+        trElement.addEventListener("click", () => {
+            openModal(ACTION_TYPES.GROUP_APPROVAL_UPDATE, item.data);
+        });
+
+        approvalContainer.appendChild(trElement);
     });
-    return html;
 }
 
-function updateListGroupApproval(html) {
-    approvalContainer.innerHTML = html;
-    approvalContainer.addEventListener("click", approvalClickHandler);
+function generateEmailTemplateHTML(records) {
+    emailContainer.innerHTML = "";
+    records?.forEach((item) => {
+        const { email_code, email_name, subject } = item.data;
+        const trElement = document.createElement("tr");
+        trElement.classList.add("border-b", "hover:bg-gray-50");
+
+        trElement.innerHTML = `<th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              ${email_code}
+                            </th>
+                            <td class="px-4 py-3">${email_name}</td>
+                            <td class="px-4 py-3">${subject}</td>`;
+        trElement.addEventListener("click", () => {
+            openModal(ACTION_TYPES.EMAIL_TEMPLATE_UPDATE, item.data);
+        });
+        emailContainer.appendChild(trElement);
+    });
 }
 
-function approvalClickHandler(event) {
-    const clickedRow = event.target.closest("tr");
-    if (!clickedRow) return;
-    const rowData = clickedRow.getAttribute("data-item");
-    openModal(ACTION_TYPES.GROUP_APPROVAL_UPDATE, JSON.parse(rowData));
+function generateSRCategoryHTML(records) {
+    categoryContainer.innerHTML = "";
+    records?.forEach((item) => {
+        const { workspace_id, app_code, app_name, process_code, process_name, process_image } = item.data;
+
+        const trElement = document.createElement("tr");
+        trElement.classList.add("border-b", "hover:bg-gray-50");
+
+        trElement.innerHTML = `<td class="px-4 py-3 w-24">
+                                    ${process_image}
+                                </td>
+                                <td class="px-4 py-3">
+                                    ${workspaces.find((item) => item.data.workspace_id == workspace_id)?.data.name || ""}
+                                </td>
+                                <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    ${process_name}
+                                </th>
+                                <td class="px-4 py-3"> ${process_code}</td>
+                                <td class="px-4 py-3"> ${app_name}</td>
+                                <td class="px-4 py-3"> ${app_code}</td>`;
+        trElement.addEventListener("click", () => {
+            openModal(ACTION_TYPES.SERVICE_REQUEST_UPDATE, item.data);
+        });
+        categoryContainer.appendChild(trElement);
+    });
+}
+
+function generateStateApprovalHTML(records) {
+    stateContainer.innerHTML = "";
+    records?.forEach((item) => {
+        const { app_code, process_code, state_name, state } = item.data;
+        const trElement = document.createElement("tr");
+        trElement.classList.add("border-b", "hover:bg-gray-50");
+
+        trElement.innerHTML = `<td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
+                                <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
+                                <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    ${state_name}
+                                </td>
+                                <td class="px-4 py-3"> ${state}</td>`;
+        trElement.addEventListener("click", () => {
+            openModal(ACTION_TYPES.STATE_APPROVAL_UPDATE, item.data);
+        });
+
+        stateContainer.appendChild(trElement);
+    });
+}
+
+function generateDocumentTemplateHTML(records) {
+    documentContainer.innerHTML = "";
+    records?.forEach((item) => {
+        const { template_code, template_name, type } = item.data;
+        const trElement = document.createElement("tr");
+        trElement.classList.add("border-b", "hover:bg-gray-50");
+
+        trElement.innerHTML = `<th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              ${template_code}
+                            </th>
+                            <td class="px-4 py-3">${template_name}</td>
+                            <td class="px-4 py-3">${type}</td>`;
+        // trElement.dataset.item = item.data;
+        trElement.addEventListener("click", () => {
+            openModal(ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE, item.data);
+        });
+
+        documentContainer.appendChild(trElement);
+    });
 }
 
 async function getAllRequesterGroup() {
@@ -445,94 +723,6 @@ async function getAllAgentGroup() {
     }
 }
 
-function generateEmailTemplateHTML(records) {
-    emailContainer.innerHTML = "";
-    records?.forEach((item) => {
-        const { email_code, email_name, subject } = item.data;
-        const rowData = JSON.stringify({
-            ...item.data,
-            body: item.data.body.replace(/&quot;/g, '\\"').replace(/'/g, "\\'")
-        });
-        const trElement = document.createElement("tr");
-        trElement.classList.add("border-b", "hover:bg-gray-50");
-
-        trElement.innerHTML = `<th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                              ${email_code}
-                            </th>
-                            <td class="px-4 py-3">${email_name}</td>
-                            <td class="px-4 py-3">${subject}</td>`;
-        trElement.dataset.item = rowData;
-
-        emailContainer.appendChild(trElement);
-    });
-}
-
-function emailClickHandler(event) {
-    const clickedRow = event.target.closest("tr");
-    if (!clickedRow) return;
-    const rowData = clickedRow.getAttribute("data-item");
-    openModal(ACTION_TYPES.EMAIL_TEMPLATE_UPDATE, JSON.parse(rowData));
-}
-
-async function getAllEmailTemplate() {
-    try {
-        const response = await clientApp.request.invokeTemplate("getAllEmailTemplate", {});
-        const data = JSON.parse(response.response);
-        generateEmailTemplateHTML(data.records);
-        templates = data.records;
-        emailContainer.addEventListener("click", emailClickHandler);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function generateSRCategoryHTML(records) {
-    let html = "";
-    records?.forEach((item) => {
-        const { workspace_id, app_code, app_name, process_code, process_name, process_image } = item.data;
-        const rowData = JSON.stringify(item.data);
-        const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <td class="px-4 py-3 w-24">
-                        ${process_image}
-                      </td>
-                      <td class="px-4 py-3">
-                        ${workspaces.find((item) => item.data.workspace_id == workspace_id)?.data.name || ""}
-                      </td>
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        ${process_name}
-                      </th>
-                      <td class="px-4 py-3"> ${process_code}</td>
-                      <td class="px-4 py-3"> ${app_name}</td>
-                      <td class="px-4 py-3"> ${app_code}</td>
-                  </tr>`;
-        html += row;
-    });
-    return html;
-}
-
-function categoryClickHandler(event) {
-    const clickedRow = event.target.closest("tr");
-    if (!clickedRow) return;
-    const rowData = clickedRow.getAttribute("data-item");
-    openModal(ACTION_TYPES.SERVICE_REQUEST_UPDATE, JSON.parse(rowData));
-}
-
-async function getAllSRCategory() {
-    try {
-        const response = await clientApp.request.invokeTemplate("getAllSRCategory", {});
-        const data = JSON.parse(response.response);
-        const html = generateSRCategoryHTML(data.records);
-        categories = data.records;
-        apps = getUniqueAppInfo(data.records);
-        generateFilter();
-        generateStateFilter();
-        categoryContainer.innerHTML = html;
-        categoryContainer.addEventListener("click", categoryClickHandler);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 async function getConditionFields(sr) {
     const [customObject, serviceItem] = await Promise.all([
         getDetailCustomObject(sr.data.related_custom_object),
@@ -549,6 +739,7 @@ async function getCustomObjects(id) {
         });
         const custom_objects = JSON.parse(response.response)?.custom_objects;
         await clientApp.instance.send({ message: { type: ACTION_TYPES.CUSTOM_OBJECT, data: custom_objects } });
+        return custom_objects;
     } catch (error) {
         console.error(error);
     }
@@ -578,44 +769,6 @@ async function getDetailCustomObject(id) {
     }
 }
 
-function generateStateApprovalHTML(records) {
-    let html = "";
-    records?.forEach((item) => {
-        const { app_code, process_code, state_name, state } = item.data;
-        const rowData = JSON.stringify(item.data);
-        const row = `<tr class="border-b hover:bg-gray-50" data-item='${rowData}'>
-                      <td class="px-4 py-3"> ${apps.find((item) => item.app_code == app_code)?.app_name || ""}</td>
-                      <td class="px-4 py-3"> ${categories.find((item) => item.data.process_code == process_code)?.data.process_name || ""}</td>
-                      <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        ${state_name}
-                      </td>
-                      <td class="px-4 py-3"> ${state}</td>
-                  </tr>`;
-        html += row;
-    });
-    return html;
-}
-
-function stateClickHandler(event) {
-    const clickedRow = event.target.closest("tr");
-    if (!clickedRow) return;
-    const rowData = clickedRow.getAttribute("data-item");
-    openModal(ACTION_TYPES.STATE_APPROVAL_UPDATE, JSON.parse(rowData));
-}
-
-async function getAllStateApproval() {
-    try {
-        const response = await clientApp.request.invokeTemplate("getAllStateApproval", {});
-        const data = JSON.parse(response.response);
-        states = data.records;
-        const html = generateStateApprovalHTML(states);
-        stateContainer.innerHTML = html;
-        stateContainer.addEventListener("click", stateClickHandler);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 function generateFilter() {
     html = "";
     apps.forEach((item) => {
@@ -630,12 +783,11 @@ function generateFilter() {
 
 function handleFilterChange(e) {
     const selectedCategories = e.target.value;
-    let list = stateChange;
+    let list = stateChanges;
     if (selectedCategories) {
-        list = stateChange.filter((item) => item.data.app_code == selectedCategories);
+        list = stateChanges.filter((item) => item.data.app_code == selectedCategories);
     }
-    const html = generateGroupApproval(list);
-    updateListGroupApproval(html);
+    generateGroupApproval(list);
 }
 
 function generateStateFilter() {
@@ -656,9 +808,7 @@ function handleStateFilterChange(e) {
     if (selectedCategories) {
         list = states.filter((item) => item.data.app_code == selectedCategories);
     }
-    const html = generateStateApprovalHTML(list);
-    stateContainer.innerHTML = html;
-    stateContainer.addEventListener("click", stateClickHandler);
+    generateStateApprovalHTML(list);
 }
 
 function generateSRFilter() {
@@ -679,9 +829,7 @@ function handleFilterSRChange(e) {
     if (selectedWorkspace) {
         list = categories.filter((item) => item.data.workspace_id == selectedWorkspace);
     }
-    const html = generateSRCategoryHTML(list);
-    categoryContainer.innerHTML = html;
-    categoryContainer.addEventListener("click", categoryClickHandler);
+    generateSRCategoryHTML(list);
 }
 
 function getUniqueAppInfo(jsonData) {
@@ -760,13 +908,14 @@ function handleTabsConfig(data) {
                 custom_object_id: item.custom_object_id,
                 is_table: Number(item.is_table),
                 fields: JSON.stringify(item.fields),
-                fields_id: Array.isArray(item.fields) ? item.fields.map((field) => field.name).join(";") : ""
+                agent_groups_id: Array.isArray(item.agent_groups_id) ? item.agent_groups_id.join(";") : "",
+                requester_groups_id: Array.isArray(item.requester_groups_id) ? item.requester_groups_id.join(";") : ""
             };
             console.log(body);
             if (item.bo_display_id) {
-                updateTabsConfig(item.bo_display_id, body);
+                TABS_CONFIG.update(item.bo_display_id, body);
             } else {
-                createTabsConfig(body);
+                TABS_CONFIG.create(body);
             }
         })
     );
@@ -784,6 +933,34 @@ function mappingServiceCatalog(workspace, list) {
 function toggleLoading(isLoading = true) {
     if (isLoading) loading.style.display = "block";
     else loading.style.display = "none";
+}
+
+async function getTicketFields() {
+    try {
+        const response = await clientApp.request.invokeTemplate("getTicketFields", {});
+        const data = JSON.parse(response.response);
+        return data.ticket_fields;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getFieldsByType(data) {
+    const { app_code, process_code, object_type, object_id } = data;
+    let fields = [];
+    if (object_type === "ticket") {
+        fields = await getTicketFields();
+    }
+    if (object_type === "service_request") {
+        const sr = categories.find((item) => item.data.app_code == app_code && item.data.process_code == process_code);
+        const res = await getServiceItem(sr.data.service_item_id, sr.data.workspace_id);
+        fields = res.custom_fields;
+    }
+    if (object_type === "custom_object") {
+        const res = await getDetailCustomObject(object_id);
+        fields = res.fields;
+    }
+    await clientApp.instance.send({ message: { type: ACTION_TYPES.GET_FIELDS_BY_TYPE, data: fields } });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

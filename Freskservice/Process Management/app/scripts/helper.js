@@ -40,6 +40,16 @@ function generateEmailTemplate(id, list, context) {
     selectElement.value = context.detail?.[id];
 }
 
+function generateDocumentTemplate(id, list, context) {
+    const selectElement = document.getElementById(id);
+
+    const options = list?.map((item) => {
+        return { value: item.data.template_code, text: item.data.template_name };
+    });
+    selectElement.choices = options;
+    selectElement.value = context.detail?.[id];
+}
+
 function generateWorkflow(processList, selected) {
     processList.forEach((item) => {
         const { workflow_code, workflow_name } = item.data;
@@ -51,17 +61,12 @@ function generateWorkflow(processList, selected) {
     });
 }
 
-const defaultField = [
-    { value: "group", text: "Group" },
-    { value: "department", text: "Department" }
-];
-
 function generateFields(container, list) {
     const selectElement = document.getElementById(container);
     const options = list?.map((item) => {
         return { value: item.name, text: item.label };
     });
-    selectElement.choices = [...defaultField, ...options];
+    selectElement.choices = options;
 }
 
 function generateSelectFields(container, list) {
@@ -70,6 +75,13 @@ function generateSelectFields(container, list) {
         return { ...item, value: item.name, text: item.label };
     });
     selectElement.options = options;
+}
+
+function generateCustomObject(container, list) {
+    const options = list?.map((item) => {
+        return { value: String(item.id), text: item.title };
+    });
+    document.getElementById(container).choices = options;
 }
 
 function blobToBase64(blob) {
@@ -81,21 +93,25 @@ function blobToBase64(blob) {
 }
 
 const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
+    try {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
 
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
 
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
         }
 
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
+        const blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+    } catch (error) {
+        console.log(error);
     }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
 };

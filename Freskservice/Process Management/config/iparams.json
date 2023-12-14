@@ -52,5 +52,23 @@
         "description": "Please enter your tabs_id",
         "type": "text",
         "required": true
+    },
+    "process_approval_state_id": {
+        "display_name": "process_approval_state_id",
+        "description": "Please enter your process_approval_state_id",
+        "type": "text",
+        "required": true
+    },
+    "process_condition_state_id": {
+        "display_name": "process_condition_state_id",
+        "description": "Please enter your process_condition_state_id",
+        "type": "text",
+        "required": true
+    },
+    "process_file_generation_id": {
+        "display_name": "process_file_generation_id",
+        "description": "Please enter your process_file_generation_id",
+        "type": "text",
+        "required": true
     }
 }

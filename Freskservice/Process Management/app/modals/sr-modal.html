@@ -12,7 +12,7 @@
             <fw-tabs>
                 <fw-tab slot="tab" panel="information">Information</fw-tab>
                 <fw-tab slot="tab" panel="tabs">Tabs Config</fw-tab>
-                <fw-tab slot="tab" panel="template">Document Template</fw-tab>
+                <!-- <fw-tab slot="tab" panel="template">Document Template</fw-tab> -->
                 <fw-tab slot="tab" panel="state">State</fw-tab>
                 <fw-tab slot="tab" panel="state-change">State Change</fw-tab>
                 <fw-tab-panel name="information">
@@ -162,6 +162,20 @@
                     ></fw-form-control>
                     <fw-form-control type="TEXT" id="tab_name" name="tab_name" label="Tab Name" placeholder="Enter tab name"></fw-form-control>
                     <fw-form-control type="TEXT" id="tab_code" name="tab_code" label="Tab Code" placeholder="Enter tab code"></fw-form-control>
+                    <fw-form-control
+                        type="MULTI_SELECT"
+                        id="requester_groups_id"
+                        name="requester_groups_id"
+                        label="Visible to requester group"
+                        placeholder="Enter requester group"
+                    ></fw-form-control>
+                    <fw-form-control
+                        type="MULTI_SELECT"
+                        id="agent_groups_id"
+                        name="agent_groups_id"
+                        label="Visible to agent group"
+                        placeholder="Enter agent group"
+                    ></fw-form-control>
                     <fw-form-control type="CHECKBOX" id="is_table" name="is_table" label="Is Table"></fw-form-control>
                 </fw-form>
                 <fw-select multiple id="fields" label="Fields" placeholder="Select fields"></fw-select>
@@ -186,10 +200,6 @@
                 var formDocument = document.querySelector("#formDocument");
                 var formTab = document.querySelector("#form-tab");
                 var tableTab = document.querySelector("#data-table-tabs");
-                document.querySelector("#type").choices = [
-                    { value: "docx", text: "Word" },
-                    { value: "xlsx", text: "Excel" }
-                ];
                 document.getElementById("closeModal").addEventListener("click", function () {
                     client.instance.close();
                 });
@@ -219,7 +229,6 @@
                 });
                 document.querySelector("#submit").addEventListener("click", async (e) => {
                     const { values, isValid } = await formCreate.doSubmit(e);
-                    const { values: document } = await formDocument.doSubmit(e);
                     await tableTab.selectAllRows();
                     const tabValues = await tableTab.getSelectedRows();
 
@@ -239,19 +248,6 @@
                             }
                         }
                     });
-                    // client.instance.send({
-                    //     message: {
-                    //         type: ACTION_TYPES.DOCUMENT_TEMPLATE,
-                    //         data: {
-                    //             service_item_id: values.service_item_id,
-                    //             template_name: document.template_name,
-                    //             type: document.type,
-                    //             file_name: document.file[0]?.name,
-                    //             template_base64: await blobToBase64(document.file[0].file)
-                    //         },
-                    //         id: document?.bo_display_id
-                    //     }
-                    // });
                 });
 
                 client.instance.receive(function (event) {
@@ -259,7 +255,6 @@
                     if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
                     if (data.type === ACTION_TYPES.CUSTOM_OBJECT) {
                         customObject = data.data;
-                        // generateCustomObject("related_custom_object", customObject);
                         generateCustomObject("related_custom_objects", customObject);
                         formCreate.setFieldValue("related_custom_objects", context.detail?.related_custom_objects?.split(";"));
                     }
@@ -275,6 +270,8 @@
                         const { detail, data } = context;
                         generateSelect("service_item_id", data.serviceItems, context);
                         generateWorkspace("workspace_id", data.workspaces, context);
+                        generateGroup("requester_groups_id", data.requesterGroups, context);
+                        generateGroup("agent_groups_id", data.agentGroups, context);
                         formCreate.setFieldValue(
                             "process_image",
                             `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -291,17 +288,6 @@
                             if (key === "related_custom_objects") return;
                             formCreate.setFieldValue([key], detail[key]);
                         });
-                        formDocument.setFieldValue("service_item_id", detail.service_item_id);
-                        if (data.template) {
-                            formDocument.setFieldValue("file", [
-                                {
-                                    file: new File([b64toBlob(data.template?.data.template_base64)], `${data.template?.data.file_name}`)
-                                }
-                            ]);
-                            Object.keys(data.template.data).forEach(function (key) {
-                                formDocument.setFieldValue([key], data.template.data[key]);
-                            });
-                        }
                         generateDataTable([]);
                         if (data.tabs) {
                             generateDataTable(data.tabs);
@@ -325,13 +311,6 @@
                 });
                 document.getElementById(container).choices = options;
                 document.getElementById(container).value = String(context.detail?.workspace_id);
-            }
-
-            function generateCustomObject(container, list) {
-                const options = list?.map((item) => {
-                    return { value: String(item.id), text: item.title };
-                });
-                document.getElementById(container).choices = options;
             }
 
             function generateState(states) {
