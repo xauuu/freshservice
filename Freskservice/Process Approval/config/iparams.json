@@ -5,6 +5,12 @@
         "type": "text",
         "required": true
     },
+    "is_send_email": {
+        "display_name": "is_send_email",
+        "description": "Please enter your is_send_email",
+        "type": "checkbox",
+        "default_value": false
+    },
     "apikey": {
         "display_name": "apikey",
         "description": "Please enter your apikey",
@@ -32,6 +38,36 @@
     "email_template_id": {
         "display_name": "email_template_id",
         "description": "Please enter your email_template_id",
+        "type": "text",
+        "required": true
+    },
+    "document_template_id": {
+        "display_name": "document_template_id",
+        "description": "Please enter your document_template_id",
+        "type": "text",
+        "required": true
+    },
+    "approval_state_id": {
+        "display_name": "approval_state_id",
+        "description": "Please enter your approval_state_id",
+        "type": "text",
+        "required": true
+    },
+    "condition_state_id": {
+        "display_name": "condition_state_id",
+        "description": "Please enter your condition_state_id",
+        "type": "text",
+        "required": true
+    },
+    "file_generation_id": {
+        "display_name": "file_generation_id",
+        "description": "Please enter your file_generation_id",
+        "type": "text",
+        "required": true
+    },
+    "approval_log_id": {
+        "display_name": "approval_log_id",
+        "description": "Please enter your approval_log_id",
         "type": "text",
         "required": true
     }

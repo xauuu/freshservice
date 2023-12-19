@@ -191,11 +191,95 @@
         },
         "options": {}
     },
+    "getAnAgent": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/agents/<%= context.id %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
     "createApprovalLog": {
         "schema": {
             "method": "POST",
             "host": "<%= iparam.domain %>",
-            "path": "/api/v2/objects/27000052793/records",
+            "path": "/api/v2/objects/<%= iparam.approval_log_id %>/records",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getProcessApproval": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.approval_state_id %>/records?query=state_change_id : '<%= context.id %>'",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getProcessCondition": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.condition_state_id %>/records?query=state_change_id : '<%= context.id %>'",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getProcessFileGeneration": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.file_generation_id %>/records?query=state_change_id : '<%= context.id %>'",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getCustomObject": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>/records?query=<%= context.query %>",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "getDocumentTemplate": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= iparam.document_template_id %>/records?query=template_code%20%3A%20%27<%= context.template_code %>%27%20",
+            "headers": {
+                "Authorization": "Basic <%= encode(iparam.apikey) %>",
+                "Content-Type": "application/json"
+            }
+        },
+        "options": {}
+    },
+    "showCustomObject": {
+        "schema": {
+            "method": "GET",
+            "host": "<%= iparam.domain %>",
+            "path": "/api/v2/objects/<%= context.custom_object_id %>",
             "headers": {
                 "Authorization": "Basic <%= encode(iparam.apikey) %>",
                 "Content-Type": "application/json"

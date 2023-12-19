@@ -1,4 +1,6 @@
 const moment = require("moment");
+const fetch = require("node-fetch");
+const base64 = require("base-64");
 
 async function getGroupApprovalRule(app_code, process_code, current_state) {
     const { response: groupApprovalRes } = await $request.invokeTemplate("getGroupApprovalRule", {
@@ -106,7 +108,7 @@ async function updateRequestedItem(ticket_id, id, body) {
 }
 
 async function updateTicket(ticket_id, body) {
-    await $request.invokeTemplate("updateTicket", {
+    return await $request.invokeTemplate("updateTicket", {
         context: { ticket_id },
         body: JSON.stringify(body)
     });
@@ -140,6 +142,127 @@ async function createApprovalLog(data) {
     }
 }
 
+async function getProcessApproval(id) {
+    try {
+        const { response } = await $request.invokeTemplate("getProcessApproval", {
+            context: { id }
+        });
+        return JSON.parse(response).records[0]?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getProcessCondition(id) {
+    try {
+        const { response } = await $request.invokeTemplate("getProcessCondition", {
+            context: { id }
+        });
+        return JSON.parse(response).records[0]?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getProcessFileGeneration(id) {
+    try {
+        const { response } = await $request.invokeTemplate("getProcessFileGeneration", {
+            context: { id }
+        });
+        return JSON.parse(response).records[0]?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getCustomObject(custom_object_id, query) {
+    try {
+        const { response } = await $request.invokeTemplate("getCustomObject", {
+            context: { custom_object_id, query }
+        });
+        const result = JSON.parse(response).records;
+        return result?.map((item) => item.data);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getDocumentTemplate(template_code) {
+    const { response } = await $request.invokeTemplate("getDocumentTemplate", {
+        context: { template_code }
+    });
+    return JSON.parse(response).records[0].data;
+}
+
+function updateTicketAttachment(args, ticket_id, body) {
+    return new Promise((resolve, reject) => {
+        fetch(`https://${args.iparams.domain}/api/v2/tickets/` + ticket_id, {
+            method: "PUT",
+            body,
+            headers: {
+                Authorization: "Basic " + base64.encode(args.iparams.apikey + ":X")
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    reject(`Lỗi HTTP: ${response.status}`);
+                } else {
+                    resolve(response);
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+async function getAnAgent(id) {
+    const { response } = await $request.invokeTemplate("getAnAgent", {
+        context: { id }
+    });
+    return JSON.parse(response).agent;
+}
+
+async function createCustomObject(args, custom_object_id, data) {
+    // try {
+    //     return await $request.invokeTemplate("createCustomObject", {
+    //         context: { custom_object_id },
+    //         body: JSON.stringify(data)
+    //     });
+    // } catch (error) {
+    //     console.log("Error in create createCustomObject", error);
+    //     throw error;
+    // }
+    return new Promise((resolve, reject) => {
+        fetch(`https://${args.iparams.domain}/api/v2/objects/${custom_object_id}/records`, {
+            method: "POST",
+            body: JSON.stringify({ data }),
+            headers: {
+                Authorization: "Basic " + base64.encode(args.iparams.apikey + ":X"),
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    reject(`Lỗi HTTP: ${response.status}`);
+                } else {
+                    resolve(response);
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+async function showCustomObject(custom_object_id) {
+    const { response } = await $request.invokeTemplate("showCustomObject", {
+        context: { custom_object_id }
+    });
+    return JSON.parse(response).custom_object;
+}
+
 exports = {
     getGroupApprovalRule,
     getProcessLog,
@@ -157,5 +280,14 @@ exports = {
     updateTicket,
     getRequesterGroup,
     getAgentGroup,
-    createApprovalLog
+    createApprovalLog,
+    getProcessApproval,
+    getProcessCondition,
+    getProcessFileGeneration,
+    getCustomObject,
+    getDocumentTemplate,
+    updateTicketAttachment,
+    getAnAgent,
+    createCustomObject,
+    showCustomObject
 };

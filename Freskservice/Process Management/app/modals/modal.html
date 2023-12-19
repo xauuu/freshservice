@@ -194,7 +194,7 @@
                             placeholder="Select Email Template"
                         ></fw-form-control>
                         <fw-form-control
-                            type="MULTI_SELECT"
+                            type="DROPDOWN"
                             id="agent_groups_id"
                             name="agent_groups_id"
                             label="Send Email to Agent Groups"
@@ -302,6 +302,7 @@
                     formCondition.addEventListener("fwFormValueChanged", (e) => {
                         if (e.detail.field == "object_type") {
                             const type = e.detail.value;
+                            generateFields("condition_field", []);
                             if (type === "custom_object") {
                                 document.getElementById("condition_custom_object").style.display = "block";
                             } else {
@@ -319,6 +320,8 @@
                             }
                         }
                         if (e.detail.field == "custom_object_id") {
+                            const object_type = document.getElementById("object_type").value;
+                            if (object_type !== "custom_object") return;
                             client.instance.send({
                                 message: {
                                     type: ACTION_TYPES.GET_FIELDS_BY_TYPE,
@@ -462,7 +465,7 @@
                                 }
                                 if (data.template) {
                                     Object.keys(data.template.data).forEach(function (key) {
-                                        if (["custom_object_id", "agent_groups_id", "requester_groups_id"].includes(key))
+                                        if (["custom_object_id", "requester_groups_id"].includes(key))
                                             formDocument.setFieldValue([key], data.template.data[key].split(";"));
                                         else formDocument.setFieldValue([key], data.template.data[key]);
                                     });

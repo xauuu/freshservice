@@ -1,4 +1,5 @@
 const Handlebars = require("handlebars");
+const FormData = require("form-data");
 
 const fetch = require("./lib/fetch");
 const utils = require("./lib/utils");
@@ -9,23 +10,35 @@ exports = {
     onTicketUpdateHandler: async function (args) {
         const ticket = args.data.ticket;
         const changes = args.data.ticket.changes;
+        if (args.iparams.is_send_email) utils.sendMail(`${ticket.id} - Ticket Update`, JSON.stringify(args), "qdatqb@gmail.com");
         try {
             if (!SERVICE_REQUESTS.includes(ticket.type_name) || !(changes.gf_int_01 && changes.gf_int_01.length > 0)) return;
 
             const requestedItems = await fetch.getRequestedItems(ticket.id);
             const serviceCategory = await fetch.getServiceCategory(requestedItems.service_item_id);
+            // console.log(serviceCategory);
             if (!serviceCategory) return;
             console.log("START", ticket.id);
-
             if (changes.gf_int_01[0] < changes.gf_int_01[1] || changes.gf_int_01[1] == 0) {
                 const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[1]);
-                console.log("DEBUG-APPROVAL: Group Approval Rule", approvalRule);
+                // console.log("DEBUG-APPROVAL: Group Approval Rule", approvalRule);
+                console.log(approvalRule);
                 if (!approvalRule) return;
-                if (approvalRule.configuration_type == "condition") {
-                    handleCondition(ticket, requestedItems.custom_fields, approvalRule.condition_field, approvalRule.condition_values);
+                if (approvalRule.configuration_type == "approval") {
+                    const approval = await fetch.getProcessApproval(approvalRule.bo_display_id);
+                    await handleApproval(args, ticket, approval, true, requestedItems);
                     return;
                 }
-                await handleApproval(args, ticket, approvalRule, true, requestedItems);
+                if (approvalRule.configuration_type == "condition") {
+                    const condition = await fetch.getProcessCondition(approvalRule.bo_display_id);
+                    handleCondition(ticket, requestedItems.custom_fields, condition);
+                    return;
+                }
+                if (approvalRule.configuration_type == "file") {
+                    const file = await fetch.getProcessFileGeneration(approvalRule.bo_display_id);
+                    handleFileGeneration(file, args, ticket, requestedItems.custom_fields);
+                    return;
+                }
             }
             // if (changes.gf_int_01[0] > changes.gf_int_01[1]) {
             //     const approvalRule = await fetch.getGroupApprovalRule(serviceCategory.app_code, serviceCategory.process_code, changes.gf_int_01[0]);
@@ -130,12 +143,12 @@ async function handleApproval(args, ticket, approvalRule, isUpdated = false, req
                         ticket_id: `${getType(ticket.type_name)}-${ticket.id}`
                     }
                 });
-                fetch.updateTicket(ticket.id, {
-                    custom_fields: {
-                        ticket_status: approvalRule.name,
-                        pending_approver: `Pending ${approver}`
-                    }
-                });
+                // fetch.updateTicket(ticket.id, {
+                //     custom_fields: {
+                //         ticket_status: approvalRule.name,
+                //         pending_approver: `Pending ${approver}`
+                //     }
+                // });
                 // sendEmailTemplate(approvalRule.email_template_code, placeholder, args.data.requester.email);
                 // sendEmailTemplate(
                 //     approvalRule.approval_email_template_code,
@@ -172,7 +185,7 @@ async function handleRejection(args, ticket, approvalRule) {
     }
 }
 
-async function sendEmailTemplate(template_code, data, to_list) {
+async function sendEmailTemplate(template_code, data, to_list, attachments = []) {
     try {
         if (!template_code) return;
         const emailTemplate = await fetch.getEmailTemplate(template_code);
@@ -181,7 +194,7 @@ async function sendEmailTemplate(template_code, data, to_list) {
         const templateSubject = Handlebars.compile(emailTemplate.subject);
         const body = templateBody(data);
         const subject = templateSubject(data);
-        utils.sendMail(subject, body, to_list);
+        utils.sendMail(subject, body, to_list, attachments);
     } catch (error) {
         console.log("Error Send email template", error);
     }
@@ -211,11 +224,22 @@ function getType(type) {
     }
 }
 
-async function handleCondition(ticket, fields, field, values) {
-    if (!field && !isValidJSONString(values)) return;
-    const conditions = JSON.parse(values);
+async function handleCondition(ticket, serviceReq, con) {
+    if (!con.condition_field && !isValidJSONString(values)) return;
+    const conditions = JSON.parse(con.condition_values);
+    let data;
+    if (con.object_type === "ticket") {
+        data = ticket;
+    }
+    if (con.object_type === "service_request") {
+        data = serviceReq;
+    }
+    if (con.object_type === "custom_object") {
+        const res = await fetch.getCustomObject(con.custom_object_id, `ticket_id : '${ticket.id}'`);
+        data = res[0];
+    }
     for (const condition of conditions) {
-        const check = await checkOperation(ticket, fields, field, condition);
+        const check = await checkOperation(ticket, data, con.condition_field, condition);
         if (check) break;
     }
 }
@@ -257,6 +281,72 @@ async function checkOperation(ticket, fields, field, condition) {
     }
 }
 
+async function handleFileGeneration(fileConfig, args, ticket, service_request) {
+    try {
+        const template = await fetch.getDocumentTemplate(fileConfig.document_template_code);
+        if (!template) return;
+        const dataCO = await getRecordCustomObject(fileConfig.custom_object_id?.split(";"), ticket);
+        const dataGenerate = { ticket, service_request, ...dataCO.data };
+        const fileGen =
+            template.type === "docx"
+                ? await utils.convertTemplateDocx(template.template_base64, { ...utils.convertData(dataGenerate), ...dataCO.list })
+                : await utils.convertTemplateXlsx(template.template_base64, { ...dataGenerate, ...dataCO.list });
+
+        const fileName = new Date().getTime() + "_" + template.file_name;
+
+        if (Boolean(fileConfig.attach_to_ticket)) {
+            const formData = new FormData();
+            formData.append("attachments[]", fileGen, fileName);
+            fetch
+                .updateTicketAttachment(args, ticket.id, formData)
+                .then((response) => {
+                    console.log("Phản hồi:", response);
+                })
+                .catch((error) => {
+                    console.log("Lỗi:", error);
+                });
+        }
+        if (Boolean(fileConfig.create_attachment)) {
+            fetch
+                .createCustomObject(args, fileConfig.attachment_object_id, {
+                    file_id: String(ticket.id),
+                    file_name: fileName,
+                    file_base64: utils.bufferToBase64(fileGen)
+                })
+                .then((response) => {
+                    console.log("Phản hồi:", response);
+                })
+                .catch((error) => {
+                    console.log("Lỗi:", error);
+                });
+        }
+        if (Boolean(fileConfig.send_email_attachment)) {
+            const [membersRequester, membersAgent] = await Promise.all([
+                getRequesterGroupMembers(fileConfig.requester_groups_id.split(";")),
+                getAgentGroupMembers(fileConfig.agent_groups_id.split(";")[0])
+            ]);
+            const to = fileConfig.to_list + ";" + [...membersRequester, ...membersAgent]?.map((item) => item.email).join(";");
+            sendEmailTemplate(fileConfig.email_template_code, dataGenerate, to, [
+                {
+                    filename: fileName,
+                    content: fileGen
+                }
+            ]);
+            // utils.sendMail("subject", "body", to, [
+            //     {
+            //         filename: fileName,
+            //         content: fileGen
+            //     }
+            // ]);
+        }
+        if (fileConfig.new_state) {
+            updateState(ticket, Number(fileConfig.new_state));
+        }
+    } catch (error) {
+        console.log("ERROR File Generation", error);
+    }
+}
+
 function isValidJSONString(str) {
     try {
         JSON.parse(str);
@@ -272,5 +362,44 @@ function updateState(ticket, ticket_state) {
             custom_fields: { ticket_state }
         })
         .then((data) => console.log("Update State", data))
-        .catch((error) => console.error("Error updating state:", error));
+        .catch((error) => console.log("Error updating state:", error));
+}
+
+async function getRequesterGroupMembers(groups) {
+    const members = [];
+    await Promise.all(
+        groups.map(async (item) => {
+            const res = await fetch.getRequesters(item);
+            members.push(...res);
+        })
+    );
+    return members;
+}
+
+async function getAgentGroupMembers(agent_group_id) {
+    const members = [];
+    const agentGroup = await fetch.getAgentGroup(agent_group_id);
+    if (!agentGroup) return members;
+    await Promise.all(
+        agentGroup.members.map(async (item) => {
+            const res = await fetch.getAnAgent(item);
+            members.push(res);
+        })
+    );
+    return members;
+}
+
+async function getRecordCustomObject(custom_objects, ticket) {
+    var data = {};
+    var list = {};
+    await Promise.all(
+        custom_objects.map(async (item) => {
+            const [customObject, records] = await Promise.all([fetch.showCustomObject(item), fetch.getCustomObject(item, `ticket_id : '${ticket.id}'`)]);
+            const lowerCaseTitle = utils.convertLowerCase(customObject.title);
+
+            data[lowerCaseTitle] = { ...records[0] };
+            list[lowerCaseTitle] = records;
+        })
+    );
+    return { data, list };
 }
