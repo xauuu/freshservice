@@ -62,10 +62,10 @@ async function openModal(type, detail = null) {
         [ACTION_TYPES.GROUP_APPROVAL_UPDATE]: { apps, categories, workflows, templates, requesterGroups, states, agentGroups, documentTemplates },
         [ACTION_TYPES.EMAIL_TEMPLATE_CREATE]: {},
         [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: {},
-        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems, workspaces, requesterGroups, agentGroups },
-        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems, workspaces, requesterGroups, agentGroups },
-        [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories },
-        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories },
+        [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems, workspaces },
+        [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems, workspaces },
+        [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories, requesterGroups, agentGroups },
+        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories, requesterGroups, agentGroups },
         [ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE]: {},
         [ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE]: {}
     };
@@ -908,10 +908,10 @@ function handleTabsConfig(data) {
                 custom_object_id: item.custom_object_id,
                 is_table: Number(item.is_table),
                 fields: JSON.stringify(item.fields),
+                fields_id: Array.isArray(item.fields) ? item.fields.map((item) => item.name)?.join(";") : "",
                 agent_groups_id: Array.isArray(item.agent_groups_id) ? item.agent_groups_id.join(";") : "",
                 requester_groups_id: Array.isArray(item.requester_groups_id) ? item.requester_groups_id.join(";") : ""
             };
-            console.log(body);
             if (item.bo_display_id) {
                 TABS_CONFIG.update(item.bo_display_id, body);
             } else {

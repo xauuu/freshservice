@@ -215,7 +215,8 @@
             "query": {
                 "page": "<%= context.page %>",
                 "per_page": "100",
-                "include_agents": "true"
+                "include_agents": "true",
+                "active": "true"
             }
         },
         "options": {}

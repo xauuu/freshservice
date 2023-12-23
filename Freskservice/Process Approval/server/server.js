@@ -286,7 +286,8 @@ async function handleFileGeneration(fileConfig, args, ticket, service_request) {
         const template = await fetch.getDocumentTemplate(fileConfig.document_template_code);
         if (!template) return;
         const dataCO = await getRecordCustomObject(fileConfig.custom_object_id?.split(";"), ticket);
-        const dataGenerate = { ticket, service_request, ...dataCO.data };
+        const dataGenerate = { ticket, requester: args.data.requester, service_request, ...dataCO.data };
+        console.log(JSON.stringify(dataGenerate));
         const fileGen =
             template.type === "docx"
                 ? await utils.convertTemplateDocx(template.template_base64, { ...utils.convertData(dataGenerate), ...dataCO.list })
@@ -323,7 +324,7 @@ async function handleFileGeneration(fileConfig, args, ticket, service_request) {
         if (Boolean(fileConfig.send_email_attachment)) {
             const [membersRequester, membersAgent] = await Promise.all([
                 getRequesterGroupMembers(fileConfig.requester_groups_id.split(";")),
-                getAgentGroupMembers(fileConfig.agent_groups_id.split(";")[0])
+                getAgentGroupMembers(fileConfig.agent_groups_id)
             ]);
             const to = fileConfig.to_list + ";" + [...membersRequester, ...membersAgent]?.map((item) => item.email).join(";");
             sendEmailTemplate(fileConfig.email_template_code, dataGenerate, to, [

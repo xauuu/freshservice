@@ -162,20 +162,6 @@
                     ></fw-form-control>
                     <fw-form-control type="TEXT" id="tab_name" name="tab_name" label="Tab Name" placeholder="Enter tab name"></fw-form-control>
                     <fw-form-control type="TEXT" id="tab_code" name="tab_code" label="Tab Code" placeholder="Enter tab code"></fw-form-control>
-                    <fw-form-control
-                        type="MULTI_SELECT"
-                        id="requester_groups_id"
-                        name="requester_groups_id"
-                        label="Visible to requester group"
-                        placeholder="Enter requester group"
-                    ></fw-form-control>
-                    <fw-form-control
-                        type="MULTI_SELECT"
-                        id="agent_groups_id"
-                        name="agent_groups_id"
-                        label="Visible to agent group"
-                        placeholder="Enter agent group"
-                    ></fw-form-control>
                     <fw-form-control type="CHECKBOX" id="is_table" name="is_table" label="Is Table"></fw-form-control>
                 </fw-form>
                 <fw-select multiple id="fields" label="Fields" placeholder="Select fields"></fw-select>
@@ -261,6 +247,7 @@
                     if (data.type === ACTION_TYPES.CUSTOM_OBJECT_FIELDS) {
                         const list = data.data;
                         generateSelectFields("fields", list);
+                        document.getElementById(fields);
                     }
                 });
 
@@ -270,8 +257,6 @@
                         const { detail, data } = context;
                         generateSelect("service_item_id", data.serviceItems, context);
                         generateWorkspace("workspace_id", data.workspaces, context);
-                        generateGroup("requester_groups_id", data.requesterGroups, context);
-                        generateGroup("agent_groups_id", data.agentGroups, context);
                         formCreate.setFieldValue(
                             "process_image",
                             `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">

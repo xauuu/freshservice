@@ -1,0 +1,7 @@
+- Đối với custom object detail:
+	+ required field: ticket_id
+	+ field lookup custom object: lúc thêm thì tạo tên như bình thường, save xong vào update lại thêm id lookup (ví dụ: lần đầu thêm field Type, thì sau update label thành Type 123445679).
+	+ Sau khi thêm field lookup thì thêm 1 field chứa value(not required) (ví dụ, sau khi thêm field Type, thì thêm 1 field là Type Value (***Lưu ý là field lookup lúc thêm lần đầu tiên phải đúng là Type, rồi sau mới update lại label))
+
+- Đối với custom object lookup:
+	+ required field: display_name

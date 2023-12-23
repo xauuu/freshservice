@@ -1,110 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="../styles/style.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../styles/style.css">
-</head>
+    <body>
+        <div id="static-form-container">
+            <fw-form id="formCreate">
+                <fw-tabs>
+                    <fw-tab slot="tab" panel="information">Information</fw-tab>
+                    <fw-tab slot="tab" panel="permission">Permission</fw-tab>
 
-<body>
-    <div id="static-form-container">
-        <fw-form id="formCreate">
-            <fw-form-control type="DROPDOWN" id="app_code" name="app_code" label="App Name" required="true"
-                placeholder="Enter App Name"></fw-form-control>
-            <fw-form-control type="DROPDOWN" id="process_code" name="process_code" label="Process Name" required="true"
-                placeholder="Enter Process Name"></fw-form-control>
-            <fw-form-control id="state_name" name="state_name" label="State Name" required="true"
-                placeholder="Enter State Name"></fw-form-control>
-            <fw-form-control id="state" name="state" label="State" required="true"
-                placeholder="Enter State"></fw-form-control>
-        </fw-form>
-        <div class="bottom">
-            <fw-button id="closeModal" color="secondary">Close</fw-button>
-            <fw-button id="submit" color="primary">Save</fw-button>
+                    <fw-tab-panel name="information">
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="app_code"
+                            name="app_code"
+                            label="App Name"
+                            required="true"
+                            placeholder="Enter App Name"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="DROPDOWN"
+                            id="process_code"
+                            name="process_code"
+                            label="Process Name"
+                            required="true"
+                            placeholder="Enter Process Name"
+                        ></fw-form-control>
+                        <fw-form-control id="state_name" name="state_name" label="State Name" required="true" placeholder="Enter State Name"></fw-form-control>
+                        <fw-form-control id="state" name="state" label="State" required="true" placeholder="Enter State"></fw-form-control>
+                    </fw-tab-panel>
+                    <fw-tab-panel name="permission">
+                        <fw-form-control
+                            type="MULTI_SELECT"
+                            id="requester_groups_id"
+                            name="requester_groups_id"
+                            label="Visible to requester group"
+                            placeholder="Enter requester group"
+                        ></fw-form-control>
+                        <fw-form-control
+                            type="MULTI_SELECT"
+                            id="agent_groups_id"
+                            name="agent_groups_id"
+                            label="Visible to agent group"
+                            placeholder="Enter agent group"
+                        ></fw-form-control>
+                        <fw-form-control type="CHECKBOX" id="can_view" name="can_view" label="Can View"></fw-form-control>
+                        <fw-form-control type="CHECKBOX" id="can_edit" name="can_edit" label="Can Edit"></fw-form-control>
+                        <fw-form-control type="CHECKBOX" id="can_delete" name="can_delete" label="Can Delete"></fw-form-control>
+                    </fw-tab-panel>
+                </fw-tabs>
+            </fw-form>
+            <div class="bottom">
+                <fw-button id="closeModal" color="secondary">Close</fw-button>
+                <fw-button id="submit" color="primary">Save</fw-button>
+            </div>
         </div>
-    </div>
-    <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
-    <script type="module"
-        src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
-    <script src="../scripts/constant.js"></script>
-    <script src="../scripts/helper.js"></script>
-    <script>
-        window.frsh_init().then(function (client) {
-            var context = {}
-            var categories = []
-            var formCreate = document.querySelector("#formCreate")
-            document.getElementById("closeModal").addEventListener("click", function () {
-                client.instance.close();
-            });
-            document.getElementById("app_code").addEventListener('change', function (e) {
-                console.log(e.target)
-                document.getElementById("process_code").value = ''
-                generateProcess(categories?.filter(item => item.data.app_code == e.target.value), "")
-            })
-            formCreate.addEventListener('fwFormValueChanged', (e) => {
-                if (e.detail.field == 'app_code') {
-                    generateProcess(categories?.filter(item => item.data.app_code == e.detail.value), "")
-                }
-            });
-            document.querySelector('#submit').addEventListener('click', async (e) => {
-                const { values, isValid } = await formCreate.doSubmit(e);
-                console.log(values)
-                client.instance.send({
-                    message: {
-                        type: context.type,
-                        data: values,
-                        id: context.detail?.bo_display_id
+        <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
+        <script src="../scripts/constant.js"></script>
+        <script src="../scripts/helper.js"></script>
+        <script>
+            window.frsh_init().then(function (client) {
+                var context = {};
+                var categories = [];
+                var formCreate = document.querySelector("#formCreate");
+                document.getElementById("closeModal").addEventListener("click", function () {
+                    client.instance.close();
+                });
+                document.getElementById("app_code").addEventListener("change", function (e) {
+                    console.log(e.target);
+                    document.getElementById("process_code").value = "";
+                    generateProcess(
+                        categories?.filter((item) => item.data.app_code == e.target.value),
+                        ""
+                    );
+                });
+                formCreate.addEventListener("fwFormValueChanged", (e) => {
+                    if (e.detail.field == "app_code") {
+                        generateProcess(
+                            categories?.filter((item) => item.data.app_code == e.detail.value),
+                            ""
+                        );
                     }
                 });
-
-            });
-            // document.getElementById("formCreate").addEventListener("submit", function (e) {
-            //     e.preventDefault();
-            //     const data = new FormData(e.target);
-            //     const formDataObj = {};
-            //     for (let entry of data.entries()) {
-            //         const [key, value] = entry;
-            //         formDataObj[key] = value;
-            //     }
-            //     client.instance.send({
-            //         message: {
-            //             type: context.type,
-            //             data: formDataObj,
-            //             id: context.detail?.bo_display_id
-            //         }
-            //     });
-            // });
-            client.instance.receive(function (event) {
-                let data = event.helper.getData();
-                if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
-            });
-            client.instance.context().then(
-                function (c) {
-                    context = c.data
+                document.querySelector("#submit").addEventListener("click", async (e) => {
+                    const { values, isValid } = await formCreate.doSubmit(e);
+                    console.log(values);
+                    client.instance.send({
+                        message: {
+                            type: context.type,
+                            data: {
+                                ...values,
+                                can_view: Number(values.can_view),
+                                can_edit: Number(values.can_edit),
+                                can_delete: Number(values.can_delete),
+                                agent_groups_id: Array.isArray(values.agent_groups_id) ? values.agent_groups_id.join(";") : "",
+                                requester_groups_id: Array.isArray(values.requester_groups_id) ? values.requester_groups_id.join(";") : ""
+                            },
+                            id: context.detail?.bo_display_id
+                        }
+                    });
+                });
+                client.instance.receive(function (event) {
+                    let data = event.helper.getData();
+                    if (data.type === ACTION_TYPES.CLOSE_MODAL) client.instance.close();
+                });
+                client.instance.context().then(function (c) {
+                    context = c.data;
                     if (context.type === ACTION_TYPES.STATE_APPROVAL_CREATE || context.type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
-                        const { detail, data } = context
-                        categories = data.categories
-                        generateApp(data.apps, context.detail?.app_code)
+                        const { detail, data } = context;
+                        categories = data.categories;
+                        generateApp(data.apps, context.detail?.app_code);
                         generateProcess(
-                            categories?.filter(item => item.data.app_code == context.detail?.app_code), context.detail?.process_code
-                        )
-                        if (!detail) return
-                        Object.keys(detail).forEach(function (key) {
-                            formCreate.setFieldValue([key], detail[key]);
+                            categories?.filter((item) => item.data.app_code == context.detail?.app_code),
+                            context.detail?.process_code
+                        );
+                        generateGroup("requester_groups_id", data.requesterGroups, context);
+                        generateGroup("agent_groups_id", data.agentGroups, context);
+
+                        if (!detail) return;
+
+                        formCreate.setFieldsValue({
+                            ...detail,
+                            agent_groups_id: detail.agent_groups_id?.split(";"),
+                            requester_groups_id: detail.requester_groups_id?.split(";")
                         });
-                        // document.getElementById("state_name").value = detail.state_name;
-                        // document.getElementById("state").value = detail.state;
-                        // document.getElementById("app_code").value = detail.app_code;
-                        // document.getElementById("process_code").value = detail.process_code;
                     }
-                }
-            );
-        });
-    </script>
-
-</body>
-
+                });
+            });
+        </script>
+    </body>
 </html>
