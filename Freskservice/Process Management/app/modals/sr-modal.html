@@ -217,7 +217,7 @@
                     const { values, isValid } = await formCreate.doSubmit(e);
                     await tableTab.selectAllRows();
                     const tabValues = await tableTab.getSelectedRows();
-
+                    console.log(tabValues);
                     client.instance.send({
                         message: {
                             type: context.type,

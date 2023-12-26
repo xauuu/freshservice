@@ -27,7 +27,7 @@ function generateState(id, list, context) {
         return { value: item.data.state, text: item.data.state_name };
     });
     document.getElementById(id).choices = options?.sort((a, b) => a.value.localeCompare(b.value));
-    document.getElementById(id).value = context.detail?.[id];
+    document.getElementById(id).value = String(context.detail?.[id]);
 }
 
 function generateEmailTemplate(id, list, context) {

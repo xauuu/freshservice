@@ -70,5 +70,11 @@
         "description": "Please enter your process_file_generation_id",
         "type": "text",
         "required": true
+    },
+    "tab_permission_id": {
+        "display_name": "tab_permission_id",
+        "description": "Please enter your tab_permission_id",
+        "type": "text",
+        "required": true
     }
 }

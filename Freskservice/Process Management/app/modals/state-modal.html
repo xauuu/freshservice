@@ -35,23 +35,19 @@
                         <fw-form-control id="state" name="state" label="State" required="true" placeholder="Enter State"></fw-form-control>
                     </fw-tab-panel>
                     <fw-tab-panel name="permission">
+                        <fw-form-control type="CHECKBOX" id="can_submit" name="can_submit" label="Can Submit"></fw-form-control>
                         <fw-form-control
-                            type="MULTI_SELECT"
-                            id="requester_groups_id"
-                            name="requester_groups_id"
-                            label="Visible to requester group"
-                            placeholder="Enter requester group"
+                            style="display: none"
+                            type="DROPDOWN"
+                            id="next_state"
+                            name="next_state"
+                            label="Next State"
+                            placeholder="Select next state"
                         ></fw-form-control>
-                        <fw-form-control
-                            type="MULTI_SELECT"
-                            id="agent_groups_id"
-                            name="agent_groups_id"
-                            label="Visible to agent group"
-                            placeholder="Enter agent group"
-                        ></fw-form-control>
-                        <fw-form-control type="CHECKBOX" id="can_view" name="can_view" label="Can View"></fw-form-control>
-                        <fw-form-control type="CHECKBOX" id="can_edit" name="can_edit" label="Can Edit"></fw-form-control>
-                        <fw-form-control type="CHECKBOX" id="can_delete" name="can_delete" label="Can Delete"></fw-form-control>
+                        <div style="display: flex; justify-content: space-between; margin: 15px 0">
+                            <fw-button id="new-tab" color="secondary">Add New</fw-button>
+                        </div>
+                        <fw-data-table id="data-table-tabs"></fw-data-table>
                     </fw-tab-panel>
                 </fw-tabs>
             </fw-form>
@@ -60,50 +56,98 @@
                 <fw-button id="submit" color="primary">Save</fw-button>
             </div>
         </div>
+        <fw-modal id="modal-detail">
+            <fw-modal-title>
+                <span>Tab Permission</span>
+            </fw-modal-title>
+            <fw-modal-content>
+                <fw-form id="form-tab">
+                    <fw-form-control type="MULTI_SELECT" id="tab_code" name="tab_code" label="Tab" placeholder="Select Tab"></fw-form-control>
+                    <fw-form-control type="CHECKBOX" id="apply_to_requester" name="apply_to_requester" label="Apply To Requester"></fw-form-control>
+                    <fw-form-control
+                        type="MULTI_SELECT"
+                        id="requester_groups_id"
+                        name="requester_groups_id"
+                        label="Visible to requester group"
+                        placeholder="Enter requester group"
+                    ></fw-form-control>
+                    <fw-form-control
+                        type="MULTI_SELECT"
+                        id="agent_groups_id"
+                        name="agent_groups_id"
+                        label="Visible to agent group"
+                        placeholder="Enter agent group"
+                    ></fw-form-control>
+                    <fw-form-control type="CHECKBOX" id="can_view" name="can_view" label="Can View"></fw-form-control>
+                    <fw-form-control type="CHECKBOX" id="can_edit" name="can_edit" label="Can Edit"></fw-form-control>
+                    <fw-form-control type="CHECKBOX" id="can_delete" name="can_delete" label="Can Delete"></fw-form-control
+                ></fw-form>
+            </fw-modal-content>
+            <fw-modal-footer>
+                <fw-button id="form-tab-close" color="secondary">Close</fw-button>
+                <fw-button id="form-tab-add">Add</fw-button>
+                <fw-button id="form-tab-save">Save</fw-button>
+            </fw-modal-footer>
+        </fw-modal>
         <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
         <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
         <script nomodule src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.js"></script>
         <script src="../scripts/constant.js"></script>
         <script src="../scripts/helper.js"></script>
+        <script src="../scripts/tab-permission.js"></script>
         <script>
             window.frsh_init().then(function (client) {
                 var context = {};
                 var categories = [];
+                var states = [];
                 var formCreate = document.querySelector("#formCreate");
+                var tableTab = document.querySelector("#data-table-tabs");
                 document.getElementById("closeModal").addEventListener("click", function () {
                     client.instance.close();
                 });
-                document.getElementById("app_code").addEventListener("change", function (e) {
-                    console.log(e.target);
-                    document.getElementById("process_code").value = "";
-                    generateProcess(
-                        categories?.filter((item) => item.data.app_code == e.target.value),
-                        ""
-                    );
-                });
                 formCreate.addEventListener("fwFormValueChanged", (e) => {
-                    if (e.detail.field == "app_code") {
+                    const { field, value } = e.detail;
+                    if (field == "app_code") {
                         generateProcess(
-                            categories?.filter((item) => item.data.app_code == e.detail.value),
+                            categories?.filter((item) => item.data.app_code == value),
                             ""
                         );
+                    }
+                    if (field == "process_code") {
+                        const newStateList = states?.filter(
+                            (item) => item.data.app_code == document.getElementById("app_code").value && item.data.process_code == value
+                        );
+                        generateState("next_state", newStateList, context);
+                    }
+                    if (field === "can_submit") {
+                        document.getElementById("next_state").style.display = value ? "block" : "none";
                     }
                 });
                 document.querySelector("#submit").addEventListener("click", async (e) => {
                     const { values, isValid } = await formCreate.doSubmit(e);
+                    await tableTab.selectAllRows();
+                    const tabValues = await tableTab.getSelectedRows();
                     console.log(values);
+                    const sr = categories.find((item) => item.data.app_code === values.app_code && item.data.process_code === values.process_code);
                     client.instance.send({
                         message: {
                             type: context.type,
                             data: {
                                 ...values,
-                                can_view: Number(values.can_view),
-                                can_edit: Number(values.can_edit),
-                                can_delete: Number(values.can_delete),
-                                agent_groups_id: Array.isArray(values.agent_groups_id) ? values.agent_groups_id.join(";") : "",
-                                requester_groups_id: Array.isArray(values.requester_groups_id) ? values.requester_groups_id.join(";") : ""
+                                service_item_id: sr?.data.service_item_id || ""
                             },
                             id: context.detail?.bo_display_id
+                        }
+                    });
+
+                    client.instance.send({
+                        message: {
+                            type: ACTION_TYPES.TABS_PERMISSION,
+                            data: {
+                                service_item_id: sr?.data.service_item_id || "",
+                                state: values.state,
+                                tabPermissions: tabValues
+                            }
                         }
                     });
                 });
@@ -116,6 +160,7 @@
                     if (context.type === ACTION_TYPES.STATE_APPROVAL_CREATE || context.type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
                         const { detail, data } = context;
                         categories = data.categories;
+                        states = data.states;
                         generateApp(data.apps, context.detail?.app_code);
                         generateProcess(
                             categories?.filter((item) => item.data.app_code == context.detail?.app_code),
@@ -123,17 +168,25 @@
                         );
                         generateGroup("requester_groups_id", data.requesterGroups, context);
                         generateGroup("agent_groups_id", data.agentGroups, context);
-
+                        generateState("next_state", states, context);
+                        generateSelect("tab_code", data.tabs, context);
                         if (!detail) return;
-
+                        document.getElementById("next_state").style.display = detail.can_submit ? "block" : "none";
                         formCreate.setFieldsValue({
                             ...detail,
                             agent_groups_id: detail.agent_groups_id?.split(";"),
                             requester_groups_id: detail.requester_groups_id?.split(";")
                         });
+                        generateDataTable(data.tabPermissions || []);
                     }
                 });
             });
+            function generateSelect(container, list, context) {
+                const options = list?.map((item) => {
+                    return { value: String(item.data.tab_code), text: item.data.tab_name };
+                });
+                document.getElementById(container).choices = options;
+            }
         </script>
     </body>
 </html>

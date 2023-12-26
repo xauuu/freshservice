@@ -64,8 +64,8 @@ async function openModal(type, detail = null) {
         [ACTION_TYPES.EMAIL_TEMPLATE_UPDATE]: {},
         [ACTION_TYPES.SERVICE_REQUEST_CREATE]: { serviceItems, workspaces },
         [ACTION_TYPES.SERVICE_REQUEST_UPDATE]: { serviceItems, workspaces },
-        [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories, requesterGroups, agentGroups },
-        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories, requesterGroups, agentGroups },
+        [ACTION_TYPES.STATE_APPROVAL_CREATE]: { apps, categories, requesterGroups, agentGroups, states },
+        [ACTION_TYPES.STATE_APPROVAL_UPDATE]: { apps, categories, requesterGroups, agentGroups, states },
         [ACTION_TYPES.DOCUMENT_TEMPLATE_CREATE]: {},
         [ACTION_TYPES.DOCUMENT_TEMPLATE_UPDATE]: {}
     };
@@ -81,6 +81,10 @@ async function openModal(type, detail = null) {
             CONDITIONS_CONFIG.detail(detail?.bo_display_id)
         ]);
         var more = { approval, template, condition };
+    }
+    if (type === ACTION_TYPES.STATE_APPROVAL_UPDATE) {
+        const [tabPermissions, tabs] = await Promise.all([TAB_PERMISSION.detail(detail?.service_item_id), TABS_CONFIG.detail(detail?.service_item_id)]);
+        var more = { tabPermissions, tabs };
     }
     clientApp.interface.trigger("showModal", {
         title: titleMap[type],
@@ -173,6 +177,9 @@ function initHandlers() {
             case ACTION_TYPES.CONDITIONS_CONFIGURATION:
                 if (id) CONDITIONS_CONFIG.update(id, data);
                 else CONDITIONS_CONFIG.create(data);
+                break;
+            case ACTION_TYPES.TABS_PERMISSION:
+                handleTabPermission(data);
                 break;
         }
     });
@@ -543,6 +550,51 @@ const CONDITIONS_CONFIG = {
     }
 };
 
+const TAB_PERMISSION = {
+    create: (data) => {
+        console.log({ data });
+        clientApp.request
+            .invokeTemplate("createCustomObject", {
+                context: { custom_object_id: iparams.tab_permission_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("CREATE TAB_PERMISSION", data);
+                },
+                function (error) {
+                    console.error("CREATE TAB_PERMISSION", error);
+                }
+            );
+    },
+    update: (id, data) => {
+        clientApp.request
+            .invokeTemplate("updateCustomObject", {
+                context: { id, custom_object_id: iparams.tab_permission_id },
+                body: JSON.stringify({ data })
+            })
+            .then(
+                function (data) {
+                    console.log("UPDATE TAB_PERMISSION", data);
+                },
+                function (error) {
+                    console.error("UPDATE TAB_PERMISSION", error);
+                }
+            );
+    },
+    detail: async (id) => {
+        try {
+            const response = await clientApp.request.invokeTemplate("queryCustomObject", {
+                context: { query: `service_item_id : '${id}'`, custom_object_id: iparams.tab_permission_id }
+            });
+            const data = JSON.parse(response.response);
+            return data.records;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+};
+
 async function handleSuccess(type) {
     showNotification("success", MESSAGES[type]);
     clientApp.instance.send({ message: { type: ACTION_TYPES.CLOSE_MODAL } });
@@ -907,8 +959,8 @@ function handleTabsConfig(data) {
                 tab_name: item.tab_name,
                 custom_object_id: item.custom_object_id,
                 is_table: Number(item.is_table),
-                fields: JSON.stringify(item.fields),
-                fields_id: Array.isArray(item.fields) ? item.fields.map((item) => item.name)?.join(";") : "",
+                fields: Array.isArray(item.fields) ? JSON.stringify(item.fields) : item.fields,
+                fields_id: Array.isArray(item.fields) ? item.fields.map((item) => item.name)?.join(";") : item.fields_id,
                 agent_groups_id: Array.isArray(item.agent_groups_id) ? item.agent_groups_id.join(";") : "",
                 requester_groups_id: Array.isArray(item.requester_groups_id) ? item.requester_groups_id.join(";") : ""
             };
@@ -961,6 +1013,30 @@ async function getFieldsByType(data) {
         fields = res.fields;
     }
     await clientApp.instance.send({ message: { type: ACTION_TYPES.GET_FIELDS_BY_TYPE, data: fields } });
+}
+
+function handleTabPermission(data) {
+    const { service_item_id, tabPermissions, state } = data;
+    Promise.all(
+        tabPermissions?.map(async (item) => {
+            const body = {
+                can_view: Number(item.can_view),
+                can_edit: Number(item.can_edit),
+                can_delete: Number(item.can_delete),
+                apply_to_requester: Number(item.apply_to_requester),
+                agent_groups_id: item.agent_groups_id,
+                requester_groups_id: item.requester_groups_id,
+                tab_code: item.tab_code,
+                state,
+                service_item_id
+            };
+            if (item.bo_display_id) {
+                TAB_PERMISSION.update(item.bo_display_id, body);
+            } else {
+                TAB_PERMISSION.create(body);
+            }
+        })
+    );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
